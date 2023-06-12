@@ -1,0 +1,11 @@
+/*
+Example of adding new link to the file:
+
+**dd.mm.yyyy**                                  <-- date of the finding / creating the source
+Brief_Explanation of the link -- link           <-- exact the same
+(Additional info if needed)                     <-- optional additional info
+*/
+
+**09.06.2023**
+Recording of the initial meeting with the customer - https://disk.yandex.ru/d/8W9K1Aaxs78YDw
+(Customers: Mike Kuskov, Andrei Markov)
