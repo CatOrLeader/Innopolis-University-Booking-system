@@ -8,7 +8,7 @@ import com.pengrad.telegrambot.request.BaseRequest;
 import com.pengrad.telegrambot.request.SendMessage;
 
 public class Bot {
-    private TelegramBot bot = new TelegramBot("6065382468:AAEWy7pzKrLu2teez_jtEyY_pXzQGWP5AsI");
+    private final TelegramBot bot = new TelegramBot("6065382468:AAEWy7pzKrLu2teez_jtEyY_pXzQGWP5AsI");
 
     public void serve() {
         bot.setUpdatesListener(updates -> {
