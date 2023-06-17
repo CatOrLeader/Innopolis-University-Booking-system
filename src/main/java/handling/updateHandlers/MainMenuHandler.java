@@ -1,8 +1,6 @@
 package handling.updateHandlers;
 
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
 import handling.ConcreteHandler;
 import handling.Response;
