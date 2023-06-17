@@ -6,6 +6,8 @@ import handling.ConcreteHandler;
 import handling.Response;
 import handling.context.BotState;
 
+import config.Text;
+
 public class MainMenuHandler extends ConcreteHandler {
     @Override
     public Response handle(Update update) {
@@ -14,15 +16,15 @@ public class MainMenuHandler extends ConcreteHandler {
         }
         var chatId = update.message().chat().id();
         var text = update.message().text();
-        if (text.equals("Book a room")) {
+        if (text.equals(Text.BookRoomBtn())) {
             return new Response(
                     new SendMessage(chatId,
-                            "There is no such opportunity yet :("),
+                            Text.BookRoomMsg_Answer()),
                     BotState.MAIN_MENU_STATE);
-        } else if (text.equals("Look my rooms")) {
+        } else if (text.equals(Text.CheckBookingsBtn())) {
             return new Response(
                     new SendMessage(chatId,
-                            "You can not book rooms -> You can not check your reservations :)"),
+                            Text.CheckBookingsMsg_Answer()),
                     BotState.MAIN_MENU_STATE);
         } else {
             return new Response(null, BotState.NO_STATE);

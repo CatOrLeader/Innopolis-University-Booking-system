@@ -8,6 +8,8 @@ import handling.context.BotState;
 import handling.ConcreteHandler;
 import handling.Response;
 
+import config.Text;
+
 /**
  * Handler for "NO_STATE" state.
  * TODO: Not actual implementation, just an example
@@ -20,9 +22,13 @@ public class NoStateHandler extends ConcreteHandler {
         }
         var chatId = update.message().chat().id();
         var botResponse = new SendMessage(chatId,
-                "Hello! I see you first time and will try to remember!");
-        botResponse.replyMarkup(new ReplyKeyboardMarkup(new KeyboardButton("Book a room"),
-                new KeyboardButton("Look my rooms")));
+                Text.NewbiesMsg());
+
+        botResponse.replyMarkup(new ReplyKeyboardMarkup(
+                new KeyboardButton(Text.BookRoomBtn()),
+                new KeyboardButton(Text.CheckBookingsBtn())
+        ).resizeKeyboard(true));
+
         var nextState = BotState.MAIN_MENU_STATE;
         return new Response(botResponse, nextState);
     }
