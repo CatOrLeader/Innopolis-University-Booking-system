@@ -9,6 +9,6 @@ import com.pengrad.telegrambot.model.Update;
  * corresponding BotState in GlobalUpdatesHandler.
  */
 public abstract class StateHandler {
-    // TODO: Create static fields to access API, Database, ...
+    // TODO: In certain specifications may be other fields to access API, DB...
     public abstract Response handle(Update update);
 }

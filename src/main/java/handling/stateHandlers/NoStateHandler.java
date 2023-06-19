@@ -1,4 +1,4 @@
-package handling.updateHandlers;
+package handling.stateHandlers;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.KeyboardButton;

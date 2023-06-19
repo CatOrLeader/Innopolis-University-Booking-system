@@ -4,8 +4,8 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.BaseRequest;
 import handling.context.BotState;
 import handling.context.UserContextHandler;
-import handling.updateHandlers.MainMenuHandler;
-import handling.updateHandlers.NoStateHandler;
+import handling.stateHandlers.MainMenuHandler;
+import handling.stateHandlers.NoStateHandler;
 
 import java.util.HashMap;
 import java.util.Map;

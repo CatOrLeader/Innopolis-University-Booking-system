@@ -4,7 +4,7 @@ import com.pengrad.telegrambot.request.BaseRequest;
 import handling.context.BotState;
 
 /**
- * Record describing ConcreteHandler response on corresponding update.
+ * Record describing StateHandler response on corresponding update.
  * @param nextState state in dialog FSA that user must take.
  * @param botResponse requests that must be executed by bot in order to answer to user.
  */
