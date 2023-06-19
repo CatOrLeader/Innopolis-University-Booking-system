@@ -5,9 +5,9 @@ import handling.context.BotState;
 
 /**
  * Record describing ConcreteHandler response on corresponding update.
- * @param botResponse request that must be executed by bot in order to answer to user.
  * @param nextState state in dialog FSA that user must take.
+ * @param botResponse requests that must be executed by bot in order to answer to user.
  */
-public record Response(BaseRequest botResponse, BotState nextState) {
+public record Response(BotState nextState, BaseRequest... botResponse) {
 
 }

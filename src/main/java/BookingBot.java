@@ -3,6 +3,8 @@ import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import handling.GlobalUpdatesHandler;
 
+import java.util.Arrays;
+
 /**
  * Class describing booking bot functionality.
  */
@@ -26,12 +28,11 @@ public class BookingBot {
 
     /**
      * Method to process all the updates and answer on them.
+     * There may be multiple response requests on one update.
      * @param update incoming update.
      */
     private void process(Update update) {
-        var response = updatesHandler.handle(update);
-        if (response != null) {
-            bot.execute(response);
-        }
+        var responses = updatesHandler.handle(update);
+        Arrays.stream(responses).forEach(bot::execute);
     }
 }
