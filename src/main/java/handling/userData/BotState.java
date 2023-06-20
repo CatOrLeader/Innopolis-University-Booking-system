@@ -1,7 +1,5 @@
 package handling.userData;
 
-// TODO: Authentication automaton
-
 /**
  * Enum describing states of the bot-user dialog FSM.
  */
