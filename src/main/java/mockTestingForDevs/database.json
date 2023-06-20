@@ -1,0 +1,73 @@
+{
+  "rooms": [
+    {
+      "name": "Meeting Room #3.2",
+      "id": "3.2",
+      "type": "MEETING_ROOM",
+      "capacity": 6
+    },
+    {
+      "name": "Meeting Room #3.3",
+      "id": "3.3",
+      "type": "MEETING_ROOM",
+      "capacity": 6
+    },
+    {
+      "name": "Meeting Room #3.4",
+      "id": "3.4",
+      "type": "MEETING_ROOM",
+      "capacity": 6
+    },
+    {
+      "name": "Lecture Room 108",
+      "id": "108",
+      "type": "AUDITORIUM",
+      "capacity": 250
+    },
+    {
+      "name": "Lecture Room 107",
+      "id": "107",
+      "type": "AUDITORIUM",
+      "capacity": 180
+    },
+    {
+      "name": "Meeting Room #3.1",
+      "id": "3.1",
+      "type": "MEETING_ROOM",
+      "capacity": 5
+    },
+    {
+      "name": "Meeting Room #3.5",
+      "id": "3.5",
+      "type": "MEETING_ROOM",
+      "capacity": 7
+    },
+    {
+      "name": "Lecture Room 100",
+      "id": "100",
+      "type": "AUDITORIUM",
+      "capacity": 90
+    }
+  ],
+  "free": [
+    {
+      "name": "Meeting Room #3.5",
+      "id": "3.5",
+      "type": "MEETING_ROOM",
+      "capacity": 7
+    },
+    {
+      "name": "Lecture Room 100",
+      "id": "100",
+      "type": "AUDITORIUM",
+      "capacity": 90
+    },
+    {
+      "name": "Meeting Room #3.1",
+      "id": "3.1",
+      "type": "MEETING_ROOM",
+      "capacity": 5
+    }
+  ],
+  "bookings": []
+}
