@@ -1,7 +1,7 @@
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
-import handling.GlobalUpdatesHandler;
+import handling.UpdatesManager;
 
 import java.util.Arrays;
 
@@ -10,10 +10,10 @@ import java.util.Arrays;
  */
 public class BookingBot {
     private final TelegramBot bot;
-    private final GlobalUpdatesHandler updatesHandler;
+    private final UpdatesManager updatesHandler;
     public BookingBot(String token) {
         bot = new TelegramBot(token);
-        updatesHandler = new GlobalUpdatesHandler();
+        updatesHandler = new UpdatesManager();
     }
 
     /**

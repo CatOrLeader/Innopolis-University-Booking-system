@@ -1,13 +1,13 @@
 package handling;
 
 import com.pengrad.telegrambot.request.BaseRequest;
-import handling.context.BotState;
+import handling.userData.UserData;
 
 /**
  * Record describing StateHandler response on corresponding update.
- * @param nextState state in dialog FSA that user must take.
+ * @param userData external user data after request handling.
  * @param botResponse requests that must be executed by bot in order to answer to user.
  */
-public record Response(BotState nextState, BaseRequest... botResponse) {
+public record Response(UserData userData, BaseRequest... botResponse) {
 
 }

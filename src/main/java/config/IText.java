@@ -1,17 +1,16 @@
 package config;
 
 /**
- * Interface common for all texts with different languages
+ * Interface describing messages of dialog in bot.
  */
-interface IText {
-    // Bot Buttons' messages
-    String BookRoomBtn();
-    String CheckBookingsBtn();
+public interface IText {
+    // Messages text
+    String initial();
+    String verificationCodeSent();
+    String authorized();
+    String reservationsHere();
 
-    // Bot answers
-    String BookRoomMsg_Answer();
-    String CheckBookingsMsg_Answer();
-
-    // Bot messages
-    String NewbiesMsg();
+    // Buttons text
+    String newBooking();
+    String myReservations();
 }

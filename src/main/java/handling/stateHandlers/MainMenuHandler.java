@@ -1,30 +1,32 @@
 package handling.stateHandlers;
 
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.request.SendMessage;
-import handling.StateHandler;
 import handling.Response;
-import handling.context.BotState;
-
-import config.Text;
+import handling.StateHandler;
+import handling.userData.UserData;
 
 public class MainMenuHandler extends StateHandler {
     @Override
-    public Response handle(Update update) {
-        if (update.message() == null) {
-            return new Response(BotState.MAIN_MENU_STATE);
-        }
-        var chatId = update.message().chat().id();
-        var text = update.message().text();
-        if (text.equals(Text.BookRoomBtn())) {
-            return new Response(BotState.MAIN_MENU_STATE,
-                    new SendMessage(chatId,
-                            Text.BookRoomMsg_Answer()));
-        } else if (text.equals(Text.CheckBookingsBtn())) {
-            return new Response(BotState.MAIN_MENU_STATE, new SendMessage(chatId,
-                    Text.CheckBookingsMsg_Answer()));
+    public Response handle(Update incomingUpdate, UserData data) {
+        var message = incomingUpdate.message();
+        var lang = data.getLang();
+        if (message == null) {
+            return new Response(data);
+        } else if (message.text().equals(data.getLang().myReservations())) {
+            return handleReservations(data);
+        } else if (message.text().equals(data.getLang().newBooking())) {
+            return handleNewBooking(data);
         } else {
-            return new Response(BotState.MAIN_MENU_STATE);
+            return new Response(data);
         }
+    }
+
+    // TODO: complete full handling
+    private Response handleReservations(UserData data) {
+        return new Response(data);
+    }
+
+    private Response handleNewBooking(UserData data) {
+        return new Response(data);
     }
 }
