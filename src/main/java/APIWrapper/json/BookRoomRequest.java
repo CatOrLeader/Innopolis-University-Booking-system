@@ -12,4 +12,6 @@ public class BookRoomRequest {
         this.end = end;
         this.owner_email = owner_email;
     }
+
+    public BookRoomRequest() {}
 }

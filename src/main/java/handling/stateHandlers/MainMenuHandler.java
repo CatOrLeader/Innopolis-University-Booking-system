@@ -5,6 +5,7 @@ import APIWrapper.json.BookingsFilter;
 import APIWrapper.json.QueryBookingsRequest;
 import APIWrapper.requests.Request;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
 import handling.Response;
 import handling.StateHandler;
@@ -30,6 +31,7 @@ public class MainMenuHandler extends StateHandler {
         }
     }
 
+    // TODO: work with time
     private Response handleReservations(UserData data) {
         var lang = data.getLang();
         var bookings = outlook.queryBookings(
@@ -51,12 +53,13 @@ public class MainMenuHandler extends StateHandler {
                     booking.room.name, booking.start, booking.end);
             answer.append("\n").append(bookingInfo);
         }
-        return new Response(data, new SendMessage(data.getUserId(), answer.toString()));
+        return new Response(data,
+                new SendMessage(data.getUserId(), answer.toString()));
     }
 
     private Response handleNewBooking(UserData data) {
         var botMessage = new SendMessage(data.getUserId(), data.getLang().chooseBookingTime());
         data.setDialogState(BotState.BOOKING_TIME_AWAITING);
-        return new Response(data, botMessage);
+        return new Response(data, botMessage.replyMarkup(new ReplyKeyboardRemove()));
     }
 }

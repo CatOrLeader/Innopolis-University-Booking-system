@@ -3,10 +3,7 @@ package handling;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.BaseRequest;
 import config.EnglishText;
-import handling.stateHandlers.CodeAwaitingHandler;
-import handling.stateHandlers.EnterEmailHandler;
-import handling.stateHandlers.MainMenuHandler;
-import handling.stateHandlers.UninitializedHandler;
+import handling.stateHandlers.*;
 import handling.userData.BotState;
 import handling.userData.UserData;
 import handling.userData.UserDataManager;
@@ -33,10 +30,15 @@ public class UpdatesManager {
      */
     // TODO: Handlers!
     private void preloadHandlers() {
+        var bookingHandler = new NewBookingHandler();
+
         handlerMap.put(BotState.UNINITIALIZED, new UninitializedHandler());
         handlerMap.put(BotState.ENTER_MAIL, new EnterEmailHandler());
         handlerMap.put(BotState.CODE_AWAITING, new CodeAwaitingHandler());
         handlerMap.put(BotState.MAIN_MENU, new MainMenuHandler());
+
+        handlerMap.put(BotState.BOOKING_TIME_AWAITING, bookingHandler);
+        handlerMap.put(BotState.BOOKING_DURATION_AWAITING, bookingHandler);
     }
 
     /**

@@ -11,6 +11,7 @@ public interface IText {
     String noActualBookings();
     String hereActualBookings();
     String chooseBookingTime();
+    String chooseBookingDuration();
 
     // Buttons text
     String newBookingBtn();

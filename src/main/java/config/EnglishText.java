@@ -36,6 +36,11 @@ public class EnglishText implements IText {
     }
 
     @Override
+    public String chooseBookingDuration() {
+        return "Please, choose preferred booking duration.";
+    }
+
+    @Override
     public String newBookingBtn() {
         return "\uD83D\uDD0F New booking";
     }
@@ -44,6 +49,4 @@ public class EnglishText implements IText {
     public String myReservationsBtn() {
         return "\uD83D\uDD10 My bookings";
     }
-
-
 }

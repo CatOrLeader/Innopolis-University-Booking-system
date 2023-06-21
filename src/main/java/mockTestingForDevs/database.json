@@ -51,6 +51,12 @@
   ],
   "free": [
     {
+      "name": "Meeting Room #3.1",
+      "id": "3.1",
+      "type": "MEETING_ROOM",
+      "capacity": 5
+    },
+    {
       "name": "Meeting Room #3.5",
       "id": "3.5",
       "type": "MEETING_ROOM",
@@ -61,12 +67,6 @@
       "id": "100",
       "type": "AUDITORIUM",
       "capacity": 90
-    },
-    {
-      "name": "Meeting Room #3.1",
-      "id": "3.1",
-      "type": "MEETING_ROOM",
-      "capacity": 5
     }
   ],
   "bookings": []
