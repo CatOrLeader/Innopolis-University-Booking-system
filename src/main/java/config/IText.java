@@ -8,9 +8,12 @@ public interface IText {
     String initial();
     String verificationCodeSent();
     String authorized();
-    String reservationsHere();
+    String noActualBookings();
+    String hereActualBookings();
+    String chooseBookingTime();
 
     // Buttons text
-    String newBooking();
-    String myReservations();
+    String newBookingBtn();
+    String myReservationsBtn();
+
 }

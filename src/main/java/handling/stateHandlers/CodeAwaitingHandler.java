@@ -4,7 +4,6 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
-import config.EnglishText;
 import config.IText;
 import handling.Response;
 import handling.StateHandler;
@@ -28,7 +27,7 @@ public class CodeAwaitingHandler extends StateHandler {
 
     private ReplyKeyboardMarkup buildMarkup(IText lang) {
         return new ReplyKeyboardMarkup(
-                new KeyboardButton(lang.newBooking()), new KeyboardButton(lang.myReservations())
+                new KeyboardButton(lang.newBookingBtn()), new KeyboardButton(lang.myReservationsBtn())
         ).resizeKeyboard(true);
     }
 }

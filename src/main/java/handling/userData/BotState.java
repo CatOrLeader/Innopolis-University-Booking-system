@@ -10,5 +10,6 @@ public enum BotState {
     MAIN_MENU,
     LIST_OF_RESERVATIONS,
     CANCEL_CONFIRMATION,
+    BOOKING_TIME_AWAITING,
     // TODO: Extend the list fully
 }
