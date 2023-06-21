@@ -22,7 +22,7 @@ class RequestFormatted {
         gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
-    // Incoming messages processor
+    // Incoming messages processors
     protected ArrayList<Room> getAllBookableRooms() {
         String content = formatStringToGson(rawRequest.getAllBookableRoomsUnformatted());
 
@@ -42,7 +42,6 @@ class RequestFormatted {
         return gson.fromJson(content, roomArrayList);
     }
 
-    // TODO: Check on real server (or mock)
     protected ArrayList<Room> getAllFreeRooms(GetFreeRoomsRequest request) {
         String jsonRequest = gson.toJson(request);
 

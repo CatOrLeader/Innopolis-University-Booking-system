@@ -38,6 +38,6 @@ public class RequestsExamples {
 //        ArrayList<Room> freeRooms = request.getAllFreeRooms(getFreeRoomsRequest);
 //        Booking booking = request.bookRoom("3.1", bookRoomRequest);
 //        ArrayList<Booking> bookings = request.queryBookings(queryBookingsRequest);
-//        String deleteReport = request.deleteBooking("1");
+        String deleteReport = request.deleteBooking("1");
     }
 }

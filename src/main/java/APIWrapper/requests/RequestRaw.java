@@ -22,7 +22,6 @@ class RequestRaw {
     }
 
     // Main requests to the DB
-
     protected String getAllBookableRoomsUnformatted() {
         String concreteURL = stringURL + Paths.ROOMS.getPath();
 
