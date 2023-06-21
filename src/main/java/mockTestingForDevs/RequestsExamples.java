@@ -22,7 +22,7 @@ public class RequestsExamples {
                 "Test bookings from the mockTesting... directory",
                 "not implemented yet",
                 "not implemented yet",
-                "email@innopolis.university"
+                "mail@innopolis.university"
         );
 
         QueryBookingsRequest queryBookingsRequest = new QueryBookingsRequest(
@@ -36,8 +36,9 @@ public class RequestsExamples {
 
 //        ArrayList<Room> rooms = request.getAllBookableRooms();
 //        ArrayList<Room> freeRooms = request.getAllFreeRooms(getFreeRoomsRequest);
-//        Booking booking = request.bookRoom("3.1", bookRoomRequest);
+//        Booking booking = request.bookRoom("3.5", bookRoomRequest);
 //        ArrayList<Booking> bookings = request.queryBookings(queryBookingsRequest);
-//        String deleteReport = request.deleteBooking("1");
+//        String deleteReport = request.deleteBooking("2");
+//        ArrayList<Booking> bookings = request.getBookingsByUser("email@innopolis.university");
     }
 }
