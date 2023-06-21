@@ -1,10 +1,8 @@
 package handling.stateHandlers;
 
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.request.KeyboardButton;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import com.pengrad.telegrambot.request.SendMessage;
-import config.IText;
+import handling.Keyboards;
 import handling.Response;
 import handling.StateHandler;
 import handling.userData.BotState;
@@ -21,13 +19,7 @@ public class CodeAwaitingHandler extends StateHandler {
         data.setDialogState(BotState.MAIN_MENU);
         var botMessage =
                 new SendMessage(data.getUserId(), data.getLang().authorized()).
-                        replyMarkup(buildMarkup(data.getLang()));
+                        replyMarkup(Keyboards.mainMenuMarkup(data.getLang()));
         return new Response(data, botMessage);
-    }
-
-    private ReplyKeyboardMarkup buildMarkup(IText lang) {
-        return new ReplyKeyboardMarkup(
-                new KeyboardButton(lang.newBookingBtn()), new KeyboardButton(lang.myReservationsBtn())
-        ).resizeKeyboard(true);
     }
 }

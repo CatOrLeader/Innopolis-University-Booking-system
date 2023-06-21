@@ -7,10 +7,13 @@ import APIWrapper.requests.Request;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
+import config.IText;
 import handling.Response;
 import handling.StateHandler;
 import handling.userData.BotState;
 import handling.userData.UserData;
+
+import java.util.List;
 
 
 public class MainMenuHandler extends StateHandler {
@@ -42,24 +45,30 @@ public class MainMenuHandler extends StateHandler {
                         new String[]{data.getEmail()}
                 ))
         );
-        StringBuilder answer;
+        var userReservations = bookingsMessageText(bookings, lang);
+        return new Response(data, new SendMessage(data.getUserId(), userReservations));
+    }
+
+    private Response handleNewBooking(UserData data) {
+        var botMessage = new SendMessage(
+                data.getUserId(), data.getLang().chooseBookingTime())
+                .replyMarkup(new ReplyKeyboardRemove());
+        data.setDialogState(BotState.BOOKING_TIME_AWAITING);
+        return new Response(data, botMessage);
+    }
+
+    private String bookingsMessageText(List<Booking> bookings, IText lang) {
+        StringBuilder text;
         if (bookings.isEmpty()) {
-            answer = new StringBuilder(lang.noActualBookings());
+            text = new StringBuilder(lang.noActualBookings());
         } else {
-            answer = new StringBuilder(lang.hereActualBookings());
+            text = new StringBuilder(lang.hereActualBookings());
         }
         for (Booking booking : bookings) {
             var bookingInfo = String.format("%s — %s, %s — %s\n", booking.title,
                     booking.room.name, booking.start, booking.end);
-            answer.append("\n").append(bookingInfo);
+            text.append("\n").append(bookingInfo);
         }
-        return new Response(data,
-                new SendMessage(data.getUserId(), answer.toString()));
-    }
-
-    private Response handleNewBooking(UserData data) {
-        var botMessage = new SendMessage(data.getUserId(), data.getLang().chooseBookingTime());
-        data.setDialogState(BotState.BOOKING_TIME_AWAITING);
-        return new Response(data, botMessage.replyMarkup(new ReplyKeyboardRemove()));
+        return text.toString();
     }
 }

@@ -12,6 +12,9 @@ public interface IText {
     String hereActualBookings();
     String chooseBookingTime();
     String chooseBookingDuration();
+    String bookingInterrupted();
+    String noAvailableRooms();
+    String hereAvailableRooms();
 
     // Buttons text
     String newBookingBtn();

@@ -4,10 +4,8 @@ import APIWrapper.json.BookRoomRequest;
 import APIWrapper.json.Room;
 import APIWrapper.requests.Request;
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
-import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
+import handling.Keyboards;
 import handling.Response;
 import handling.StateHandler;
 import handling.userData.BotState;
@@ -19,6 +17,7 @@ import java.util.Map;
 /**
  * States Group handler
  */
+// TODO: implement a class to work with user booking parameters at parse it to request
 public class NewBookingHandler extends StateHandler {
     private final Map<String, BookRoomRequest> userRequests = new HashMap<>();
     private final Request outlook = new Request("http://localhost:3000");
@@ -41,7 +40,26 @@ public class NewBookingHandler extends StateHandler {
 
     // Handle somehow
     private Response handleBookingDuration(Update update, UserData data) {
-        return new Response(data);
+        var query = update.callbackQuery();
+        if (query == null) {
+            return new Response(data);
+        }
+        var user = data.getUserId();
+        var duration = query.data();
+        // TODO: properly handle work with time
+        userRequests.get(user).end = userRequests.get(user).start + duration;
+        // TODO: properly obtain list of available rooms at given time
+        var userRooms = rooms;
+        if (userRooms.length == 0) {
+            data.setDialogState(BotState.MAIN_MENU);
+            return new Response(data, new SendMessage(user, data.getLang().noAvailableRooms()).
+                    replyMarkup(Keyboards.mainMenuMarkup(data.getLang())));
+        } else {
+            var keyboardWithRooms = Keyboards.availableRoomsKeyboard(rooms);
+            data.setDialogState(BotState.ROOM_AWAITING);
+            return new Response(data, new SendMessage(user, data.getLang().hereAvailableRooms()).
+                    replyMarkup(keyboardWithRooms));
+        }
     }
 
     private Response handleBookingTime(Update update, UserData data) {
@@ -54,30 +72,11 @@ public class NewBookingHandler extends StateHandler {
         userRequests.put(usr, new BookRoomRequest());
         // TODO: validate user input time
         userRequests.get(usr).start = msg.text();
-
         var botMsg =
                 new SendMessage(usr, data.getLang().
                         chooseBookingDuration()).
-                        replyMarkup(bookingDurations());
+                        replyMarkup(Keyboards.bookingDurations());
         data.setDialogState(BotState.BOOKING_DURATION_AWAITING);
         return new Response(data, botMsg);
-    }
-
-    private InlineKeyboardMarkup bookingDurations() {
-        return new InlineKeyboardMarkup(
-                new InlineKeyboardButton[] {
-                        new InlineKeyboardButton("30 min").callbackData("30"),
-                        new InlineKeyboardButton("60 min").callbackData("60"),
-                        new InlineKeyboardButton("90 min").callbackData("90")
-                },
-                new InlineKeyboardButton[] {
-                        new InlineKeyboardButton("120 min").callbackData("120"),
-                        new InlineKeyboardButton("150 min").callbackData("150"),
-                        new InlineKeyboardButton("180 min").callbackData("180")
-                },
-                new InlineKeyboardButton[]{
-                        new InlineKeyboardButton("❌").callbackData("cancel")
-                }
-        );
     }
 }

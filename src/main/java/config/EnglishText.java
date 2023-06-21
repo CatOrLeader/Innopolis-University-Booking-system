@@ -41,6 +41,21 @@ public class EnglishText implements IText {
     }
 
     @Override
+    public String bookingInterrupted() {
+        return "Booking process was interrupted.";
+    }
+
+    @Override
+    public String noAvailableRooms() {
+        return "Unfortunately, there are no rooms available at this time.";
+    }
+
+    @Override
+    public String hereAvailableRooms() {
+        return "Here are available rooms to book at preferred period. Choose the room.";
+    }
+
+    @Override
     public String newBookingBtn() {
         return "\uD83D\uDD0F New booking";
     }
