@@ -143,6 +143,8 @@ class RequestFormatted {
     }
 
     private void updateJson(String body) throws IOException {
+        if (body == null) return;
+
         BufferedWriter writer = new BufferedWriter(
                 new FileWriter("src/main/java/mockTestingForDevs/serverResponse.json"));
         writer.write(body);
