@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 [
   {
     "name": "Meeting Room #3.2",
@@ -48,3 +49,6 @@
     "capacity": 90
   }
 ]
+=======
+"Delete was unsuccessful. Wrong booking ID"
+>>>>>>> APIWrapper_test
