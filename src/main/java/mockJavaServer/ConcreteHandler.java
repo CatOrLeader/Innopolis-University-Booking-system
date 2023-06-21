@@ -135,6 +135,8 @@ class ConcreteHandler implements HttpHandler{
     }
 
     private void updateJson(String body) throws IOException {
+        if (body == null) return;
+
         BufferedWriter writer = new BufferedWriter(
                 new FileWriter("src/main/java/mockTestingForDevs/database.json"));
         writer.write(body);
