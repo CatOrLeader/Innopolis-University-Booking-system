@@ -57,17 +57,25 @@
       "capacity": 5
     },
     {
-      "name": "Meeting Room #3.5",
-      "id": "3.5",
-      "type": "MEETING_ROOM",
-      "capacity": 7
-    },
-    {
       "name": "Lecture Room 100",
       "id": "100",
       "type": "AUDITORIUM",
       "capacity": 90
     }
   ],
-  "bookings": []
+  "bookings": [
+    {
+      "id": "1",
+      "title": "Test bookings from the mockTesting... directory",
+      "start": "2023-06-22T05:00:00.000Z",
+      "end": "2023-06-22T06:30:00.000Z",
+      "room": {
+        "name": "Meeting Room #3.5",
+        "id": "3.5",
+        "type": "MEETING_ROOM",
+        "capacity": 7
+      },
+      "owner_email": "mail@innopolis.university"
+    }
+  ]
 }

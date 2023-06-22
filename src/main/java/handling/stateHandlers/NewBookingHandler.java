@@ -1,7 +1,6 @@
 package handling.stateHandlers;
 
 import APIWrapper.json.BookRoomRequest;
-import APIWrapper.json.Booking;
 import APIWrapper.json.Room;
 import APIWrapper.requests.Request;
 import com.pengrad.telegrambot.model.Update;
@@ -20,7 +19,7 @@ import java.util.Map;
  */
 // TODO: implement a class to work with user booking parameters at parse it to request
 public class NewBookingHandler extends StateHandler {
-    private final Map<String, Booking> bookingInfo = new HashMap<>();
+    private final Map<String, BookRoomRequest> userRequests = new HashMap<>();
     private final Request outlook = new Request("http://localhost:3000");
     private final Room[] rooms =
             outlook.getAllBookableRooms().toArray(Room[]::new);
@@ -33,61 +32,13 @@ public class NewBookingHandler extends StateHandler {
             case BOOKING_DURATION_AWAITING -> {
                 return handleBookingDuration(incomingUpdate, data);
             }
-            case ROOM_AWAITING -> {
-                return handleRoom(incomingUpdate, data);
-            }
-            case BOOKING_TITLE_AWAITING ->  {
-                return handleTitle(incomingUpdate, data);
-            }
             default -> {
                 return new Response(data);
             }
         }
     }
 
-    private Response handleTitle(Update update, UserData data) {
-        var message = update.message();
-        if (message == null) {
-            return new Response(data);
-        }
-        var user = data.getUserId();
-        var lang = data.getLang();
-        var info = bookingInfo.get(user);
-        info.title = message.text();
-        var botMessage = new SendMessage(user,
-                String.format(
-                        lang.bookedSuccessfully(),
-                        info.title,
-                        info.room.name,
-                        info.start,
-                        info.end)).
-                replyMarkup(Keyboards.mainMenuMarkup(lang));
-        System.out.println(info.title + ' ' + info.start + ' ' + info.end + ' ' + info.owner_email);
-        outlook.bookRoom(info.room.id,
-                new BookRoomRequest(info.title, info.start, info.end, info.owner_email));
-        data.setDialogState(BotState.MAIN_MENU);
-        return new Response(data, botMessage);
-    }
-
     // Handle somehow
-
-    private Response handleRoom(Update update, UserData data) {
-        var query = update.callbackQuery();
-        if (query == null) {
-            return new Response(data);
-        }
-        var user = data.getUserId();
-        var lang = data.getLang();
-        var roomId = query.data();
-        bookingInfo.get(user).room = takeRoomById(roomId);
-        assert takeRoomById(roomId) != null;
-        var botMessage = new SendMessage(
-                user,
-                String.format(lang.bookingTitle(), takeRoomById(roomId).name));
-        data.setDialogState(BotState.BOOKING_TITLE_AWAITING);
-        return new Response(data, botMessage);
-    }
-
     private Response handleBookingDuration(Update update, UserData data) {
         var query = update.callbackQuery();
         if (query == null) {
@@ -96,7 +47,7 @@ public class NewBookingHandler extends StateHandler {
         var user = data.getUserId();
         var duration = query.data();
         // TODO: properly handle work with time
-        bookingInfo.get(user).end = bookingInfo.get(user).start + duration;
+        userRequests.get(user).duration = Integer.parseInt(duration);
         // TODO: properly obtain list of available rooms at given time
         var userRooms = rooms;
         if (userRooms.length == 0) {
@@ -118,32 +69,14 @@ public class NewBookingHandler extends StateHandler {
         var msg = update.message();
         var usr = data.getUserId();
 
-        bookingInfo.put(usr, new Booking());
+        userRequests.put(usr, new BookRoomRequest());
         // TODO: validate user input time
-        bookingInfo.get(usr).owner_email = data.getEmail();
-        bookingInfo.get(usr).start = msg.text();
+        userRequests.get(usr).start = msg.text();
         var botMsg =
                 new SendMessage(usr, data.getLang().
                         chooseBookingDuration()).
                         replyMarkup(Keyboards.bookingDurations());
-
         data.setDialogState(BotState.BOOKING_DURATION_AWAITING);
         return new Response(data, botMsg);
-    }
-
-    // Utils methods
-
-    /**
-     * Find room instance by its id
-     * @param roomId given id
-     * @return room (it is supposed that given id always correct)
-     */
-    private Room takeRoomById(String roomId) {
-        for (Room room : rooms) {
-            if (room.id.equals(roomId)) {
-                return room;
-            }
-        }
-        return null;
     }
 }

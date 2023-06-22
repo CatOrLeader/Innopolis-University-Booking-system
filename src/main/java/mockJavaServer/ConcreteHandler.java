@@ -22,7 +22,7 @@ class ConcreteHandler implements HttpHandler{
             return gson.toJson(new HTTPValidationError(
                     new ValidationError(
                             "Concrete Handler, in handle() method",
-                            "something went wrotg with your http request," +
+                            "something went wrong with your http request," +
                                     "connect to the server provider (Artur)",
                             "Wrong http request"
                     )
@@ -79,6 +79,7 @@ class ConcreteHandler implements HttpHandler{
     private String processGetFreeRooms(Database database) {
         return gson.toJson(database.freeRooms);
     }
+
     private String processBookRoom(HttpRequest request, Database database) throws IOException {
         String roomId = request.getUrl().split("/")[2];
         BookRoomRequest bookRoomRequest = gson.fromJson(request.getBody(), BookRoomRequest.class);
@@ -104,6 +105,7 @@ class ConcreteHandler implements HttpHandler{
 
         return gson.toJson(booking, Booking.class);
     }
+
     private String processGetBookings(HttpRequest request, Database database) {
         QueryBookingsRequest queryBookingsRequest =
                 gson.fromJson(request.getBody(), QueryBookingsRequest.class);
@@ -116,6 +118,7 @@ class ConcreteHandler implements HttpHandler{
 
         return gson.toJson(neededBookings);
     }
+
     private String processDeleteBooking(HttpRequest request, HttpResponse response, Database database)
             throws IOException {
         String bookingId = request.getUrl().split("/")[2];
@@ -135,6 +138,8 @@ class ConcreteHandler implements HttpHandler{
     }
 
     private void updateJson(String body) throws IOException {
+        if (body == null) return;
+
         BufferedWriter writer = new BufferedWriter(
                 new FileWriter("src/main/java/mockTestingForDevs/database.json"));
         writer.write(body);

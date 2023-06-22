@@ -6,4 +6,9 @@ public class QueryBookingsRequest {
     public QueryBookingsRequest(BookingsFilter filter) {
         this.filter = filter;
     }
+
+    // Class constructor
+    public void formatToSend() {
+        filter.formatToSend();
+    }
 }
