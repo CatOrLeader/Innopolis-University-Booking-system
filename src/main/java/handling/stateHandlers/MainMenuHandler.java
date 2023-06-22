@@ -1,9 +1,8 @@
 package handling.stateHandlers;
 
 import APIWrapper.json.Booking;
-import APIWrapper.json.BookingsFilter;
-import APIWrapper.json.QueryBookingsRequest;
 import APIWrapper.requests.Request;
+import APIWrapper.utilities.DateTime;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
@@ -33,17 +32,9 @@ public class MainMenuHandler extends StateHandler {
         }
     }
 
-    // TODO: work with time
     private Response handleReservations(UserData data) {
         var lang = data.getLang();
-        var bookings = outlook.queryBookings(
-                new QueryBookingsRequest(new BookingsFilter(
-                        "any",
-                        "any90",
-                        rooms,
-                        new String[]{data.getEmail()}
-                ))
-        );
+        var bookings = outlook.getBookingsByUser(data.getEmail());
         var userReservations = bookingsMessageText(bookings, lang);
         return new Response(data, new SendMessage(data.getUserId(), userReservations));
     }
@@ -58,15 +49,17 @@ public class MainMenuHandler extends StateHandler {
 
     private String bookingsMessageText(List<Booking> bookings, IText lang) {
         StringBuilder text;
-        if (bookings.isEmpty()) {
+        if (bookings == null || bookings.isEmpty()) {
             text = new StringBuilder(lang.noActualBookings());
         } else {
             text = new StringBuilder(lang.hereActualBookings());
-        }
-        for (Booking booking : bookings) {
-            var bookingInfo = String.format("%s — %s, %s — %s\n", booking.title,
-                    booking.room.name, booking.start, booking.end);
-            text.append("\n").append(bookingInfo);
+            for (Booking booking : bookings) {
+                var bookingInfo = String.format("%s — %s, %s — %s\n", booking.title,
+                        booking.room.name,
+                        DateTime.formatToConvenient(booking.start),
+                        DateTime.formatToConvenient(booking.end));
+                text.append("\n").append(bookingInfo);
+            }
         }
         return text.toString();
     }

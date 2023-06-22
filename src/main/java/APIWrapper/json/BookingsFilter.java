@@ -2,6 +2,8 @@ package APIWrapper.json;
 
 // https://stackoverflow.com/questions/63156952/how-to-convert-2020-12-20t000000-000z-to-java-util-date
 
+import APIWrapper.utilities.DateTime;
+
 public class BookingsFilter {
     public String started_at_or_after;
     public String ended_at_or_before;
@@ -13,5 +15,18 @@ public class BookingsFilter {
         this.ended_at_or_before = ended_at_or_before;
         this.room_id_in = room_id_in;
         this.owner_email_in = owner_email_in;
+    }
+
+    // Class constructor
+    public void formatToSend() {
+        parseDateTimeToOutput();
+    }
+
+    // Additional methods
+    private void parseDateTimeToOutput() {
+        DateTime dateTime = new DateTime(started_at_or_after, ended_at_or_before);
+
+        started_at_or_after = dateTime.getOutputStart();
+        ended_at_or_before = dateTime.getOutputEnd();
     }
 }

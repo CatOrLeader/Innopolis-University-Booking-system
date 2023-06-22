@@ -36,6 +36,11 @@ public class EnglishText implements IText {
     }
 
     @Override
+    public String chosenBookingTime(String time, String duration) {
+        return String.format("Free rooms since %s during %s minutes will be looked for...", time, duration);
+    }
+
+    @Override
     public String chooseBookingDuration() {
         return "Please, choose preferred booking duration.";
     }
@@ -63,6 +68,11 @@ public class EnglishText implements IText {
     @Override
     public String bookedSuccessfully() {
         return "Booking with title '%s' at %s, %s - %s successfully created!";
+    }
+
+    @Override
+    public String bookedUnsuccessfully() {
+        return "For certain reasons booking was unsuccessful :( You may try again!";
     }
 
     @Override

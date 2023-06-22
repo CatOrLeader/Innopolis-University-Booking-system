@@ -1,6 +1,5 @@
 package mockJavaServer;
 
-import APIWrapper.json.BookRoomError;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -17,10 +16,12 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 class Server {
+    // Server Properties
     private final static int BUFFER_SIZE = 256;
     private AsynchronousServerSocketChannel server;
     private final HttpHandler handler;
 
+    // Additional External classes
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private final Database database = new Database();
 
@@ -51,6 +52,52 @@ class Server {
         AsynchronousSocketChannel clientChannel = future.get();
 
         while (clientChannel != null && clientChannel.isOpen()) {
+            String strRequest = parseRequest(clientChannel);
+
+            HttpRequest request = new HttpRequest(strRequest);
+            HttpResponse response = new HttpResponse();
+
+            if (handler != null ) {
+                try {
+                    String requestPossibleBody = this.handler.handle(request, response, database);
+
+                    if (requestHasBody(requestPossibleBody)) {
+                        bodyHasType(response); // Set Default if header is empty
+                        response.setBody(requestPossibleBody);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+
+                    ExceptionResponseMaker.INTERNAL_ERROR(response);
+                }
+            } else {
+                ExceptionResponseMaker.NOT_FOUND_ERROR(response);
+            }
+
+            ByteBuffer serverResponse = ByteBuffer.wrap(response.getBytes());
+            clientChannel.write(serverResponse);
+
+            clientChannel.close();
+        }
+    }
+
+    // Checkers
+    private boolean requestHasBody(String possibleBody) {
+        return possibleBody != null && !possibleBody.isBlank();
+    }
+
+    private boolean bodyHasType(HttpResponse response) {
+        if (response.getHeaders().get("Content-Type") == null) {
+            response.addHeader("Content-Type", Config.TEXT_HTML);
+            return false;
+        }
+
+        return true;
+    }
+
+    // Additional Server Methods
+    private String parseRequest(AsynchronousSocketChannel clientChannel) {
+        try {
             ByteBuffer buffer = ByteBuffer.allocate(BUFFER_SIZE);
             StringBuilder builder = new StringBuilder();
             boolean keepReading = true;
@@ -66,44 +113,16 @@ class Server {
                 buffer.clear();
             }
 
-            HttpRequest request = new HttpRequest(builder.toString());
-            HttpResponse response = new HttpResponse();
-
-            if (handler != null ) {
-                try {
-                    String body = this.handler.handle(request, response, database);
-
-                    if (body != null && !body.isBlank()) {
-                        if (response.getHeaders().get("Content-Type") == null) {
-                            response.addHeader("Content-Type", "application/json; charset=utf-8");
-                        }
-                        response.setBody(body);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-
-                    response.setStatusCode(500);
-                    response.setStatus("Internal server error");
-                    response.getHeaders().put("Content-Type", "application/json; charset=utf-8");
-
-                    BookRoomError error = new BookRoomError("Wrong booking ID");
-                    response.setBody(gson.toJson(error));
-                }
-            } else {
-                response.setStatusCode(404);
-                response.setStatus("Not Found");
-                response.addHeader("Content-Type", "text/html; charset=utf-8");
-                response.setBody("<html><body><h1>Resources not found</h1></body></html>");
-            }
-
-            ByteBuffer serverResponse = ByteBuffer.wrap(response.getBytes());
-            clientChannel.write(serverResponse);
-
-            clientChannel.close();
+            return builder.toString();
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 
     private void updateJson(String body) throws IOException {
+        if (body == null) return;
+
         BufferedWriter writer = new BufferedWriter(
                 new FileWriter("src/main/java/mockTestingForDevs/database.json"));
         writer.write(body);

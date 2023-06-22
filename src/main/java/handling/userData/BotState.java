@@ -13,6 +13,6 @@ public enum BotState {
     BOOKING_TIME_AWAITING,
     BOOKING_DURATION_AWAITING,
     ROOM_AWAITING,
-    BOOKING_TITLE_AWAITING,
+    BOOKING_TITLE_AWAITING
     // TODO: Extend the list fully
 }

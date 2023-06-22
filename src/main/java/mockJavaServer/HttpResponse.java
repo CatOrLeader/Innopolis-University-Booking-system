@@ -7,13 +7,14 @@ class HttpResponse {
     // Constants
     private final static String NEW_LINE = "\r\n";
 
+    // Request body destruction
     private final Map<String, String> headers = new HashMap<>();
     private String body;
     private int statusCode = 200;
     private String status = "Ok";
 
     public HttpResponse() {
-        this.headers.put("Server", "test");
+        this.headers.put("Server", Config.SERVER_NAME);
         this.headers.put("Connection", "Close");
     }
 
@@ -25,7 +26,7 @@ class HttpResponse {
         this.headers.putAll(headers);
     }
 
-    public String message() {
+    private String constructMessage() {
         StringBuilder builder = new StringBuilder();
 
         builder.append("HTTP/1.1 ")
@@ -47,8 +48,9 @@ class HttpResponse {
                 .toString();
     }
 
+    // Getters
     public byte[] getBytes() {
-        return message().getBytes();
+        return constructMessage().getBytes();
     }
 
     public Map<String, String> getHeaders() {
@@ -59,21 +61,22 @@ class HttpResponse {
         return body;
     }
 
+    public int getStatusCode() {
+        return statusCode;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    // Setters
     public void setBody(String body) {
         this.headers.put("Content-Length", String.valueOf(body.length()));
         this.body = body;
     }
 
-    public int getStatusCode() {
-        return statusCode;
-    }
-
     public void setStatusCode(int statusCode) {
         this.statusCode = statusCode;
-    }
-
-    public String getStatus() {
-        return status;
     }
 
     public void setStatus(String status) {

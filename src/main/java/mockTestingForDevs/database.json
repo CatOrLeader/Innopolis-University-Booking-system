@@ -51,23 +51,38 @@
   ],
   "free": [
     {
-      "name": "Meeting Room #3.1",
-      "id": "3.1",
-      "type": "MEETING_ROOM",
-      "capacity": 5
-    },
-    {
       "name": "Meeting Room #3.5",
       "id": "3.5",
       "type": "MEETING_ROOM",
       "capacity": 7
-    },
-    {
-      "name": "Lecture Room 100",
-      "id": "100",
-      "type": "AUDITORIUM",
-      "capacity": 90
     }
   ],
-  "bookings": []
+  "bookings": [
+    {
+      "id": "1",
+      "title": "a",
+      "start": "2023-06-23T12:45:00.000Z",
+      "end": "2023-06-23T14:15:00.000Z",
+      "room": {
+        "name": "Meeting Room #3.1",
+        "id": "3.1",
+        "type": "MEETING_ROOM",
+        "capacity": 5
+      },
+      "owner_email": "a"
+    },
+    {
+      "id": "2",
+      "title": "a",
+      "start": "2023-06-23T12:45:00.000Z",
+      "end": "2023-06-23T14:15:00.000Z",
+      "room": {
+        "name": "Lecture Room 100",
+        "id": "100",
+        "type": "AUDITORIUM",
+        "capacity": 90
+      },
+      "owner_email": "23.06.23 12:45"
+    }
+  ]
 }

@@ -4,6 +4,7 @@ import APIWrapper.json.BookRoomRequest;
 import APIWrapper.json.Booking;
 import APIWrapper.json.Room;
 import APIWrapper.requests.Request;
+import APIWrapper.utilities.DateTime;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
 import handling.Keyboards;
@@ -54,17 +55,18 @@ public class NewBookingHandler extends StateHandler {
         var lang = data.getLang();
         var info = bookingInfo.get(user);
         info.title = message.text();
+        var response = outlook.bookRoom(info.room.id,
+                new BookRoomRequest(info.title, info.start, info.duration, info.owner_email));
+        info.formatToSend();
+        // TODO: Format via response from server
         var botMessage = new SendMessage(user,
                 String.format(
                         lang.bookedSuccessfully(),
                         info.title,
                         info.room.name,
-                        info.start,
-                        info.end)).
+                        DateTime.formatToConvenient(info.start),
+                        DateTime.formatToConvenient(info.end))).
                 replyMarkup(Keyboards.mainMenuMarkup(lang));
-        System.out.println(info.title + ' ' + info.start + ' ' + info.end + ' ' + info.owner_email);
-        outlook.bookRoom(info.room.id,
-                new BookRoomRequest(info.title, info.start, info.end, info.owner_email));
         data.setDialogState(BotState.MAIN_MENU);
         return new Response(data, botMessage);
     }
@@ -94,9 +96,12 @@ public class NewBookingHandler extends StateHandler {
             return new Response(data);
         }
         var user = data.getUserId();
-        var duration = query.data();
-        // TODO: properly handle work with time
-        bookingInfo.get(user).end = bookingInfo.get(user).start + duration;
+        var lang = data.getLang();
+        var info = bookingInfo.get(user);
+
+        info.duration = Integer.parseInt(query.data());
+
+        // TODO: edit message with durations
         // TODO: properly obtain list of available rooms at given time
         var userRooms = rooms;
         if (userRooms.length == 0) {
@@ -104,6 +109,7 @@ public class NewBookingHandler extends StateHandler {
             return new Response(data, new SendMessage(user, data.getLang().noAvailableRooms()).
                     replyMarkup(Keyboards.mainMenuMarkup(data.getLang())));
         } else {
+            // TODO: check here for NOW AVAILABLE rooms
             var keyboardWithRooms = Keyboards.availableRoomsKeyboard(rooms);
             data.setDialogState(BotState.ROOM_AWAITING);
             return new Response(data, new SendMessage(user, data.getLang().hereAvailableRooms()).
@@ -119,7 +125,7 @@ public class NewBookingHandler extends StateHandler {
         var usr = data.getUserId();
 
         bookingInfo.put(usr, new Booking());
-        // TODO: validate user input time
+        // TODO: validate user input time by DateTime validator
         bookingInfo.get(usr).owner_email = data.getEmail();
         bookingInfo.get(usr).start = msg.text();
         var botMsg =

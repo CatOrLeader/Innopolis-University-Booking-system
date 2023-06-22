@@ -16,29 +16,30 @@ class HttpRequest {
     private final static String NEW_LINE = "\r\n";
     private final static String HEADER_DELIMITER = ":";
 
-    // Useful addition
-    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    // Initial values
+    private final String incomingMessage;
 
     // Request body destruction
-
-    private final String message;
-
     private final HttpMethod method;
     private final String url;
     private final Map<String, String> headers;
     private final String body;
+
+    // Useful addition
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     // Possible classes from json-parsing
     protected GetFreeRoomsRequest getFreeRoomsRequest;
     protected BookRoomRequest bookRoomRequest;
     protected QueryBookingsRequest queryBookingsRequest;
 
-    public HttpRequest(String message) {
-        this.message = message;
+    public HttpRequest(String incomingMessage) {
+        this.incomingMessage = incomingMessage;
 
-        String[] parts = this.message.split(DELIMITER);
+        String[] requestParts = this.incomingMessage.split(DELIMITER);
 
-        String head = parts[0];
+        // Destruct first line and headers
+        String head = requestParts[0];
         String[] headers = head.split(NEW_LINE);
 
         String[] firstLine = headers[0].split(" ");
@@ -48,35 +49,25 @@ class HttpRequest {
         this.headers = Collections.unmodifiableMap(
                 new HashMap<>() {
                     {
-                    for (int i = 1; i < headers.length; i++) {
-                        String[] headerParts = headers[i].split(HEADER_DELIMITER, 2);
-                        put(headerParts[0].trim(), headerParts[1].trim());
-                    }
+                        for (int i = 1; i < headers.length; i++) {
+                            String[] headerParts = headers[i].split(HEADER_DELIMITER, 2);
+                            put(headerParts[0].trim(), headerParts[1].trim());
+                        }
                     }
                 }
         );
 
+        // Destruct request body (if exists)
         String bodyLength = this.headers.get("Content-Length");
-        int length = bodyLength != null ? Integer.parseInt(bodyLength) : 0;
-        body = parts.length > 1 ? parts[1].trim().substring(0, length) : "";
+        int length = (bodyLength != null ? Integer.parseInt(bodyLength) : 0);
+        body = (requestParts.length > 1 ? requestParts[1].trim().substring(0, length) : "");
 
         parseClassFromGson();
     }
 
-    private void parseClassFromGson() {
-        String[] urlSplit = url.split("/");
-
-        if (url.equals("/rooms/free")) {
-            getFreeRoomsRequest = gson.fromJson(body, GetFreeRoomsRequest.class);
-        } else if (urlSplit.length == 4) {
-            bookRoomRequest = gson.fromJson(body, BookRoomRequest.class);
-        } else if (url.equals("/bookings/query")) {
-            queryBookingsRequest = gson.fromJson(body, QueryBookingsRequest.class);
-        }
-    }
-
+    // Getters
     public String getMessage() {
-        return message;
+        return incomingMessage;
     }
 
     public HttpMethod getMethod() {
@@ -93,5 +84,18 @@ class HttpRequest {
 
     public String getBody() {
         return body;
+    }
+
+    // Additional methods for proper working with the JSON-Containers
+    private void parseClassFromGson() {
+        String[] urlSplit = url.split("/");
+
+        if (url.equals("/rooms/free")) {
+            getFreeRoomsRequest = gson.fromJson(body, GetFreeRoomsRequest.class);
+        } else if (urlSplit.length == 4) {
+            bookRoomRequest = gson.fromJson(body, BookRoomRequest.class);
+        } else if (url.equals("/bookings/query")) {
+            queryBookingsRequest = gson.fromJson(body, QueryBookingsRequest.class);
+        }
     }
 }

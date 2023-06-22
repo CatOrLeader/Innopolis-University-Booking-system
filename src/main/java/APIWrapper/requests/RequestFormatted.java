@@ -22,7 +22,7 @@ class RequestFormatted {
         gson = new GsonBuilder().setPrettyPrinting().create();
     }
 
-    // Incoming messages processor
+    // Incoming messages processors
     protected ArrayList<Room> getAllBookableRooms() {
         String content = formatStringToGson(rawRequest.getAllBookableRoomsUnformatted());
 
@@ -42,8 +42,8 @@ class RequestFormatted {
         return gson.fromJson(content, roomArrayList);
     }
 
-    // TODO: Check on real server (or mock)
     protected ArrayList<Room> getAllFreeRooms(GetFreeRoomsRequest request) {
+        request.formatToSend();
         String jsonRequest = gson.toJson(request);
 
         // Make a request and receive a response
@@ -67,6 +67,7 @@ class RequestFormatted {
     }
 
     protected Booking bookRoom(String roomId, BookRoomRequest request) {
+        request.formatToSend();
         String jsonRequest = gson.toJson(request);
 
         // Make a request and receive a response
@@ -89,6 +90,7 @@ class RequestFormatted {
     }
 
     protected ArrayList<Booking> queryBookings(QueryBookingsRequest request) {
+        request.formatToSend();
         String jsonRequest = gson.toJson(request);
 
         // Make a request and receive a response
@@ -143,6 +145,8 @@ class RequestFormatted {
     }
 
     private void updateJson(String body) throws IOException {
+        if (body == null) return;
+
         BufferedWriter writer = new BufferedWriter(
                 new FileWriter("src/main/java/mockTestingForDevs/serverResponse.json"));
         writer.write(body);
