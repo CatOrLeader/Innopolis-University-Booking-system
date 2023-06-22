@@ -1,13 +1,8 @@
 package mockTestingForDevs;
 
-import APIWrapper.json.BookRoomRequest;
 import APIWrapper.json.BookingsFilter;
-import APIWrapper.json.GetFreeRoomsRequest;
 import APIWrapper.json.QueryBookingsRequest;
 import APIWrapper.requests.Request;
-import APIWrapper.json.*;
-
-import java.util.ArrayList;
 
 public class RequestsExamples {
     public static void main(String[] args) {
