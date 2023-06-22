@@ -47,7 +47,7 @@ public class NewBookingHandler extends StateHandler {
         var user = data.getUserId();
         var duration = query.data();
         // TODO: properly handle work with time
-        userRequests.get(user).end = userRequests.get(user).start + duration;
+        userRequests.get(user).duration = Integer.parseInt(duration);
         // TODO: properly obtain list of available rooms at given time
         var userRooms = rooms;
         if (userRooms.length == 0) {

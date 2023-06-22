@@ -4,6 +4,7 @@ import APIWrapper.json.Booking;
 import APIWrapper.json.BookingsFilter;
 import APIWrapper.json.QueryBookingsRequest;
 import APIWrapper.requests.Request;
+import APIWrapper.utilities.DateTime;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
@@ -13,6 +14,7 @@ import handling.StateHandler;
 import handling.userData.BotState;
 import handling.userData.UserData;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -39,8 +41,8 @@ public class MainMenuHandler extends StateHandler {
         var lang = data.getLang();
         var bookings = outlook.queryBookings(
                 new QueryBookingsRequest(new BookingsFilter(
-                        "any_time_start",
-                        "any_time_end",
+                        "22.06.23 12:00",
+                        "22.07.23 12:00",
                         rooms,
                         new String[]{data.getEmail()}
                 ))
@@ -65,8 +67,12 @@ public class MainMenuHandler extends StateHandler {
             text = new StringBuilder(lang.hereActualBookings());
         }
         for (Booking booking : bookings) {
-            var bookingInfo = String.format("%s — %s, %s — %s\n", booking.title,
-                    booking.room.name, booking.start, booking.end);
+            var bookingInfo = String.format("%s — %s, %s — %s\n",
+                    booking.title,
+                    booking.room.name,
+                    DateTime.formatToConvenient(booking.start),
+                    DateTime.formatToConvenient(booking.end)
+            );
             text.append("\n").append(bookingInfo);
         }
         return text.toString();
