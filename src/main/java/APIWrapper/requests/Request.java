@@ -44,8 +44,8 @@ public class Request {
         String[] ids = extractRoomIds(rooms);
 
         BookingsFilter bookingsFilter = new BookingsFilter(
-                "not implemented yet",
-                "not implemented yet",
+                "any",
+                "any",
                 ids,
                 new String[]{email}
         );

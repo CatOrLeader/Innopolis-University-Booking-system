@@ -43,6 +43,7 @@ class RequestFormatted {
     }
 
     protected ArrayList<Room> getAllFreeRooms(GetFreeRoomsRequest request) {
+        request.formatToSend();
         String jsonRequest = gson.toJson(request);
 
         // Make a request and receive a response
@@ -66,6 +67,7 @@ class RequestFormatted {
     }
 
     protected Booking bookRoom(String roomId, BookRoomRequest request) {
+        request.formatToSend();
         String jsonRequest = gson.toJson(request);
 
         // Make a request and receive a response
@@ -88,6 +90,7 @@ class RequestFormatted {
     }
 
     protected ArrayList<Booking> queryBookings(QueryBookingsRequest request) {
+        request.formatToSend();
         String jsonRequest = gson.toJson(request);
 
         // Make a request and receive a response
