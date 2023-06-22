@@ -16,4 +16,8 @@ public class Booking {
         this.room = room;
         this.owner_email = owner_email;
     }
+
+    public Booking() {
+
+    }
 }

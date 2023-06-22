@@ -15,6 +15,8 @@ public interface IText {
     String bookingInterrupted();
     String noAvailableRooms();
     String hereAvailableRooms();
+    String bookingTitle();
+    String bookedSuccessfully();
 
     // Buttons text
     String newBookingBtn();

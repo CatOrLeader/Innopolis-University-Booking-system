@@ -15,7 +15,6 @@ import handling.userData.UserData;
 
 import java.util.List;
 
-
 public class MainMenuHandler extends StateHandler {
     private final Request outlook = new Request("http://localhost:3000");
     private final String[] rooms =
@@ -39,8 +38,8 @@ public class MainMenuHandler extends StateHandler {
         var lang = data.getLang();
         var bookings = outlook.queryBookings(
                 new QueryBookingsRequest(new BookingsFilter(
-                        "any_time_start",
-                        "any_time_end",
+                        "any",
+                        "any90",
                         rooms,
                         new String[]{data.getEmail()}
                 ))

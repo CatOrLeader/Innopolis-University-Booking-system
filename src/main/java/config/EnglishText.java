@@ -56,6 +56,16 @@ public class EnglishText implements IText {
     }
 
     @Override
+    public String bookingTitle() {
+        return "You've chosen %s. What will be the booking title?";
+    }
+
+    @Override
+    public String bookedSuccessfully() {
+        return "Booking with title '%s' at %s, %s - %s successfully created!";
+    }
+
+    @Override
     public String newBookingBtn() {
         return "\uD83D\uDD0F New booking";
     }
