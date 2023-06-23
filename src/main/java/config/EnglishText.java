@@ -36,6 +36,11 @@ public class EnglishText implements IText {
     }
 
     @Override
+    public String chosenBookingTime(String time, String duration) {
+        return String.format("Free rooms since %s during %s minutes will be looked for...", time, duration);
+    }
+
+    @Override
     public String chooseBookingDuration() {
         return "Please, choose preferred booking duration.";
     }
@@ -56,13 +61,25 @@ public class EnglishText implements IText {
     }
 
     @Override
-    public String bookingTitle() {
-        return "You've chosen %s. What will be the booking title?";
+    public String chosenRoom(String name) {
+        return String.format("You've chosen %s.", name);
     }
 
     @Override
-    public String bookedSuccessfully() {
-        return "Booking with title '%s' at %s, %s - %s successfully created!";
+    public String bookingTitle() {
+        return "What will be the booking title?";
+    }
+
+    @Override
+    public String bookedSuccessfully(String title, String room, String since, String until) {
+        return String.format(
+                "Booking with title '%s' at %s, %s - %s successfully created!",
+                title, room, since, until);
+    }
+
+    @Override
+    public String bookedUnsuccessfully() {
+        return "For certain reasons booking was unsuccessful :( You may try again!";
     }
 
     @Override
@@ -73,5 +90,12 @@ public class EnglishText implements IText {
     @Override
     public String myReservationsBtn() {
         return "\uD83D\uDD10 My bookings";
+    }
+
+    @Override
+    public String printReservation(String name, String room, String since, String until) {
+        return String.format(
+                "%s — at %s since %s until %s", name, room, since, until
+        );
     }
 }

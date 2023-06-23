@@ -32,6 +32,10 @@ public class Booking {
         this.duration = duration;
     }
 
+    public Booking() {
+
+    }
+
     // Class constructor
     public void formatToSend() {
         parseDateTimeToOutput();

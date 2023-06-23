@@ -8,6 +8,7 @@ import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import config.IText;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Class that allows to obtain keyboards that are used in bot.
@@ -19,8 +20,8 @@ public class Keyboards {
         ).resizeKeyboard(true);
     }
 
-    public static InlineKeyboardMarkup availableRoomsKeyboard(Room[] rooms) {
-        var roomButtons = Arrays.stream(rooms).
+    public static InlineKeyboardMarkup availableRoomsKeyboard(List<Room> rooms) {
+        var roomButtons = rooms.stream().
                 map(room ->
                         new InlineKeyboardButton[]{
                                 new InlineKeyboardButton(room.name).callbackData(room.id)}).
