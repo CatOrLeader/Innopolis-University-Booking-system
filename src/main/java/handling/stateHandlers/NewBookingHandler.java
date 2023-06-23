@@ -6,6 +6,7 @@ import APIWrapper.json.Room;
 import APIWrapper.requests.Request;
 import APIWrapper.utilities.DateTime;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import handling.Keyboards;
 import handling.Response;
@@ -78,16 +79,22 @@ public class NewBookingHandler extends StateHandler {
         if (query == null) {
             return new Response(data);
         }
+
         var user = data.getUserId();
         var lang = data.getLang();
         var roomId = query.data();
-        bookingInfo.get(user).room = takeRoomById(roomId);
-        assert takeRoomById(roomId) != null;
+        var chatId = query.message().chat().id();
+        var msgId = query.message().messageId();
+        var info = bookingInfo.get(user);
+
+        info.room = takeRoomById(roomId);
+        assert info.room != null;
+        var updateMessage = new EditMessageText(chatId, msgId, lang.chosenRoom(info.room.name));
         var botMessage = new SendMessage(
                 user,
-                String.format(lang.bookingTitle(), takeRoomById(roomId).name));
+                lang.bookingTitle());
         data.setDialogState(BotState.BOOKING_TITLE_AWAITING);
-        return new Response(data, botMessage);
+        return new Response(data, botMessage, updateMessage);
     }
 
     private Response handleBookingDuration(Update update, UserData data) {
@@ -96,10 +103,21 @@ public class NewBookingHandler extends StateHandler {
             return new Response(data);
         }
         var user = data.getUserId();
+        var chatId = query.message().chat().id();
+        var msgId = query.message().messageId();
         var lang = data.getLang();
         var info = bookingInfo.get(user);
 
         info.duration = Integer.parseInt(query.data());
+
+        var updateMessage =
+                new EditMessageText(
+                        chatId,
+                        msgId,
+                        lang.chosenBookingTime(
+                                info.start,
+                                String.valueOf(info.duration))
+                );
 
         // TODO: edit message with durations
         // TODO: properly obtain list of available rooms at given time
@@ -107,13 +125,13 @@ public class NewBookingHandler extends StateHandler {
         if (userRooms.length == 0) {
             data.setDialogState(BotState.MAIN_MENU);
             return new Response(data, new SendMessage(user, data.getLang().noAvailableRooms()).
-                    replyMarkup(Keyboards.mainMenuMarkup(data.getLang())));
+                    replyMarkup(Keyboards.mainMenuMarkup(data.getLang())), updateMessage);
         } else {
             // TODO: check here for NOW AVAILABLE rooms
             var keyboardWithRooms = Keyboards.availableRoomsKeyboard(rooms);
             data.setDialogState(BotState.ROOM_AWAITING);
             return new Response(data, new SendMessage(user, data.getLang().hereAvailableRooms()).
-                    replyMarkup(keyboardWithRooms));
+                    replyMarkup(keyboardWithRooms), updateMessage);
         }
     }
 

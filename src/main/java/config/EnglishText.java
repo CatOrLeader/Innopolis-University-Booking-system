@@ -61,8 +61,13 @@ public class EnglishText implements IText {
     }
 
     @Override
+    public String chosenRoom(String name) {
+        return String.format("You've chosen %s.", name);
+    }
+
+    @Override
     public String bookingTitle() {
-        return "You've chosen %s. What will be the booking title?";
+        return "What will be the booking title?";
     }
 
     @Override
