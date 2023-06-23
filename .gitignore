@@ -1,1 +1,7 @@
 /target/
+/.idea/
+/src/main/java/mockTestingForDevs/database.json
+/src/main/java/mockTestingForDevs/serverResponse.json
+README.md
+LICENSE
+IUBookingBot.iml

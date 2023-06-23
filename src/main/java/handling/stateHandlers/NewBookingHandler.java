@@ -61,8 +61,8 @@ public class NewBookingHandler extends StateHandler {
 
         info.title = message.text();
         var response = outlook.bookRoom(info.room.id,
-                new BookRoomRequest(info.title, info.start, info.duration, info.owner_email));
-        info.formatToSend();
+                info.convertToBookRoomRequest());
+
         // TODO: Format via response from server
         var botMessage = new SendMessage(user,
                         lang.bookedSuccessfully(info.title,

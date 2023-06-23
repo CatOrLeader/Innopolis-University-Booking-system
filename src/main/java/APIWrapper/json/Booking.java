@@ -37,8 +37,18 @@ public class Booking {
     }
 
     // Class constructor
-    public void formatToSend() {
+    public BookRoomRequest convertToBookRoomRequest() {
+        BookRoomRequest request = new BookRoomRequest(
+                title,
+                start,
+                duration,
+                owner_email
+        );
+
+        // It is necessary to make actions in this order
         parseDateTimeToOutput();
+
+        return request;
     }
 
     // Additional methods
