@@ -1,4 +1,5 @@
-package DataBase;
+package Database;
 
 public class DbConnection {
+
 }
