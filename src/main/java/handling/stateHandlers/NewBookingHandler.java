@@ -52,9 +52,11 @@ public class NewBookingHandler extends StateHandler {
         if (message == null) {
             return new Response(data);
         }
+
         var user = data.getUserId();
         var lang = data.getLang();
         var info = bookingInfo.get(user);
+
         info.title = message.text();
         var response = outlook.bookRoom(info.room.id,
                 new BookRoomRequest(info.title, info.start, info.duration, info.owner_email));
@@ -102,6 +104,7 @@ public class NewBookingHandler extends StateHandler {
         if (query == null) {
             return new Response(data);
         }
+
         var user = data.getUserId();
         var chatId = query.message().chat().id();
         var msgId = query.message().messageId();
@@ -139,6 +142,7 @@ public class NewBookingHandler extends StateHandler {
         if (update.message() == null) {
             return new Response(data);
         }
+
         var msg = update.message();
         var usr = data.getUserId();
 

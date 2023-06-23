@@ -25,4 +25,7 @@ public interface IText {
     String newBookingBtn();
     String myReservationsBtn();
 
+    // Info messages
+    String printReservation(String name, String room, String since, String until);
+
 }

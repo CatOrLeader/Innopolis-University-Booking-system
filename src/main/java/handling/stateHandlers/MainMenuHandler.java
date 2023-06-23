@@ -40,8 +40,9 @@ public class MainMenuHandler extends StateHandler {
     }
 
     private Response handleNewBooking(UserData data) {
+        var lang = data.getLang();
         var botMessage = new SendMessage(
-                data.getUserId(), data.getLang().chooseBookingTime())
+                data.getUserId(), lang.chooseBookingTime())
                 .replyMarkup(new ReplyKeyboardRemove());
         data.setDialogState(BotState.BOOKING_TIME_AWAITING);
         return new Response(data, botMessage);
@@ -54,10 +55,12 @@ public class MainMenuHandler extends StateHandler {
         } else {
             text = new StringBuilder(lang.hereActualBookings());
             for (Booking booking : bookings) {
-                var bookingInfo = String.format("%s — %s, %s — %s\n", booking.title,
+                var bookingInfo = lang.printReservation(
+                        booking.title,
                         booking.room.name,
                         DateTime.formatToConvenient(booking.start),
-                        DateTime.formatToConvenient(booking.end));
+                        DateTime.formatToConvenient(booking.end)
+                );
                 text.append("\n").append(bookingInfo);
             }
         }

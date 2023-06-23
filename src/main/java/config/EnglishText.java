@@ -89,4 +89,11 @@ public class EnglishText implements IText {
     public String myReservationsBtn() {
         return "\uD83D\uDD10 My bookings";
     }
+
+    @Override
+    public String printReservation(String name, String room, String since, String until) {
+        return String.format(
+                "%s — at %s since %s until %s", name, room, since, until
+        );
+    }
 }
