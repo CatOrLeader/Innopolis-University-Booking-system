@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 
 public class DateTime {
@@ -60,12 +61,18 @@ public class DateTime {
     // Outer methods for parsing incoming string time to user-friendly view
     public static String formatToConvenient(String time) {
         return ZonedDateTime.parse(time).format(INPUT_FORMATTER);
+    }
 
+    public static boolean isValid(String time) {
+        try {
+            INPUT_FORMATTER.parse(time);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
     }
 
     public static void main(String[] args) {
-        DateTime test = new DateTime("23.06.23 20:00", 90);
-        System.out.println(formatToConvenient("2023-06-23T17:00:00Z"));
     }
 }
 
