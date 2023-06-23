@@ -44,8 +44,8 @@ public class Request {
         String[] ids = extractRoomIds(rooms);
 
         BookingsFilter bookingsFilter = new BookingsFilter(
-                "any",
-                "any",
+                "23.06.23 12:15",
+                "23.06.23 13:15",
                 ids,
                 new String[]{email}
         );

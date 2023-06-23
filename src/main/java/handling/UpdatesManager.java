@@ -40,6 +40,7 @@ public class UpdatesManager {
         handlerMap.put(BotState.BOOKING_TIME_AWAITING, bookingHandler);
         handlerMap.put(BotState.BOOKING_DURATION_AWAITING, bookingHandler);
         handlerMap.put(BotState.ROOM_AWAITING, bookingHandler);
+        handlerMap.put(BotState.BOOKING_TITLE_AWAITING, bookingHandler);
     }
 
     /**

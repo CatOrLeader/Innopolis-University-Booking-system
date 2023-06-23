@@ -1,9 +1,8 @@
 package handling.stateHandlers;
 
 import APIWrapper.json.Booking;
-import APIWrapper.json.BookingsFilter;
-import APIWrapper.json.QueryBookingsRequest;
 import APIWrapper.requests.Request;
+import APIWrapper.utilities.DateTime;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
@@ -14,7 +13,6 @@ import handling.userData.BotState;
 import handling.userData.UserData;
 
 import java.util.List;
-
 
 public class MainMenuHandler extends StateHandler {
     private final Request outlook = new Request("http://localhost:3000");
@@ -34,24 +32,17 @@ public class MainMenuHandler extends StateHandler {
         }
     }
 
-    // TODO: work with time
     private Response handleReservations(UserData data) {
         var lang = data.getLang();
-        var bookings = outlook.queryBookings(
-                new QueryBookingsRequest(new BookingsFilter(
-                        "any_time_start",
-                        "any_time_end",
-                        rooms,
-                        new String[]{data.getEmail()}
-                ))
-        );
+        var bookings = outlook.getBookingsByUser(data.getEmail());
         var userReservations = bookingsMessageText(bookings, lang);
         return new Response(data, new SendMessage(data.getUserId(), userReservations));
     }
 
     private Response handleNewBooking(UserData data) {
+        var lang = data.getLang();
         var botMessage = new SendMessage(
-                data.getUserId(), data.getLang().chooseBookingTime())
+                data.getUserId(), lang.chooseBookingTime())
                 .replyMarkup(new ReplyKeyboardRemove());
         data.setDialogState(BotState.BOOKING_TIME_AWAITING);
         return new Response(data, botMessage);
@@ -59,15 +50,19 @@ public class MainMenuHandler extends StateHandler {
 
     private String bookingsMessageText(List<Booking> bookings, IText lang) {
         StringBuilder text;
-        if (bookings.isEmpty()) {
+        if (bookings == null || bookings.isEmpty()) {
             text = new StringBuilder(lang.noActualBookings());
         } else {
             text = new StringBuilder(lang.hereActualBookings());
-        }
-        for (Booking booking : bookings) {
-            var bookingInfo = String.format("%s — %s, %s — %s\n", booking.title,
-                    booking.room.name, booking.start, booking.end);
-            text.append("\n").append(bookingInfo);
+            for (Booking booking : bookings) {
+                var bookingInfo = lang.printReservation(
+                        booking.title,
+                        booking.room.name,
+                        DateTime.formatToConvenient(booking.start),
+                        DateTime.formatToConvenient(booking.end)
+                );
+                text.append("\n").append(bookingInfo);
+            }
         }
         return text.toString();
     }

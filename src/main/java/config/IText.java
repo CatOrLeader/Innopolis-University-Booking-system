@@ -11,13 +11,21 @@ public interface IText {
     String noActualBookings();
     String hereActualBookings();
     String chooseBookingTime();
+    String chosenBookingTime(String time, String duration);
     String chooseBookingDuration();
     String bookingInterrupted();
     String noAvailableRooms();
     String hereAvailableRooms();
+    String chosenRoom(String name);
+    String bookingTitle();
+    String bookedSuccessfully(String title, String room, String since, String until);
+    String bookedUnsuccessfully();
 
     // Buttons text
     String newBookingBtn();
     String myReservationsBtn();
+
+    // Info messages
+    String printReservation(String name, String room, String since, String until);
 
 }
