@@ -3,12 +3,27 @@ package APIWrapper.json;
 import APIWrapper.utilities.DateTime;
 
 public class GetFreeRoomsRequest {
+    // Exposed Fields
     public String start;
     public String end;
+
+    // Hidden fields
+    public transient int duration;
+    private final transient boolean isDurationUsed;
 
     public GetFreeRoomsRequest(String start, String end) {
         this.start = start;
         this.end = end;
+
+
+        isDurationUsed = false;
+    }
+
+    public GetFreeRoomsRequest(String start, int duration) {
+        this.start = start;
+        this.duration = duration;
+
+        isDurationUsed = true;
     }
 
     // Class constructor
@@ -18,9 +33,16 @@ public class GetFreeRoomsRequest {
 
     // Additional methods
     private void parseDateTimeToOutput() {
-        DateTime dateTime = new DateTime(start, end);
+        DateTime dateTime;
+        if (isDurationUsed) {
+            dateTime = new DateTime(start, duration);
+        } else {
+            dateTime = new DateTime(start, end);
+        }
 
         start = dateTime.getOutputStart();
         end = dateTime.getOutputEnd();
     }
 }
+
+

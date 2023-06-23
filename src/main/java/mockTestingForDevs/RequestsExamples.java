@@ -14,7 +14,7 @@ public class RequestsExamples {
 
         var getFreeRoomsRequest = new GetFreeRoomsRequest(
                 "22.06.23 04:30",
-                "22.06.23 19:30"
+                90
         );
 
 //        BookRoomRequest bookRoomRequest = new BookRoomRequest(

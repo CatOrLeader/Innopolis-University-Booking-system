@@ -125,7 +125,7 @@ public class NewBookingHandler extends StateHandler {
         // TODO: properly obtain list of available rooms at given time (how to get time?)
 
         var userRooms = outlook.getAllFreeRooms(
-                new GetFreeRoomsRequest("25.05.04 09:26", "26.06.05 12:18"));
+                new GetFreeRoomsRequest("25.05.04 09:26", 90));
 
         if (userRooms.isEmpty()) {
             data.setDialogState(BotState.MAIN_MENU);
