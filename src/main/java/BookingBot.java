@@ -32,6 +32,7 @@ public class BookingBot {
      * @param update incoming update.
      */
     private void process(Update update) {
+        // TODO: try-catch
         var responses = updatesHandler.handle(update);
         Arrays.stream(responses).forEach(bot::execute);
     }
