@@ -18,7 +18,7 @@ public interface IText {
     String hereAvailableRooms();
     String chosenRoom(String name);
     String bookingTitle();
-    String bookedSuccessfully();
+    String bookedSuccessfully(String title, String room, String since, String until);
     String bookedUnsuccessfully();
 
     // Buttons text

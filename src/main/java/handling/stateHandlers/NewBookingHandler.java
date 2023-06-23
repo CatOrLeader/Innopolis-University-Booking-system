@@ -2,6 +2,7 @@ package handling.stateHandlers;
 
 import APIWrapper.json.BookRoomRequest;
 import APIWrapper.json.Booking;
+import APIWrapper.json.GetFreeRoomsRequest;
 import APIWrapper.json.Room;
 import APIWrapper.requests.Request;
 import APIWrapper.utilities.DateTime;
@@ -15,6 +16,7 @@ import handling.userData.BotState;
 import handling.userData.UserData;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -24,8 +26,8 @@ import java.util.Map;
 public class NewBookingHandler extends StateHandler {
     private final Map<String, Booking> bookingInfo = new HashMap<>();
     private final Request outlook = new Request("http://localhost:3000");
-    private final Room[] rooms =
-            outlook.getAllBookableRooms().toArray(Room[]::new);
+    private final List<Room> rooms =
+            outlook.getAllBookableRooms();
     @Override
     public Response handle(Update incomingUpdate, UserData data) {
         switch (data.getDialogState()) {
@@ -63,12 +65,10 @@ public class NewBookingHandler extends StateHandler {
         info.formatToSend();
         // TODO: Format via response from server
         var botMessage = new SendMessage(user,
-                String.format(
-                        lang.bookedSuccessfully(),
-                        info.title,
-                        info.room.name,
-                        DateTime.formatToConvenient(info.start),
-                        DateTime.formatToConvenient(info.end))).
+                        lang.bookedSuccessfully(info.title,
+                                info.room.name,
+                                DateTime.formatToConvenient(info.start),
+                                DateTime.formatToConvenient(info.end))).
                 replyMarkup(Keyboards.mainMenuMarkup(lang));
         data.setDialogState(BotState.MAIN_MENU);
         return new Response(data, botMessage);
@@ -122,16 +122,18 @@ public class NewBookingHandler extends StateHandler {
                                 String.valueOf(info.duration))
                 );
 
-        // TODO: edit message with durations
-        // TODO: properly obtain list of available rooms at given time
-        var userRooms = rooms;
-        if (userRooms.length == 0) {
+        // TODO: properly obtain list of available rooms at given time (how to get time?)
+
+        var userRooms = outlook.getAllFreeRooms(
+                new GetFreeRoomsRequest("25.05.04 09:26", "26.06.05 12:18"));
+
+        if (userRooms.isEmpty()) {
             data.setDialogState(BotState.MAIN_MENU);
             return new Response(data, new SendMessage(user, data.getLang().noAvailableRooms()).
                     replyMarkup(Keyboards.mainMenuMarkup(data.getLang())), updateMessage);
         } else {
             // TODO: check here for NOW AVAILABLE rooms
-            var keyboardWithRooms = Keyboards.availableRoomsKeyboard(rooms);
+            var keyboardWithRooms = Keyboards.availableRoomsKeyboard(userRooms);
             data.setDialogState(BotState.ROOM_AWAITING);
             return new Response(data, new SendMessage(user, data.getLang().hereAvailableRooms()).
                     replyMarkup(keyboardWithRooms), updateMessage);

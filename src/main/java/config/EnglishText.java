@@ -71,8 +71,10 @@ public class EnglishText implements IText {
     }
 
     @Override
-    public String bookedSuccessfully() {
-        return "Booking with title '%s' at %s, %s - %s successfully created!";
+    public String bookedSuccessfully(String title, String room, String since, String until) {
+        return String.format(
+                "Booking with title '%s' at %s, %s - %s successfully created!",
+                title, room, since, until);
     }
 
     @Override
