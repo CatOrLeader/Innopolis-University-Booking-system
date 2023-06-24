@@ -1,41 +1,46 @@
 package APIWrapper.utilities;
 
-import APIWrapper.json.Booking;
-import APIWrapper.json.Room;
-import APIWrapper.json.RoomType;
-import com.google.gson.GsonBuilder;
-
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 
 public class DateTime {
     // Initial values
-    private LocalDateTime start;
-    private LocalDateTime end;
+    private final ZonedDateTime start;
+    private ZonedDateTime end;
     private Duration duration;
 
     // Additional values
-    private static final String inputFormat = "dd.MM.yy HH:mm";
-    // TODO: Check the format conditions according to the customers' request
-    private static final String outputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'";
+    private static final DateTimeFormatter INPUT_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+    private static final DateTimeFormatter OUTPUT_FORMATTER = DateTimeFormatter.ISO_INSTANT;
 
     public DateTime(String start, String end) {
-        this.start = LocalDateTime.parse(start, DateTimeFormatter.ofPattern(inputFormat));
-        this.end = LocalDateTime.parse(end, DateTimeFormatter.ofPattern(inputFormat));
+        this.start = ZonedDateTime.of(
+                LocalDateTime.from(INPUT_FORMATTER.parse(start)),
+                ZoneId.systemDefault());
+        this.end = ZonedDateTime.of(
+                LocalDateTime.from(INPUT_FORMATTER.parse(end)),
+                ZoneId.systemDefault());
         this.duration = Duration.between(this.start, this.end);
     }
 
     public DateTime(String start, int duration) {
-        this.start = LocalDateTime.parse(start, DateTimeFormatter.ofPattern(inputFormat));
+        this.start = ZonedDateTime.of(
+                LocalDateTime.from(INPUT_FORMATTER.parse(start)),
+                ZoneId.systemDefault());
         this.duration = Duration.of(duration, ChronoUnit.MINUTES);
         this.end = this.start.plusMinutes(this.duration.toMinutes());
     }
 
     // Setters
     public void setEnd(String end) {
-        this.end = LocalDateTime.parse(end, DateTimeFormatter.ofPattern(inputFormat));
+        this.end = ZonedDateTime.of(
+                LocalDateTime.from(INPUT_FORMATTER.parse(end)),
+                ZoneId.systemDefault());
         duration = Duration.between(this.start, this.end);
     }
 
@@ -46,43 +51,28 @@ public class DateTime {
 
     // Inner methods of the date and time formatter
     public String getOutputStart() {
-        return start.format(DateTimeFormatter.ofPattern(outputFormat));
+        return start.format(OUTPUT_FORMATTER);
     }
 
     public String getOutputEnd() {
-        return end.format(DateTimeFormatter.ofPattern(outputFormat));
+        return end.format(OUTPUT_FORMATTER);
     }
 
     // Outer methods for parsing incoming string time to user-friendly view
     public static String formatToConvenient(String time) {
-        return
-                LocalDateTime
-                        .parse(time, DateTimeFormatter.ofPattern(outputFormat))
-                        .format(DateTimeFormatter.ofPattern(inputFormat));
+        return ZonedDateTime.parse(time).format(INPUT_FORMATTER);
+    }
 
+    public static boolean isValid(String time) {
+        try {
+            INPUT_FORMATTER.parse(time);
+            return true;
+        } catch (DateTimeParseException e) {
+            return false;
+        }
     }
 
     public static void main(String[] args) {
-        Booking booking = new Booking(
-                "Matvey privet!",
-                "Zatesti menya pzh",
-                "22.06.23 05:00",
-                90,
-                new Room(
-                        "hui",
-                        "23112",
-                        RoomType.MEETING_ROOM,
-                        20
-                ),
-                "sda"
-        );
-
-        System.out.println(new GsonBuilder().setPrettyPrinting().create().toJson(booking));
-
-
-        System.out.println(DateTime.formatToConvenient("2023-06-22T00:28:22.135Z"));
     }
 }
-
-// Exceptions
 

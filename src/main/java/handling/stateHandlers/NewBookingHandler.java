@@ -61,8 +61,8 @@ public class NewBookingHandler extends StateHandler {
 
         info.title = message.text();
         var response = outlook.bookRoom(info.room.id,
-                new BookRoomRequest(info.title, info.start, info.duration, info.owner_email));
-        info.formatToSend();
+                info.convertToBookRoomRequest());
+
         // TODO: Format via response from server
         var botMessage = new SendMessage(user,
                         lang.bookedSuccessfully(info.title,
@@ -125,7 +125,7 @@ public class NewBookingHandler extends StateHandler {
         // TODO: properly obtain list of available rooms at given time (how to get time?)
 
         var userRooms = outlook.getAllFreeRooms(
-                new GetFreeRoomsRequest("25.05.04 09:26", "26.06.05 12:18"));
+                new GetFreeRoomsRequest("25.05.04 09:26", 90));
 
         if (userRooms.isEmpty()) {
             data.setDialogState(BotState.MAIN_MENU);
