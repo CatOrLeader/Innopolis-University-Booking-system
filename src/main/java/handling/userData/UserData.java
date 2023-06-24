@@ -8,7 +8,7 @@ import config.IText;
  * TODO: probably add mail status (boolean)
  */
 public class UserData {
-    private Long userId;
+    private final Long userId;
     private BotState dialogState;
     private String email;
     private IText lang;
@@ -23,10 +23,6 @@ public class UserData {
 
     public Long getUserId() {
         return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
     }
 
     public BotState getDialogState() {

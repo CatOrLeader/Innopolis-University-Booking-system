@@ -11,6 +11,11 @@ public class EnglishText implements IText {
     }
 
     @Override
+    public String wrongEmail() {
+        return "It seems to be that provided university email is incorrect \uD83D\uDE22 Please, send new again.";
+    }
+
+    @Override
     public String verificationCodeSent() {
         return "Verification code has been sent to this email. Send me this code back.";
     }
@@ -33,6 +38,11 @@ public class EnglishText implements IText {
     @Override
     public String chooseBookingTime() {
         return "Choose preferred booking start time in the format of 'DD.MM.YY HH:MM' (without quotes)";
+    }
+
+    @Override
+    public String invalidBookingTime() {
+        return "Input booking time is invalid \uD83D\uDE22 Please, try again.";
     }
 
     @Override
