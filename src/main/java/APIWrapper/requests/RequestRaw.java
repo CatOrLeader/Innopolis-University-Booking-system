@@ -112,6 +112,8 @@ class RequestRaw {
 
         post.setEntity(entity);
 
+        post.setHeader("Content-Length: ", String.valueOf(entity.getContentLength()));
+
         return post;
     }
 
