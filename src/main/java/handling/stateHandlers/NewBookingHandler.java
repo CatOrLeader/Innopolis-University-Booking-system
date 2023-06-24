@@ -24,7 +24,7 @@ import java.util.Map;
  */
 // TODO: implement a class to work with user booking parameters at parse it to request
 public class NewBookingHandler extends StateHandler {
-    private final Map<String, Booking> bookingInfo = new HashMap<>();
+    private final Map<Long, Booking> bookingInfo = new HashMap<>();
     private final Request outlook = new Request("http://localhost:3000");
     private final List<Room> rooms =
             outlook.getAllBookableRooms();

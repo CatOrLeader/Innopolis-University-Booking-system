@@ -43,6 +43,7 @@ public class Request {
         ArrayList<Room> rooms = getAllBookableRooms();
         String[] ids = extractRoomIds(rooms);
 
+
         BookingsFilter bookingsFilter = new BookingsFilter(
                 "23.06.23 12:15",
                 "23.06.23 13:15",
