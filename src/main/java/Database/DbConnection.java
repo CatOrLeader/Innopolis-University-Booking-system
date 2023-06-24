@@ -8,28 +8,57 @@ import java.sql.DriverManager;
  */
 public class DbConnection {
 
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/IUBookingBotDb";
+    private static final String DB_USERNAME = "postgres";
+    private static final String DB_PASSWORD = "pgadmin";
+
+    private Connection connection;
+
     /**
-     * Connects to the database
-     * @param dbName database name
-     * @param username database owner name
-     * @param password database password
-     * @return connection value
+     * Default constructor
      */
-    public Connection connect(String dbName, String username, String password) {
-        Connection connection = null;
+    public DbConnection(){
+
         try {
             Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/" + dbName, username, password);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
-            if (connection != null){
-                System.out.println("Db connected successfully");
-            } else {
-                System.out.println("Db connection failed");
+    /**
+     * Connects to the database
+     * @return connection value
+     */
+    public Connection getConnection() {
+        if (connection == null) {
+            try {
+                connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+
+                if (connection != null){
+                    System.out.println("Database connected successfully");
+                } else {
+                    System.out.println("Database connection failed");
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
             }
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
         }
 
         return connection;
+    }
+
+    /**
+     * Closes database connection
+     */
+    public void closeConnection() {
+        if (connection != null) {
+            try {
+                connection.close();
+                connection = null;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 }
