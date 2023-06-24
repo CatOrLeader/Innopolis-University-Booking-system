@@ -11,6 +11,7 @@ public interface IText {
     String noActualBookings();
     String hereActualBookings();
     String chooseBookingTime();
+    String invalidBookingTime();
     String chosenBookingTime(String time, String duration);
     String chooseBookingDuration();
     String bookingInterrupted();

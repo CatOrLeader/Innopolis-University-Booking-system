@@ -36,6 +36,11 @@ public class EnglishText implements IText {
     }
 
     @Override
+    public String invalidBookingTime() {
+        return "Input booking time is invalid \uD83D\uDE22 Please, try again.";
+    }
+
+    @Override
     public String chosenBookingTime(String time, String duration) {
         return String.format("Free rooms since %s during %s minutes will be looked for...", time, duration);
     }
