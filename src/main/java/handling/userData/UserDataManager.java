@@ -9,7 +9,7 @@ import java.util.Map;
  * TODO: add work with database
  */
 public class UserDataManager {
-    private final Map<String, UserData> userData;
+    private final Map<Long, UserData> userData;
     public UserDataManager() {
         userData = new HashMap<>();
     }
@@ -19,7 +19,7 @@ public class UserDataManager {
      * @param userId ID of user whose data will be set.
      * @param data new data.
      */
-    public void setUserData(String userId, UserData data) {
+    public void setUserData(Long userId, UserData data) {
         userData.put(userId, data);
     }
 
@@ -28,7 +28,7 @@ public class UserDataManager {
      * @param userId ID of desired user.
      * @return user's data.
      */
-    public UserData getUserData(String userId) {
+    public UserData getUserData(Long userId) {
         return userData.get(userId);
     }
 
@@ -38,7 +38,7 @@ public class UserDataManager {
      * @param userId ID of user to check existence of his data.
      * @return true if database has data of given user, false - otherwise.
      */
-    public boolean hasUserData(String userId) {
+    public boolean hasUserData(Long userId) {
         return userData.containsKey(userId);
     }
 }

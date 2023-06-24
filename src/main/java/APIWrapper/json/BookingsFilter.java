@@ -1,10 +1,9 @@
 package APIWrapper.json;
 
-// https://stackoverflow.com/questions/63156952/how-to-convert-2020-12-20t000000-000z-to-java-util-date
-
 import APIWrapper.utilities.DateTime;
 
 public class BookingsFilter {
+    // Exposed fields
     public String started_at_or_after;
     public String ended_at_or_before;
     public String[] room_id_in;

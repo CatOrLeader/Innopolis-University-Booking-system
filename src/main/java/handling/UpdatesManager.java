@@ -67,11 +67,11 @@ public class UpdatesManager {
      * @return user id parsed to string.
      * TODO: Extend variety of updates with sender id
      */
-    private String extractUserId(Update update) {
+    private Long extractUserId(Update update) {
         if (update.message() != null) {
-            return update.message().from().id().toString();
+            return update.message().from().id();
         } else if (update.callbackQuery() != null) {
-            return update.callbackQuery().from().id().toString();
+            return update.callbackQuery().from().id();
         }
         return null;
     }

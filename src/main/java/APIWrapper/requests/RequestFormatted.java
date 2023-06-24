@@ -156,10 +156,12 @@ class RequestFormatted {
     // Exception checkers
     private boolean checkIfValidationError(String content) {
         try {
-            gson.fromJson(content, HTTPValidationError.class);
+            HTTPValidationError error = gson.fromJson(content, HTTPValidationError.class);
             updateJson(content);
-            System.out.println("HTTPValidation error");
-            System.out.println(content);
+            System.out.println("HTTPValidation error" +
+                    "\nLoc: " + error.detail.loc +
+                    "\nMsg: " + error.detail.msg +
+                    "\nType: " + error.detail.type);
             return true;
         } catch (Exception e) {
             System.out.println("Validation was successfully done");
@@ -169,13 +171,17 @@ class RequestFormatted {
 
     private boolean checkIfBookRoomError(String content) {
         try {
-            gson.fromJson(content, BookRoomError.class);
+            BookRoomError error = gson.fromJson(content, BookRoomError.class);
             updateJson(content);
+
+            // Check if the incoming body satisfy to the BookRoomError Class
+            if (error.message == null) throw new Exception();
+
             System.out.println("This room cannot be booked for this user during this time period");
-            System.out.println(content);
+            System.out.println("BookRoomError message: " + error.message);
             return true;
         } catch (Exception e) {
-            System.out.println("Bookings was successfully done");
+            System.out.println("Booking was successfully done");
             return false;
         }
     }
