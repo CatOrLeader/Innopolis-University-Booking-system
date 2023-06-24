@@ -6,6 +6,7 @@ package config;
 public interface IText {
     // Messages text
     String initial();
+    String wrongEmail();
     String verificationCodeSent();
     String authorized();
     String noActualBookings();

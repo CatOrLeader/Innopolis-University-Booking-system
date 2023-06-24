@@ -11,6 +11,11 @@ public class EnglishText implements IText {
     }
 
     @Override
+    public String wrongEmail() {
+        return "It seems to be that provided university email is incorrect \uD83D\uDE22 Please, send new again.";
+    }
+
+    @Override
     public String verificationCodeSent() {
         return "Verification code has been sent to this email. Send me this code back.";
     }

@@ -31,10 +31,13 @@ public class UpdatesManager {
     // TODO: Handlers!
     private void preloadHandlers() {
         var bookingHandler = new NewBookingHandler();
+        var authenticationHandler = new AuthenticationHandler();
 
         handlerMap.put(BotState.UNINITIALIZED, new UninitializedHandler());
-        handlerMap.put(BotState.ENTER_MAIL, new EnterEmailHandler());
-        handlerMap.put(BotState.CODE_AWAITING, new CodeAwaitingHandler());
+
+        handlerMap.put(BotState.ENTER_MAIL, authenticationHandler);
+        handlerMap.put(BotState.CODE_AWAITING, authenticationHandler);
+
         handlerMap.put(BotState.MAIN_MENU, new MainMenuHandler());
 
         handlerMap.put(BotState.BOOKING_TIME_AWAITING, bookingHandler);
