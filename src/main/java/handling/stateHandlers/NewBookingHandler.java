@@ -1,6 +1,5 @@
 package handling.stateHandlers;
 
-import APIWrapper.json.BookRoomRequest;
 import APIWrapper.json.Booking;
 import APIWrapper.json.GetFreeRoomsRequest;
 import APIWrapper.json.Room;
@@ -147,13 +146,20 @@ public class NewBookingHandler extends StateHandler {
 
         var msg = update.message();
         var usr = data.getUserId();
+        var lang = data.getLang();
+
+        var maybeDate = msg.text().strip();
+
+        if (!DateTime.isValid(maybeDate)) {
+            return new Response(data, new SendMessage(usr, lang.invalidBookingTime()));
+        }
 
         bookingInfo.put(usr, new Booking());
-        // TODO: validate user input time by DateTime validator
         bookingInfo.get(usr).owner_email = data.getEmail();
         bookingInfo.get(usr).start = msg.text();
+
         var botMsg =
-                new SendMessage(usr, data.getLang().
+                new SendMessage(usr, lang.
                         chooseBookingDuration()).
                         replyMarkup(Keyboards.bookingDurations());
 
