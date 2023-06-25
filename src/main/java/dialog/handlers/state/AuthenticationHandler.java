@@ -17,9 +17,8 @@ import java.util.Map;
 
 public class AuthenticationHandler extends StateHandler {
 
-    private Client mailClient = new Client();
-    private Map<Long, AuthPair> authMap = new HashMap<>();
-    private final Integer CODE_LENGTH = 6;
+    private final Client mailClient = new Client();
+    private final Map<Long, AuthPair> authMap = new HashMap<>();
 
     public AuthenticationHandler() throws NoSuchProviderException {
     }
