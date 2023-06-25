@@ -56,11 +56,6 @@ public class EnglishText implements IText {
     }
 
     @Override
-    public String bookingInterrupted() {
-        return "Booking process was interrupted.";
-    }
-
-    @Override
     public String noAvailableRooms() {
         return "Unfortunately, there are no rooms available at this time.";
     }
@@ -107,5 +102,10 @@ public class EnglishText implements IText {
         return String.format(
                 "%s — at %s since %s until %s", name, room, since, until
         );
+    }
+
+    @Override
+    public String abortAndToMenu() {
+        return "Aborting all processes and going to menu.";
     }
 }

@@ -1,4 +1,4 @@
-package handling;
+package dialog;
 
 import APIWrapper.json.Room;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
@@ -7,7 +7,6 @@ import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import config.IText;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**

@@ -1,14 +1,24 @@
-package handling;
+package dialog;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.BaseRequest;
 import config.EnglishText;
-import handling.stateHandlers.*;
-import handling.userData.BotState;
-import handling.userData.UserData;
-import handling.userData.UserDataManager;
+import dialog.handlers.IndependentHandler;
+import dialog.handlers.MaybeResponse;
+import dialog.handlers.Response;
+import dialog.handlers.StateHandler;
+import dialog.handlers.independent.GoToMenuHandler;
+import dialog.handlers.state.AuthenticationHandler;
+import dialog.handlers.state.MainMenuHandler;
+import dialog.handlers.state.NewBookingHandler;
+import dialog.handlers.state.UninitializedHandler;
+import dialog.userData.BotState;
+import dialog.userData.UserData;
+import dialog.userData.UserDataManager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -18,10 +28,12 @@ import java.util.Map;
 public class UpdatesManager {
     private final UserDataManager dataManager;
     private final Map<BotState, StateHandler> handlerMap;
+    private final List<IndependentHandler> independentHandlers;
 
     public UpdatesManager() {
         dataManager = new UserDataManager();
         handlerMap = new HashMap<>();
+        independentHandlers = new ArrayList<>();
         preloadHandlers();
     }
 
@@ -30,6 +42,21 @@ public class UpdatesManager {
      */
     // TODO: Handlers!
     private void preloadHandlers() {
+        preloadStateHandlers();
+        preloadIndependentHandlers();
+    }
+
+    /**
+     * Method to preload independent handlers.
+     */
+    private void preloadIndependentHandlers() {
+        independentHandlers.add(new GoToMenuHandler());
+    }
+
+    /**
+     * Method to preload state dependent handlers.
+     */
+    private void preloadStateHandlers() {
         var bookingHandler = new NewBookingHandler();
         var authenticationHandler = new AuthenticationHandler();
 
@@ -54,14 +81,44 @@ public class UpdatesManager {
     public BaseRequest[] handle(Update update) {
         var userId = extractUserId(update);
         if (!dataManager.hasUserData(userId)) {
-            var initialData = new UserData(userId, BotState.UNINITIALIZED, null, new EnglishText());
+            var initialData = new UserData(
+                    userId,
+                    BotState.UNINITIALIZED,
+                    null,
+                    new EnglishText());
             dataManager.setUserData(userId, initialData);
         }
+
         var userData = dataManager.getUserData(userId);
-        var stateHandler = handlerMap.get(userData.getDialogState());
-        var response = stateHandler.handle(update, userData);
+
+        var independentResponse = handleIndependently(update, userData);
+        Response response;
+
+        if (!independentResponse.hasResponse()) {
+            var stateHandler = handlerMap.get(userData.getDialogState());
+            response = stateHandler.handle(update, userData);
+        } else {
+            response = independentResponse.getResponse();
+        }
+
         dataManager.setUserData(userId, response.userData());
         return response.botResponse();
+    }
+
+    /**
+     * Method to try handle request independently of current state
+     * @param update incoming update
+     * @param data user data
+     * @return MaybeResponse instance. Contains response if handled
+     */
+    private MaybeResponse handleIndependently(Update update, UserData data) {
+        for (IndependentHandler handler : independentHandlers) {
+            var independentResponse = handler.handle(update, data);
+            if (independentResponse.hasResponse()) {
+                return independentResponse;
+            }
+        }
+        return new MaybeResponse();
     }
 
     /**

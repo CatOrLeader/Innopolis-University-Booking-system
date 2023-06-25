@@ -1,4 +1,4 @@
-package handling.userData;
+package dialog.userData;
 
 import config.IText;
 
