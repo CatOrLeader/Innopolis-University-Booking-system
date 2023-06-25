@@ -1,7 +1,7 @@
-package handling;
+package dialog.handlers;
 
 import com.pengrad.telegrambot.request.BaseRequest;
-import handling.userData.UserData;
+import dialog.userData.UserData;
 
 /**
  * Record describing StateHandler response on corresponding update.

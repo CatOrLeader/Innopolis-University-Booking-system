@@ -1,9 +1,6 @@
 package APIWrapper.utilities;
 
-import java.time.Duration;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
@@ -21,17 +18,17 @@ public class DateTime {
     public DateTime(String start, String end) {
         this.start = ZonedDateTime.of(
                 LocalDateTime.from(INPUT_FORMATTER.parse(start)),
-                ZoneId.systemDefault());
+                ZoneOffset.UTC);
         this.end = ZonedDateTime.of(
                 LocalDateTime.from(INPUT_FORMATTER.parse(end)),
-                ZoneId.systemDefault());
+                ZoneOffset.UTC);
         this.duration = Duration.between(this.start, this.end);
     }
 
     public DateTime(String start, int duration) {
         this.start = ZonedDateTime.of(
                 LocalDateTime.from(INPUT_FORMATTER.parse(start)),
-                ZoneId.systemDefault());
+                ZoneOffset.UTC);
         this.duration = Duration.of(duration, ChronoUnit.MINUTES);
         this.end = this.start.plusMinutes(this.duration.toMinutes());
     }
@@ -40,7 +37,7 @@ public class DateTime {
     public void setEnd(String end) {
         this.end = ZonedDateTime.of(
                 LocalDateTime.from(INPUT_FORMATTER.parse(end)),
-                ZoneId.systemDefault());
+                ZoneOffset.UTC);
         duration = Duration.between(this.start, this.end);
     }
 
@@ -73,6 +70,11 @@ public class DateTime {
     }
 
     public static void main(String[] args) {
+//        DateTime dateTime = new DateTime("25.06.23 01:00", 90);
+//        System.out.println(dateTime.start + " " + dateTime.end);
+//        System.out.println(dateTime.getOutputStart() + " " + dateTime.getOutputEnd());
+//        System.out.println(formatToConvenient(dateTime.getOutputStart()) + " " +
+//                formatToConvenient(dateTime.getOutputEnd()));
     }
 }
 

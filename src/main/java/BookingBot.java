@@ -1,7 +1,7 @@
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
-import handling.UpdatesManager;
+import dialog.UpdatesManager;
 
 import java.util.Arrays;
 

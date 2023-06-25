@@ -1,4 +1,4 @@
-package handling.stateHandlers;
+package dialog.handlers.state;
 
 import APIWrapper.json.Booking;
 import APIWrapper.requests.Request;
@@ -7,10 +7,10 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
 import config.IText;
-import handling.Response;
-import handling.StateHandler;
-import handling.userData.BotState;
-import handling.userData.UserData;
+import dialog.handlers.Response;
+import dialog.handlers.StateHandler;
+import dialog.userData.BotState;
+import dialog.userData.UserData;
 
 import java.util.List;
 

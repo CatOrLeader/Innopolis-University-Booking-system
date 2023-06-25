@@ -1,4 +1,4 @@
-package handling.stateHandlers;
+package dialog.handlers.state;
 
 import APIWrapper.json.Booking;
 import APIWrapper.json.GetFreeRoomsRequest;
@@ -8,11 +8,11 @@ import APIWrapper.utilities.DateTime;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
-import handling.Keyboards;
-import handling.Response;
-import handling.StateHandler;
-import handling.userData.BotState;
-import handling.userData.UserData;
+import dialog.Keyboards;
+import dialog.handlers.Response;
+import dialog.handlers.StateHandler;
+import dialog.userData.BotState;
+import dialog.userData.UserData;
 
 import java.util.HashMap;
 import java.util.List;

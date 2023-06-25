@@ -6,6 +6,7 @@ package config;
 public interface IText {
     // Messages text
     String initial();
+    String wrongEmail();
     String verificationCodeSent();
     String authorized();
     String noActualBookings();
@@ -14,7 +15,6 @@ public interface IText {
     String invalidBookingTime();
     String chosenBookingTime(String time, String duration);
     String chooseBookingDuration();
-    String bookingInterrupted();
     String noAvailableRooms();
     String hereAvailableRooms();
     String chosenRoom(String name);
@@ -28,5 +28,8 @@ public interface IText {
 
     // Info messages
     String printReservation(String name, String room, String since, String until);
+
+    // Independent handlers' messages
+    String abortAndToMenu();
 
 }

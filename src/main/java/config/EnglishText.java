@@ -11,6 +11,11 @@ public class EnglishText implements IText {
     }
 
     @Override
+    public String wrongEmail() {
+        return "It seems to be that provided university email is incorrect \uD83D\uDE22 Please, send new again.";
+    }
+
+    @Override
     public String verificationCodeSent() {
         return "Verification code has been sent to this email. Send me this code back.";
     }
@@ -48,11 +53,6 @@ public class EnglishText implements IText {
     @Override
     public String chooseBookingDuration() {
         return "Please, choose preferred booking duration.";
-    }
-
-    @Override
-    public String bookingInterrupted() {
-        return "Booking process was interrupted.";
     }
 
     @Override
@@ -102,5 +102,10 @@ public class EnglishText implements IText {
         return String.format(
                 "%s — at %s since %s until %s", name, room, since, until
         );
+    }
+
+    @Override
+    public String abortAndToMenu() {
+        return "Aborting all processes and going to menu.";
     }
 }
