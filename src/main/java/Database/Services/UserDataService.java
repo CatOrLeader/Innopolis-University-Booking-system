@@ -1,7 +1,11 @@
 package Database.Services;
 
+import Models.UserDataModel;
+import dialog.userData.BotState;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.Types;
 
 /**
  * Class for implementation user data access in database
@@ -21,18 +25,17 @@ public class UserDataService {
 
     /**
      * Adds a new bot user to the database
-     *
-     * @param tgChatId     user's chat id
-     * @param email        user's email
-     * @param isAuthorized email confirmation
+     * @param userData model of user's data
      */
-    public void addUserData(long tgChatId, String email, boolean isAuthorized) {
-        String query = "INSERT INTO \"TgChat\" (\"Id\", \"UserEmail\", \"IsAuthorized\") VALUES (?, ?, ?)";
+    public void addUserData(UserDataModel userData) {
+        String query = "INSERT INTO \"TgChat\" (\"Id\", \"UserEmail\", \"IsAuthorized\", \"BotState\", \"Language\") VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setLong(1, tgChatId);
-            statement.setString(2, email);
-            statement.setBoolean(3, isAuthorized);
+            statement.setLong(1, userData.userId);
+            statement.setString(2, userData.email);
+            statement.setBoolean(3, userData.isAuthorized);
+            statement.setObject(4, userData.dialogState, Types.OTHER);
+            statement.setObject(5, userData.language, Types.OTHER);
             statement.executeUpdate();
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -41,23 +44,51 @@ public class UserDataService {
 
     /**
      * Updates data about telegram bot user
-     *
-     * @param tgChatId     user's chat id
-     * @param email        user's email
-     * @param isAuthorized email confirmation
+     * @param userData model of user's data
      */
-    public void updateUserData(long tgChatId, String email, boolean isAuthorized) {
-        String query = "UPDATE \"TgChat\" SET \"UserEmail\" = ?, \"IsAuthorized\" = ? " +
-                "WHERE \"Id\" = ?";
+    public void updateUserData(UserDataModel userData) {
+        String query = "UPDATE \"TgChat\" SET \"UserEmail\" = ?, \"IsAuthorized\" = ?, " +
+                "\"BotState\" = ?, \"Language\" = ? WHERE \"Id\" = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, email);
-            statement.setBoolean(2, isAuthorized);
-            statement.setLong(3, tgChatId);
+            statement.setString(1, userData.email);
+            statement.setBoolean(2, userData.isAuthorized);
+            statement.setObject(3, userData.dialogState, Types.OTHER);
+            statement.setObject(4, userData.language, Types.OTHER);
+            statement.setLong(5, userData.userId);
             statement.executeUpdate();
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    /**
+     * Updates user's data
+     * @param tgChatId user's chat id
+     * @return model of the user
+     */
+    public UserDataModel getUserData(long tgChatId) {
+        String query = "SELECT \"UserEmail\", \"IsAuthorized\", \"BotState\", \"Language\" " +
+                "FROM \"TgChat\" WHERE \"Id\" = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setLong(1, tgChatId);
+            var resultSet = statement.executeQuery();
+
+            if (resultSet.next()) {
+                String email = resultSet.getString("UserEmail");
+                boolean isAuthorized = resultSet.getBoolean("IsAuthorized");
+                String botStateName = resultSet.getString("BotState");
+                BotState botState = BotState.valueOf(botStateName);
+                String language = resultSet.getString("Language");
+
+                return new UserDataModel(tgChatId, email, isAuthorized, botState,  language);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return null;
     }
 
     /**

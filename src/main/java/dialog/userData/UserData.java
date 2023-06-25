@@ -20,7 +20,6 @@ public class UserData {
         this.lang = lang;
     }
 
-
     public Long getUserId() {
         return userId;
     }

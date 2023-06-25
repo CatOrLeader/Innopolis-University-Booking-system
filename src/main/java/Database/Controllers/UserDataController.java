@@ -1,13 +1,14 @@
 package Database.Controllers;
 
 import Database.DbConnection;
+import Models.UserDataModel;
 import Database.Services.UserDataService;
 
 /**
  * Controller for the user's data
  */
 public class UserDataController {
-    // database connetion
+    // database connection
     private final DbConnection connection = new DbConnection();
     private final UserDataService userDataService;
 
@@ -17,24 +18,27 @@ public class UserDataController {
 
     /**
      * Adds a new bot user to the database
-     *
-     * @param tgChatId     user's chat id
-     * @param email        user's email
-     * @param isAuthorized email confirmation
+     * @param userDataModel model of user's data
      */
-    public void addUserData(long tgChatId, String email, boolean isAuthorized) {
-        userDataService.addUserData(tgChatId, email, isAuthorized);
+    public void addUserData(UserDataModel userDataModel) {
+        userDataService.addUserData(userDataModel);
     }
 
     /**
      * Updates data about telegram bot user
-     *
-     * @param tgChatId     user's chat id
-     * @param email        user's email
-     * @param isAuthorized email confirmation
+     * @param userDataModel model of user's data
      */
-    public void updateUserData(long tgChatId, String email, boolean isAuthorized) {
-        userDataService.updateUserData(tgChatId, email, isAuthorized);
+    public void updateUserData(UserDataModel userDataModel) {
+        userDataService.updateUserData(userDataModel);
+    }
+
+    /**
+     * Updates user's data
+     * @param tgChatId user's chat id
+     * @return model of the user
+     */
+    public UserDataModel getUserData(long tgChatId) {
+        return userDataService.getUserData(tgChatId);
     }
 
     /**
