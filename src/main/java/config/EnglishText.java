@@ -17,12 +17,18 @@ public class EnglishText implements IText {
 
     @Override
     public String verificationCodeSent() {
-        return "Verification code has been sent to this email. Send me this code back.";
+        return "Verification code has been sent to this email. Send me this code back." +
+                "You also can change your email if code does not appear.";
     }
 
     @Override
     public String authenticationCodeWrong() {
         return "Input code is incorrect. You can input it again or change the email.";
+    }
+
+    @Override
+    public String returnToEnterEmail() {
+        return "Returning back. Please, enter your IU email.";
     }
 
     @Override

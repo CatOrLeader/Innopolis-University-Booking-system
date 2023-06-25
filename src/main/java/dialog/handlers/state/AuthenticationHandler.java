@@ -1,6 +1,7 @@
 package dialog.handlers.state;
 
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import dialog.Keyboards;
 import dialog.handlers.Response;
@@ -56,7 +57,10 @@ public class AuthenticationHandler extends StateHandler {
                 mailClient.sendAuthenticationCode(email, code);
                 authMap.put(usr, new AuthPair(email, code));
                 data.setDialogState(BotState.CODE_AWAITING);
-                botMessage = new SendMessage(usr, lang.verificationCodeSent());
+                botMessage = new SendMessage(
+                        usr,
+                        lang.verificationCodeSent())
+                        .replyMarkup(Keyboards.changeEmail());
             } catch (MessagingException e) {
                 data.setDialogState(BotState.ENTER_MAIL);
                 botMessage = new SendMessage(usr, lang.wrongEmail());
@@ -70,24 +74,41 @@ public class AuthenticationHandler extends StateHandler {
 
     private Response handleConfirmationCode(Update update, UserData data) {
         var msg = update.message();
-        if (msg == null) {
-            return new Response(data);
-        }
+        var query = update.callbackQuery();
 
         var usr = data.getUserId();
         var lang = data.getLang();
-        var inputCode = msg.text().strip();
 
+        if (msg == null && query == null) {
+            return new Response(data);
+        }
+
+        if (query != null && query.data().equals("update")) {
+            data.setDialogState(BotState.ENTER_MAIL);
+            var updateMessage =
+                    new EditMessageText(
+                            usr,
+                            query.message().messageId(),
+                            lang.returnToEnterEmail()
+                    );
+            return new Response(data, updateMessage);
+        } else if (query != null) {
+            return new Response(data);
+        }
+
+        var inputCode = msg.text().strip();
         var realCode = authMap.get(usr).code();
 
-        // TODO: implement keyboard to allow to change the email
         if (!realCode.equals(inputCode)) {
-            var botMessage = new SendMessage(usr, lang.authenticationCodeWrong());
+            var botMessage =
+                    new SendMessage(usr,
+                            lang.authenticationCodeWrong());
             return new Response(data, botMessage);
         }
 
         data.setEmail(authMap.get(usr).email());
         data.setDialogState(BotState.MAIN_MENU);
+
         var botMessage =
                 new SendMessage(usr, lang.authorized()).
                         replyMarkup(Keyboards.mainMenuMarkup(lang));

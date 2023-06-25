@@ -42,4 +42,9 @@ public class Keyboards {
                 }
         );
     }
+
+    public static InlineKeyboardMarkup changeEmail() {
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton("\uD83D\uDCE8 Update email").callbackData("update"));
+    }
 }
