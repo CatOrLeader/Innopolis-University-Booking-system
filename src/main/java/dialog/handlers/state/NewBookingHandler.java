@@ -87,15 +87,19 @@ public class NewBookingHandler extends StateHandler {
         var chatId = query.message().chat().id();
         var msgId = query.message().messageId();
         var info = bookingInfo.get(user);
-
-        info.room = takeRoomById(roomId);
-        assert info.room != null;
-        var updateMessage = new EditMessageText(chatId, msgId, lang.chosenRoom(info.room.name));
-        var botMessage = new SendMessage(
-                user,
-                lang.bookingTitle());
-        data.setDialogState(BotState.BOOKING_TITLE_AWAITING);
-        return new Response(data, botMessage, updateMessage);
+        // TODO: more precise handling of incorrect callbacks
+        try {
+            info.room = takeRoomById(roomId);
+            assert info.room != null;
+            var updateMessage = new EditMessageText(chatId, msgId, lang.chosenRoom(info.room.name));
+            var botMessage = new SendMessage(
+                    user,
+                    lang.bookingTitle());
+            data.setDialogState(BotState.BOOKING_TITLE_AWAITING);
+            return new Response(data, botMessage, updateMessage);
+        } catch (Exception e) {
+            return new Response(data);
+        }
     }
 
     private Response handleBookingDuration(Update update, UserData data) {
@@ -109,8 +113,13 @@ public class NewBookingHandler extends StateHandler {
         var msgId = query.message().messageId();
         var lang = data.getLang();
         var info = bookingInfo.get(user);
+        // TODO: handle wrong callbacks more precisely
+        try {
+            info.duration = Integer.parseInt(query.data());
+        } catch (Exception e) {
+            return new Response(data);
+        }
 
-        info.duration = Integer.parseInt(query.data());
 
         var updateMessage =
                 new EditMessageText(

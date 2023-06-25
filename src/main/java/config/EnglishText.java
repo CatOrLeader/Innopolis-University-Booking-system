@@ -21,6 +21,11 @@ public class EnglishText implements IText {
     }
 
     @Override
+    public String authenticationCodeWrong() {
+        return "Input code is incorrect. You can input it again or change the email.";
+    }
+
+    @Override
     public String authorized() {
         return "You are authorized. Now you can book the rooms.";
     }

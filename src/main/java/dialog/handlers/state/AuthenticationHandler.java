@@ -7,8 +7,23 @@ import dialog.handlers.Response;
 import dialog.handlers.StateHandler;
 import dialog.userData.BotState;
 import dialog.userData.UserData;
+import mail.AuthPair;
+import mail.Client;
+
+import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AuthenticationHandler extends StateHandler {
+
+    private Client mailClient = new Client();
+    private Map<Long, AuthPair> authMap = new HashMap<>();
+    private final Integer CODE_LENGTH = 6;
+
+    public AuthenticationHandler() throws NoSuchProviderException {
+    }
+
     @Override
     public Response handle(Update incomingUpdate, UserData data) {
         switch (data.getDialogState()) {
@@ -36,12 +51,19 @@ public class AuthenticationHandler extends StateHandler {
 
         SendMessage botMessage;
 
-        if (isEmailValid(email)) {
-            data.setEmail(email);
-            data.setDialogState(BotState.CODE_AWAITING);
-            // TODO: send here code, write it somewhere (for example, in HashMap or database)
-            botMessage = new SendMessage(usr, lang.verificationCodeSent());
+        if (isEnterpriseEmail(email)) {
+            try {
+                var code = generateCode();
+                mailClient.sendAuthenticationCode(email, code);
+                authMap.put(usr, new AuthPair(email, code));
+                data.setDialogState(BotState.CODE_AWAITING);
+                botMessage = new SendMessage(usr, lang.verificationCodeSent());
+            } catch (MessagingException e) {
+                data.setDialogState(BotState.ENTER_MAIL);
+                botMessage = new SendMessage(usr, lang.wrongEmail());
+            }
         } else {
+            data.setDialogState(BotState.ENTER_MAIL);
             botMessage = new SendMessage(usr, lang.wrongEmail());
         }
         return new Response(data, botMessage);
@@ -52,9 +74,20 @@ public class AuthenticationHandler extends StateHandler {
         if (msg == null) {
             return new Response(data);
         }
+
         var usr = data.getUserId();
         var lang = data.getLang();
-        // TODO: check code
+        var inputCode = msg.text().strip();
+
+        var realCode = authMap.get(usr).code();
+
+        // TODO: implement keyboard to allow to change the email
+        if (!realCode.equals(inputCode)) {
+            var botMessage = new SendMessage(usr, lang.authenticationCodeWrong());
+            return new Response(data, botMessage);
+        }
+
+        data.setEmail(authMap.get(usr).email());
         data.setDialogState(BotState.MAIN_MENU);
         var botMessage =
                 new SendMessage(usr, lang.authorized()).
@@ -67,7 +100,17 @@ public class AuthenticationHandler extends StateHandler {
      * @param email given email
      * @return true if email has the form of IU email, false otherwise
      */
-    private boolean isEmailValid(String email) {
+    private boolean isEnterpriseEmail(String email) {
         return email.matches("^[\\w-.]+@innopolis.university$");
+    }
+
+    /**
+     * Method to generate code between [10^6, 10^7)
+     * @return code parsed to string
+     */
+    private String generateCode() {
+        var minBound = 100000;
+        var maxBound = 999999;
+        return String.valueOf((int) ((Math.random() * (maxBound - minBound)) + minBound));
     }
 }

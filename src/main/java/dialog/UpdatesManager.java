@@ -16,6 +16,7 @@ import dialog.userData.BotState;
 import dialog.userData.UserData;
 import dialog.userData.UserDataManager;
 
+import javax.mail.NoSuchProviderException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -58,7 +59,13 @@ public class UpdatesManager {
      */
     private void preloadStateHandlers() {
         var bookingHandler = new NewBookingHandler();
-        var authenticationHandler = new AuthenticationHandler();
+
+        AuthenticationHandler authenticationHandler;
+        try {
+            authenticationHandler = new AuthenticationHandler();
+        } catch (NoSuchProviderException e) {
+            throw new RuntimeException(e);
+        }
 
         handlerMap.put(BotState.UNINITIALIZED, new UninitializedHandler());
 

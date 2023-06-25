@@ -37,7 +37,7 @@ public class Client {
 
     /**
      * Method to send authentication code.
-     * @param receptionist one who receive authentication code
+     * @param receptionist one's email who receive authentication code
      * @param code given code
      * @throws MessagingException if something went wrong
      */

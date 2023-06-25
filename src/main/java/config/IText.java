@@ -8,6 +8,7 @@ public interface IText {
     String initial();
     String wrongEmail();
     String verificationCodeSent();
+    String authenticationCodeWrong();
     String authorized();
     String noActualBookings();
     String hereActualBookings();
