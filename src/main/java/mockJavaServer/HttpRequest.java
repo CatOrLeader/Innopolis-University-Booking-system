@@ -58,9 +58,7 @@ class HttpRequest {
         );
 
         // Destruct request body (if exists)
-        String bodyLength = this.headers.get("Content-Length");
-        int length = (bodyLength != null ? Integer.parseInt(bodyLength) : 0);
-        body = (requestParts.length > 1 ? requestParts[1].trim().substring(0, length) : "");
+        body = (requestParts.length > 1 ? requestParts[1].trim() : "");
 
         parseClassFromGson();
     }
