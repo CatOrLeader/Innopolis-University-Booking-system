@@ -19,7 +19,7 @@ public class UserDataManager {
      * @param userId ID of user whose data will be set.
      * @param data new data.
      */
-    public void setUserData(Long userId, UserData data) {
+    public void setUserData(long userId, UserData data) {
         userData.put(userId, data);
     }
 
@@ -28,7 +28,7 @@ public class UserDataManager {
      * @param userId ID of desired user.
      * @return user's data.
      */
-    public UserData getUserData(Long userId) {
+    public UserData getUserData(long userId) {
         return userData.get(userId);
     }
 
@@ -38,7 +38,7 @@ public class UserDataManager {
      * @param userId ID of user to check existence of his data.
      * @return true if database has data of given user, false - otherwise.
      */
-    public boolean hasUserData(Long userId) {
+    public boolean hasUserData(long userId) {
         return userData.containsKey(userId);
     }
 }
