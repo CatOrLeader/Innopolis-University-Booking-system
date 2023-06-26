@@ -1,7 +1,14 @@
-package config;
+package dialog.config;
 
 import APIWrapper.json.Booking;
+import APIWrapper.json.Room;
 import APIWrapper.utilities.DateTime;
+import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
+import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.model.request.KeyboardButton;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
+
+import java.util.List;
 
 /**
  * English bot interface localization.
@@ -134,5 +141,53 @@ public class EnglishText implements IText {
     @Override
     public String goToBookings() {
         return "Going to your bookings...";
+    }
+
+    @Override
+    public ReplyKeyboardMarkup mainMenuMarkup() {
+        return new ReplyKeyboardMarkup(
+                new KeyboardButton(newBookingBtn()),
+                new KeyboardButton(myReservationsBtn())
+        ).resizeKeyboard(true);
+    }
+
+    @Override
+    public InlineKeyboardMarkup availableRoomsKeyboard(List<Room> rooms) {
+        var roomButtons = rooms.stream().
+                map(room ->
+                        new InlineKeyboardButton[]{
+                                new InlineKeyboardButton(room.name).callbackData(room.id)}).
+                toArray(InlineKeyboardButton[][]::new);
+        return new InlineKeyboardMarkup(roomButtons);
+    }
+
+    @Override
+    public InlineKeyboardMarkup bookingDurations() {
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton[] {
+                        new InlineKeyboardButton("30 min").callbackData("30"),
+                        new InlineKeyboardButton("60 min").callbackData("60"),
+                        new InlineKeyboardButton("90 min").callbackData("90")
+                },
+                new InlineKeyboardButton[] {
+                        new InlineKeyboardButton("120 min").callbackData("120"),
+                        new InlineKeyboardButton("150 min").callbackData("150"),
+                        new InlineKeyboardButton("180 min").callbackData("180")
+                }
+        );
+    }
+
+    @Override
+    public InlineKeyboardMarkup userBookings(List<Booking> bookings) {
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        for (Booking booking : bookings) {
+            markup.addRow(
+                    new InlineKeyboardButton(booking.title).
+                            callbackData(String.format("info %s", booking.id)),
+                    new InlineKeyboardButton("Cancel ❌").
+                            callbackData(String.format("cancel %s", booking.id)));
+        }
+        markup.addRow(new InlineKeyboardButton("◀️ Go back").callbackData("back"));
+        return markup;
     }
 }

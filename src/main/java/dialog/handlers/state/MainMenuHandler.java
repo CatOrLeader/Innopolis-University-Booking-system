@@ -5,8 +5,7 @@ import APIWrapper.requests.Request;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
-import config.IText;
-import dialog.Keyboards;
+import dialog.config.IText;
 import dialog.handlers.Response;
 import dialog.handlers.StateHandler;
 import dialog.userData.BotState;
@@ -43,7 +42,7 @@ public class MainMenuHandler extends StateHandler {
                 lang.goToBookings()
         ).replyMarkup(new ReplyKeyboardRemove());
         var bookingsMsg = new SendMessage(usr, userReservations).
-                replyMarkup(Keyboards.userBookings(bookings));
+                replyMarkup(lang.userBookings(bookings));
 
         data.setDialogState(BotState.LIST_OF_RESERVATIONS);
         return new Response(data, transition, bookingsMsg);

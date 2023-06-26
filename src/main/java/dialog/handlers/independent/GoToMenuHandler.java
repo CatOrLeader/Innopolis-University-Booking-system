@@ -2,7 +2,6 @@ package dialog.handlers.independent;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import dialog.Keyboards;
 import dialog.handlers.IndependentHandler;
 import dialog.handlers.MaybeResponse;
 import dialog.handlers.Response;
@@ -28,7 +27,7 @@ public class GoToMenuHandler extends IndependentHandler {
 
         data.setDialogState(BotState.MAIN_MENU);
         var botMessage = new SendMessage(usr,
-                lang.abortAndToMenu()).replyMarkup(Keyboards.mainMenuMarkup(lang));
+                lang.abortAndToMenu()).replyMarkup(lang.mainMenuMarkup());
         return new MaybeResponse(new Response(data, botMessage));
     }
 

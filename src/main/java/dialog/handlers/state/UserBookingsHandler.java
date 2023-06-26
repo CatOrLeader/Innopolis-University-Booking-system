@@ -5,7 +5,6 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.AnswerCallbackQuery;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
-import dialog.Keyboards;
 import dialog.handlers.Response;
 import dialog.handlers.StateHandler;
 import dialog.userData.BotState;
@@ -77,7 +76,7 @@ public class UserBookingsHandler extends StateHandler {
         var usr = data.getUserId();
         var lang = data.getLang();
 
-        var bookingsKb = Keyboards.userBookings(bookings);
+        var bookingsKb = lang.userBookings(bookings);
         var edit =
                 new EditMessageText(
                         usr,
@@ -101,7 +100,7 @@ public class UserBookingsHandler extends StateHandler {
                 new SendMessage(
                         usr,
                         lang.goToMenu()
-                ).replyMarkup(Keyboards.mainMenuMarkup(lang));
+                ).replyMarkup(lang.mainMenuMarkup());
         return new Response(data, edit, botMsg);
     }
 }

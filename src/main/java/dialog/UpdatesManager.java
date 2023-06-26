@@ -2,7 +2,7 @@ package dialog;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.BaseRequest;
-import config.EnglishText;
+import dialog.config.EnglishText;
 import dialog.handlers.IndependentHandler;
 import dialog.handlers.MaybeResponse;
 import dialog.handlers.Response;

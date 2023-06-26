@@ -2,7 +2,6 @@ package dialog.handlers.state;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import dialog.Keyboards;
 import dialog.handlers.Response;
 import dialog.handlers.StateHandler;
 import dialog.userData.BotState;
@@ -58,7 +57,7 @@ public class AuthenticationHandler extends StateHandler {
         data.setDialogState(BotState.MAIN_MENU);
         var botMessage =
                 new SendMessage(usr, lang.authorized()).
-                        replyMarkup(Keyboards.mainMenuMarkup(lang));
+                        replyMarkup(lang.mainMenuMarkup());
         return new Response(data, botMessage);
     }
 
