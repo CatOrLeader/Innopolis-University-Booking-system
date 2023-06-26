@@ -1,6 +1,6 @@
 package dialog.userData;
 
-import config.IText;
+import dialog.config.IText;
 
 /**
  * Class to store external user information.

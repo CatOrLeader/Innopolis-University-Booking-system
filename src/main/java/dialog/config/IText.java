@@ -1,4 +1,11 @@
-package config;
+package dialog.config;
+
+import APIWrapper.json.Booking;
+import APIWrapper.json.Room;
+import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
+
+import java.util.List;
 
 /**
  * Interface describing messages of dialog in bot.
@@ -21,6 +28,8 @@ public interface IText {
     String bookingTitle();
     String bookedSuccessfully(String title, String room, String since, String until);
     String bookedUnsuccessfully();
+    String goToMenu();
+    String bookingInterfaceClosed();
 
     // Buttons text
     String newBookingBtn();
@@ -31,5 +40,16 @@ public interface IText {
 
     // Independent handlers' messages
     String abortAndToMenu();
+
+    // Pop-ups text
+    String fullBookingInfo(Booking booking);
+
+    String goToBookings();
+
+    // Keyboards
+    ReplyKeyboardMarkup mainMenuMarkup();
+    InlineKeyboardMarkup availableRoomsKeyboard(List<Room> rooms);
+    InlineKeyboardMarkup bookingDurations();
+    InlineKeyboardMarkup userBookings(List<Booking> bookings);
 
 }
