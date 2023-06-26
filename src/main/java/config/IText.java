@@ -1,5 +1,7 @@
 package config;
 
+import APIWrapper.json.Booking;
+
 /**
  * Interface describing messages of dialog in bot.
  */
@@ -21,6 +23,8 @@ public interface IText {
     String bookingTitle();
     String bookedSuccessfully(String title, String room, String since, String until);
     String bookedUnsuccessfully();
+    String goToMenu();
+    String bookingInterfaceClosed();
 
     // Buttons text
     String newBookingBtn();
@@ -32,4 +36,8 @@ public interface IText {
     // Independent handlers' messages
     String abortAndToMenu();
 
+    // Pop-ups text
+    String fullBookingInfo(Booking booking);
+
+    String goToBookings();
 }

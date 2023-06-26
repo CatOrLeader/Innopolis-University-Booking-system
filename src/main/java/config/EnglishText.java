@@ -1,5 +1,8 @@
 package config;
 
+import APIWrapper.json.Booking;
+import APIWrapper.utilities.DateTime;
+
 /**
  * English bot interface localization.
  */
@@ -88,6 +91,16 @@ public class EnglishText implements IText {
     }
 
     @Override
+    public String goToMenu() {
+        return "Going to main menu..";
+    }
+
+    @Override
+    public String bookingInterfaceClosed() {
+        return "Booking interface closed.";
+    }
+
+    @Override
     public String newBookingBtn() {
         return "\uD83D\uDD0F New booking";
     }
@@ -107,5 +120,19 @@ public class EnglishText implements IText {
     @Override
     public String abortAndToMenu() {
         return "Aborting all processes and going to menu.";
+    }
+
+    @Override
+    public String fullBookingInfo(Booking booking) {
+        return String.format("'%s' will take place at %s since %s until %s",
+                booking.title,
+                booking.room.name,
+                DateTime.formatToConvenient(booking.start),
+                DateTime.formatToConvenient(booking.end));
+    }
+
+    @Override
+    public String goToBookings() {
+        return "Going to your bookings...";
     }
 }

@@ -1,5 +1,6 @@
 package dialog;
 
+import APIWrapper.json.Booking;
 import APIWrapper.json.Room;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
@@ -7,6 +8,7 @@ import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 import config.IText;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -41,5 +43,18 @@ public class Keyboards {
                         new InlineKeyboardButton("180 min").callbackData("180")
                 }
         );
+    }
+
+    public static InlineKeyboardMarkup userBookings(List<Booking> bookings) {
+        InlineKeyboardMarkup markup = new InlineKeyboardMarkup();
+        for (Booking booking : bookings) {
+            markup.addRow(
+                    new InlineKeyboardButton(booking.title).
+                            callbackData(String.format("info %s", booking.id)),
+                    new InlineKeyboardButton("❌").
+                            callbackData(String.format("cancel %s", booking.id)));
+        }
+        markup.addRow(new InlineKeyboardButton("◀️ Go back").callbackData("back"));
+        return markup;
     }
 }

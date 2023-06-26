@@ -8,10 +8,7 @@ import dialog.handlers.MaybeResponse;
 import dialog.handlers.Response;
 import dialog.handlers.StateHandler;
 import dialog.handlers.independent.GoToMenuHandler;
-import dialog.handlers.state.AuthenticationHandler;
-import dialog.handlers.state.MainMenuHandler;
-import dialog.handlers.state.NewBookingHandler;
-import dialog.handlers.state.UninitializedHandler;
+import dialog.handlers.state.*;
 import dialog.userData.BotState;
 import dialog.userData.UserData;
 import dialog.userData.UserDataManager;
@@ -66,6 +63,8 @@ public class UpdatesManager {
         handlerMap.put(BotState.CODE_AWAITING, authenticationHandler);
 
         handlerMap.put(BotState.MAIN_MENU, new MainMenuHandler());
+
+        handlerMap.put(BotState.LIST_OF_RESERVATIONS, new UserBookingsHandler());
 
         handlerMap.put(BotState.BOOKING_TIME_AWAITING, bookingHandler);
         handlerMap.put(BotState.BOOKING_DURATION_AWAITING, bookingHandler);
