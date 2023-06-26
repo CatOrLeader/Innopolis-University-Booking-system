@@ -1,0 +1,64 @@
+package Database;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+
+/**
+ * Class for Database connection control
+ */
+public class DbConnection {
+
+    private static final String DB_URL = "jdbc:postgresql://localhost:5432/IUBookingBotDb";
+    private static final String DB_USERNAME = "postgres";
+    private static final String DB_PASSWORD = "pgadmin";
+
+    private Connection connection;
+
+    /**
+     * Default constructor
+     */
+    public DbConnection(){
+
+        try {
+            Class.forName("org.postgresql.Driver");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Connects to the database
+     * @return connection value
+     */
+    public Connection getConnection() {
+        if (connection == null) {
+            try {
+                connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
+
+                if (connection != null){
+                    System.out.println("Database connected successfully");
+                } else {
+                    System.out.println("Database connection failed");
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+        return connection;
+    }
+
+    /**
+     * Closes database connection
+     */
+    public void closeConnection() {
+        if (connection != null) {
+            try {
+                connection.close();
+                connection = null;
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+}
