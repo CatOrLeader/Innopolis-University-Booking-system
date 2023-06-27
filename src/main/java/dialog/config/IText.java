@@ -15,6 +15,10 @@ public interface IText {
     String initial();
     String wrongEmail();
     String verificationCodeSent();
+    String verificationCodeWrong();
+    String verificationCodeExpired(String email);
+    String sorryEmailError();
+    String returnToEnterEmail();
     String authorized();
     String noActualBookings();
     String hereActualBookings();
@@ -51,5 +55,5 @@ public interface IText {
     InlineKeyboardMarkup availableRoomsKeyboard(List<Room> rooms);
     InlineKeyboardMarkup bookingDurations();
     InlineKeyboardMarkup userBookings(List<Booking> bookings);
-
+    InlineKeyboardMarkup changeEmail();
 }

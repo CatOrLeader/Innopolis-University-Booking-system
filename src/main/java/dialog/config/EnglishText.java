@@ -27,7 +27,29 @@ public class EnglishText implements IText {
 
     @Override
     public String verificationCodeSent() {
-        return "Verification code has been sent to this email. Send me this code back.";
+        return "Verification code has been sent to this email. It expires in 5 minutes. " +
+                "Send me this code back. You also can update email in case of any issues.";
+    }
+
+    @Override
+    public String verificationCodeWrong() {
+        return "Input code is incorrect. You can input it again or change the email.";
+    }
+
+    @Override
+    public String verificationCodeExpired(String email) {
+        return String.format("Verification code has expired. We've sent it to %s. " +
+                "You also can change email if something goes wrong.", email);
+    }
+
+    @Override
+    public String sorryEmailError() {
+        return "Sorry.. Unexpected error happen. Please, input your email again.";
+    }
+
+    @Override
+    public String returnToEnterEmail() {
+        return "Returning back to email entering...";
     }
 
     @Override
@@ -52,7 +74,7 @@ public class EnglishText implements IText {
 
     @Override
     public String invalidBookingTime() {
-        return "Input booking time is invalid \uD83D\uDE22 Please, try again.";
+        return "Input booking date or time is invalid \uD83D\uDE22 Please, try again.";
     }
 
     @Override
@@ -99,7 +121,7 @@ public class EnglishText implements IText {
 
     @Override
     public String goToMenu() {
-        return "Going to main menu..";
+        return "Going to main menu...";
     }
 
     @Override
@@ -126,7 +148,7 @@ public class EnglishText implements IText {
 
     @Override
     public String abortAndToMenu() {
-        return "Aborting all processes and going to menu.";
+        return "Aborting all processes and going to menu...";
     }
 
     @Override
@@ -189,5 +211,12 @@ public class EnglishText implements IText {
         }
         markup.addRow(new InlineKeyboardButton("◀️ Go back").callbackData("back"));
         return markup;
+    }
+
+    @Override
+    public InlineKeyboardMarkup changeEmail() {
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton("\uD83D\uDCE8 Update email").callbackData("update")
+        );
     }
 }
