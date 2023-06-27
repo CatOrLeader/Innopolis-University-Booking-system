@@ -31,8 +31,14 @@ public class EnglishText implements IText {
     }
 
     @Override
-    public String authenticationCodeWrong() {
+    public String verificationCodeWrong() {
         return "Input code is incorrect. You can input it again or change the email.";
+    }
+
+    @Override
+    public String verificationCodeExpired(String email) {
+        return String.format("Verification code has expired. We've sent it to %s. " +
+                "You also can change email if something goes wrong.", email);
     }
 
     @Override
