@@ -3,7 +3,6 @@ package dialog.config;
 import APIWrapper.json.Booking;
 import APIWrapper.json.Room;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.model.request.Keyboard;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 
 import java.util.List;
