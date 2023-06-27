@@ -3,6 +3,7 @@ package dialog.handlers.state;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
+import dialog.config.IText;
 import dialog.handlers.Response;
 import dialog.handlers.StateHandler;
 import dialog.userData.BotState;
@@ -52,19 +53,7 @@ public class AuthenticationHandler extends StateHandler {
         SendMessage botMessage;
 
         if (isEnterpriseEmail(email)) {
-            try {
-                var code = generateCode();
-                mailClient.sendAuthenticationCode(email, code);
-                authMap.put(usr, new AuthData(email, code, Instant.now()));
-                data.setDialogState(BotState.CODE_AWAITING);
-                botMessage = new SendMessage(
-                        usr,
-                        lang.verificationCodeSent())
-                        .replyMarkup(lang.changeEmail());
-            } catch (MessagingException e) {
-                data.setDialogState(BotState.ENTER_MAIL);
-                botMessage = new SendMessage(usr, lang.wrongEmail());
-            }
+            return trySendCodeOrSorry(usr, lang, email, data, false);
         } else {
             data.setDialogState(BotState.ENTER_MAIL);
             botMessage = new SendMessage(usr, lang.wrongEmail());
@@ -100,18 +89,7 @@ public class AuthenticationHandler extends StateHandler {
         var inputCode = msg.text().strip();
 
         if (didExpire(authData)) {
-            try {
-                var newCode = generateCode();
-                authMap.put(usr, new AuthData(authData.email(), newCode, Instant.now()));
-                mailClient.sendAuthenticationCode(authData.email(), newCode);
-                var botMessage = new SendMessage(
-                        usr,
-                        lang.verificationCodeExpired(authData.email())
-                ).replyMarkup(lang.changeEmail());
-                return new Response(data, botMessage);
-            } catch (MessagingException e) {
-                // TODO: may be say about error and re-enter email
-            }
+            return trySendCodeOrSorry(usr, lang, authData.email(), data, true);
         }
 
         if (!isCorrect(authData, inputCode)) {
@@ -169,5 +147,32 @@ public class AuthenticationHandler extends StateHandler {
      */
     private boolean isCorrect(AuthData data, String inputCode) {
         return data.code().equals(inputCode.strip());
+    }
+
+    /**
+     * Method that tries to send verification code.
+     * @param usr user Telegram ID
+     * @param lang user language (IText)
+     * @param email user email (unconfirmed)
+     * @param data user data
+     * @param expired flag to determine message type
+     * @return bot response
+     */
+    private Response trySendCodeOrSorry(Long usr, IText lang, String email, UserData data, boolean expired) {
+        var code = generateCode();
+        try {
+            mailClient.sendAuthenticationCode(email, code);
+            authMap.put(usr, new AuthData(email, code, Instant.now()));
+            data.setDialogState(BotState.CODE_AWAITING);
+            var text = (expired ? lang.verificationCodeExpired(email) : lang.verificationCodeSent());
+            var msg = new SendMessage(
+                    usr,
+                    text)
+                    .replyMarkup(lang.changeEmail());
+            return new Response(data, msg);
+        } catch (MessagingException e) {
+            data.setDialogState(BotState.ENTER_MAIL);
+            return new Response(data, new SendMessage(usr, lang.sorryEmailError()));
+        }
     }
 }

@@ -17,6 +17,7 @@ public interface IText {
     String verificationCodeSent();
     String verificationCodeWrong();
     String verificationCodeExpired(String email);
+    String sorryEmailError();
     String returnToEnterEmail();
     String authorized();
     String noActualBookings();
