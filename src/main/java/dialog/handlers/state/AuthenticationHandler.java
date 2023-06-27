@@ -59,7 +59,7 @@ public class AuthenticationHandler extends StateHandler {
                 botMessage = new SendMessage(
                         usr,
                         lang.verificationCodeSent())
-                        .replyMarkup(Keyboards.changeEmail());
+                        .replyMarkup(lang.changeEmail());
             } catch (MessagingException e) {
                 data.setDialogState(BotState.ENTER_MAIL);
                 botMessage = new SendMessage(usr, lang.wrongEmail());
@@ -128,6 +128,7 @@ public class AuthenticationHandler extends StateHandler {
      * @return code parsed to string
      */
     private String generateCode() {
+        // Code bounds
         var minBound = 100000;
         var maxBound = 999999;
         return String.valueOf((int) ((Math.random() * (maxBound - minBound)) + minBound));

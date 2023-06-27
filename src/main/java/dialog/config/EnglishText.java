@@ -31,6 +31,16 @@ public class EnglishText implements IText {
     }
 
     @Override
+    public String authenticationCodeWrong() {
+        return "Input code is incorrect. You can input it again or change the email.";
+    }
+
+    @Override
+    public String returnToEnterEmail() {
+        return "Returning back to email entering..";
+    }
+
+    @Override
     public String authorized() {
         return "You are authorized. Now you can book the rooms.";
     }
@@ -189,5 +199,12 @@ public class EnglishText implements IText {
         }
         markup.addRow(new InlineKeyboardButton("◀️ Go back").callbackData("back"));
         return markup;
+    }
+
+    @Override
+    public InlineKeyboardMarkup changeEmail() {
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton("\uD83D\uDCE8 Update email").callbackData("update")
+        );
     }
 }
