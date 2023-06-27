@@ -1,6 +1,6 @@
 package Database.Controllers;
 
-import Database.DbConnection;
+import Database.DbConnector;
 import Models.UserDataModel;
 import Database.Services.UserDataService;
 
@@ -9,7 +9,7 @@ import Database.Services.UserDataService;
  */
 public class UserDataController {
     // database connection
-    private final DbConnection connection = new DbConnection();
+    private final DbConnector connection = new DbConnector();
     private final UserDataService userDataService;
 
     public UserDataController() {

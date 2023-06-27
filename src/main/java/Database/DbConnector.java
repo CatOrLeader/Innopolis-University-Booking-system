@@ -6,18 +6,17 @@ import java.sql.DriverManager;
 /**
  * Class for Database connection control
  */
-public class DbConnection {
-
-    private static final String DB_URL = "jdbc:postgresql://localhost:5432/IUBookingBotDb";
-    private static final String DB_USERNAME = "postgres";
-    private static final String DB_PASSWORD = "pgadmin";
+public class DbConnector {
+    private static final String DB_URL = System.getenv("DB_URL");
+    private static final String DB_USERNAME = System.getenv("DB_USERNAME");
+    private static final String DB_PASSWORD = System.getenv("DB_PASSWORD");
 
     private Connection connection;
 
     /**
      * Default constructor
      */
-    public DbConnection(){
+    public DbConnector(){
 
         try {
             Class.forName("org.postgresql.Driver");
