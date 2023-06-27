@@ -2,11 +2,10 @@ package dialog.handlers.state;
 
 import APIWrapper.json.Booking;
 import APIWrapper.requests.Request;
-import APIWrapper.utilities.DateTime;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
-import config.IText;
+import dialog.config.IText;
 import dialog.handlers.Response;
 import dialog.handlers.StateHandler;
 import dialog.userData.BotState;
@@ -16,15 +15,14 @@ import java.util.List;
 
 public class MainMenuHandler extends StateHandler {
     private final Request outlook = new Request("http://localhost:3000");
-    private final String[] rooms =
-            outlook.getAllBookableRooms().stream().map(room -> room.id).toArray(String[]::new);
+
     @Override
     public Response handle(Update incomingUpdate, UserData data) {
         var message = incomingUpdate.message();
         if (message == null) {
             return new Response(data);
         } else if (message.text().equals(data.getLang().myReservationsBtn())) {
-            return handleReservations(data);
+            return handleBookings(data);
         } else if (message.text().equals(data.getLang().newBookingBtn())) {
             return handleNewBooking(data);
         } else {
@@ -32,17 +30,30 @@ public class MainMenuHandler extends StateHandler {
         }
     }
 
-    private Response handleReservations(UserData data) {
+    private Response handleBookings(UserData data) {
+        var usr = data.getUserId();
         var lang = data.getLang();
+
         var bookings = outlook.getBookingsByUser(data.getEmail());
         var userReservations = bookingsMessageText(bookings, lang);
-        return new Response(data, new SendMessage(data.getUserId(), userReservations));
+
+        var transition = new SendMessage(
+                usr,
+                lang.goToBookings()
+        ).replyMarkup(new ReplyKeyboardRemove());
+        var bookingsMsg = new SendMessage(usr, userReservations).
+                replyMarkup(lang.userBookings(bookings));
+
+        data.setDialogState(BotState.LIST_OF_RESERVATIONS);
+        return new Response(data, transition, bookingsMsg);
     }
 
     private Response handleNewBooking(UserData data) {
         var lang = data.getLang();
+        var usr = data.getUserId();
+
         var botMessage = new SendMessage(
-                data.getUserId(), lang.chooseBookingTime())
+                usr, lang.chooseBookingTime())
                 .replyMarkup(new ReplyKeyboardRemove());
         data.setDialogState(BotState.BOOKING_TIME_AWAITING);
         return new Response(data, botMessage);
@@ -54,15 +65,6 @@ public class MainMenuHandler extends StateHandler {
             text = new StringBuilder(lang.noActualBookings());
         } else {
             text = new StringBuilder(lang.hereActualBookings());
-            for (Booking booking : bookings) {
-                var bookingInfo = lang.printReservation(
-                        booking.title,
-                        booking.room.name,
-                        DateTime.formatToConvenient(booking.start),
-                        DateTime.formatToConvenient(booking.end)
-                );
-                text.append("\n").append(bookingInfo);
-            }
         }
         return text.toString();
     }

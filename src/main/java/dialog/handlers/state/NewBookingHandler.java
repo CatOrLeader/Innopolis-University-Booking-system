@@ -8,7 +8,6 @@ import APIWrapper.utilities.DateTime;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
-import dialog.Keyboards;
 import dialog.handlers.Response;
 import dialog.handlers.StateHandler;
 import dialog.userData.BotState;
@@ -68,7 +67,7 @@ public class NewBookingHandler extends StateHandler {
                                 info.room.name,
                                 DateTime.formatToConvenient(info.start),
                                 DateTime.formatToConvenient(info.end))).
-                replyMarkup(Keyboards.mainMenuMarkup(lang));
+                replyMarkup(lang.mainMenuMarkup());
         data.setDialogState(BotState.MAIN_MENU);
         return new Response(data, botMessage);
     }
@@ -129,10 +128,10 @@ public class NewBookingHandler extends StateHandler {
         if (userRooms.isEmpty()) {
             data.setDialogState(BotState.MAIN_MENU);
             return new Response(data, new SendMessage(user, data.getLang().noAvailableRooms()).
-                    replyMarkup(Keyboards.mainMenuMarkup(data.getLang())), updateMessage);
+                    replyMarkup(lang.mainMenuMarkup()), updateMessage);
         } else {
             // TODO: check here for NOW AVAILABLE rooms
-            var keyboardWithRooms = Keyboards.availableRoomsKeyboard(userRooms);
+            var keyboardWithRooms = lang.availableRoomsKeyboard(userRooms);
             data.setDialogState(BotState.ROOM_AWAITING);
             return new Response(data, new SendMessage(user, data.getLang().hereAvailableRooms()).
                     replyMarkup(keyboardWithRooms), updateMessage);
@@ -161,7 +160,7 @@ public class NewBookingHandler extends StateHandler {
         var botMsg =
                 new SendMessage(usr, lang.
                         chooseBookingDuration()).
-                        replyMarkup(Keyboards.bookingDurations());
+                        replyMarkup(lang.bookingDurations());
 
         data.setDialogState(BotState.BOOKING_DURATION_AWAITING);
         return new Response(data, botMsg);
