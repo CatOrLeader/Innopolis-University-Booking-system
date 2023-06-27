@@ -1,6 +1,7 @@
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.GetUpdates;
 import dialog.UpdatesManager;
 
 import java.util.Arrays;
@@ -11,9 +12,19 @@ import java.util.Arrays;
 public class BookingBot {
     private final TelegramBot bot;
     private final UpdatesManager updatesHandler;
+    private int skipUntil = 0;
     public BookingBot(String token) {
         bot = new TelegramBot(token);
         updatesHandler = new UpdatesManager();
+    }
+
+    /**
+     * Method to skip updates on bot startup.
+     * Saves the max Update ID that should be skipped.
+     */
+    public void skipUpdates() {
+        var updates = bot.execute(new GetUpdates()).updates();
+        updates.forEach(update -> skipUntil = Math.max(skipUntil, update.updateId()));
     }
 
     /**
@@ -21,7 +32,13 @@ public class BookingBot {
      */
     public void listen() {
         bot.setUpdatesListener(updates -> {
-            updates.forEach(this::process);
+            updates.forEach(update -> {
+                if (update.updateId() > skipUntil) {
+                    process(update);
+                } else if (update.updateId() == skipUntil) {
+                    skipUntil = 0;
+                }
+            });
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
     }
