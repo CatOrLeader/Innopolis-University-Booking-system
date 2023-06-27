@@ -1,13 +1,28 @@
 package dialog.handlers.state;
 
 import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import dialog.handlers.Response;
 import dialog.handlers.StateHandler;
 import dialog.userData.BotState;
 import dialog.userData.UserData;
+import mail.AuthPair;
+import mail.Client;
+
+import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AuthenticationHandler extends StateHandler {
+
+    private final Client mailClient = new Client();
+    private final Map<Long, AuthPair> authMap = new HashMap<>();
+
+    public AuthenticationHandler() throws NoSuchProviderException {
+    }
+
     @Override
     public Response handle(Update incomingUpdate, UserData data) {
         switch (data.getDialogState()) {
@@ -35,12 +50,22 @@ public class AuthenticationHandler extends StateHandler {
 
         SendMessage botMessage;
 
-        if (isEmailValid(email)) {
-            data.setEmail(email);
-            data.setDialogState(BotState.CODE_AWAITING);
-            // TODO: send here code, write it somewhere (for example, in HashMap or database)
-            botMessage = new SendMessage(usr, lang.verificationCodeSent());
+        if (isEnterpriseEmail(email)) {
+            try {
+                var code = generateCode();
+                mailClient.sendAuthenticationCode(email, code);
+                authMap.put(usr, new AuthPair(email, code));
+                data.setDialogState(BotState.CODE_AWAITING);
+                botMessage = new SendMessage(
+                        usr,
+                        lang.verificationCodeSent())
+                        .replyMarkup(Keyboards.changeEmail());
+            } catch (MessagingException e) {
+                data.setDialogState(BotState.ENTER_MAIL);
+                botMessage = new SendMessage(usr, lang.wrongEmail());
+            }
         } else {
+            data.setDialogState(BotState.ENTER_MAIL);
             botMessage = new SendMessage(usr, lang.wrongEmail());
         }
         return new Response(data, botMessage);
@@ -48,13 +73,41 @@ public class AuthenticationHandler extends StateHandler {
 
     private Response handleConfirmationCode(Update update, UserData data) {
         var msg = update.message();
-        if (msg == null) {
-            return new Response(data);
-        }
+        var query = update.callbackQuery();
+
         var usr = data.getUserId();
         var lang = data.getLang();
-        // TODO: check code
+
+        if (msg == null && query == null) {
+            return new Response(data);
+        }
+
+        if (query != null && query.data().equals("update")) {
+            data.setDialogState(BotState.ENTER_MAIL);
+            var updateMessage =
+                    new EditMessageText(
+                            usr,
+                            query.message().messageId(),
+                            lang.returnToEnterEmail()
+                    );
+            return new Response(data, updateMessage);
+        } else if (query != null) {
+            return new Response(data);
+        }
+
+        var inputCode = msg.text().strip();
+        var realCode = authMap.get(usr).code();
+
+        if (!realCode.equals(inputCode)) {
+            var botMessage =
+                    new SendMessage(usr,
+                            lang.authenticationCodeWrong());
+            return new Response(data, botMessage);
+        }
+
+        data.setEmail(authMap.get(usr).email());
         data.setDialogState(BotState.MAIN_MENU);
+
         var botMessage =
                 new SendMessage(usr, lang.authorized()).
                         replyMarkup(lang.mainMenuMarkup());
@@ -66,7 +119,17 @@ public class AuthenticationHandler extends StateHandler {
      * @param email given email
      * @return true if email has the form of IU email, false otherwise
      */
-    private boolean isEmailValid(String email) {
+    private boolean isEnterpriseEmail(String email) {
         return email.matches("^[\\w-.]+@innopolis.university$");
+    }
+
+    /**
+     * Method to generate code between [10^6, 10^7)
+     * @return code parsed to string
+     */
+    private String generateCode() {
+        var minBound = 100000;
+        var maxBound = 999999;
+        return String.valueOf((int) ((Math.random() * (maxBound - minBound)) + minBound));
     }
 }
