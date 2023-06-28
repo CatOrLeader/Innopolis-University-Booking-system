@@ -27,9 +27,11 @@ public class EnglishText implements IText {
 
     @Override
     public String verificationCodeSent() {
-        return "A confirmation code was sent to the specified email. " +
-                "It expires in 5 minutes. Send this code to me for authorization. " +
-                "\n\nYou also can update email in case of any issues.";
+        return """
+                A confirmation code was sent to the specified email.
+                It expires in 5 minutes. Send this code to me for authorization.\s
+
+                You also can update email in case of any issues.""";
     }
 
     @Override
@@ -39,8 +41,10 @@ public class EnglishText implements IText {
 
     @Override
     public String verificationCodeExpired(String email) {
-        return String.format("Verification code has expired. We've sent it again to %s.\n\n" +
-                "You also can change email if something goes wrong.", email);
+        return String.format("""
+                Verification code has expired. We've sent it again to %s.
+
+                You also can change email if something goes wrong.""", email);
     }
 
     @Override
