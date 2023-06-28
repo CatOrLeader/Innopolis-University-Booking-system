@@ -1,17 +1,13 @@
 package dialog.handlers.state;
 
-import APIWrapper.json.Booking;
 import APIWrapper.requests.Request;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
-import dialog.config.IText;
 import dialog.handlers.Response;
 import dialog.handlers.StateHandler;
 import dialog.userData.BotState;
 import dialog.userData.UserData;
-
-import java.util.List;
 
 public class MainMenuHandler extends StateHandler {
     private final Request outlook = new Request("http://localhost:3000");

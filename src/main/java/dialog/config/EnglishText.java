@@ -143,13 +143,6 @@ public class EnglishText implements IText {
     }
 
     @Override
-    public String printReservation(String name, String room, String since, String until) {
-        return String.format(
-                "%s — at %s since %s until %s", name, room, since, until
-        );
-    }
-
-    @Override
     public String abortAndToMenu() {
         return "Aborting all processes and going to menu...";
     }
