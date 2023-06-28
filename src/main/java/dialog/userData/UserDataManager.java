@@ -1,17 +1,15 @@
 package dialog.userData;
 
-import java.util.HashMap;
-import java.util.Map;
+import Database.Controllers.UserDataController;
 
 /**
  * Class that allows to work with external user data by his
  * Telegram ID. Data can be placed in HashMap or in DB
- * TODO: add work with database
  */
 public class UserDataManager {
-    private final Map<Long, UserData> userData;
+    private final UserDataController userData;
     public UserDataManager() {
-        userData = new HashMap<>();
+        userData = new UserDataController();
     }
 
     /**
@@ -20,7 +18,12 @@ public class UserDataManager {
      * @param data new data.
      */
     public void setUserData(long userId, UserData data) {
-        userData.put(userId, data);
+        var model = data.toUserDataModel();
+        if (userData.userExists(userId)) {
+            userData.updateUserData(model);
+        } else {
+            userData.addUserData(model);
+        }
     }
 
     /**
@@ -29,7 +32,7 @@ public class UserDataManager {
      * @return user's data.
      */
     public UserData getUserData(long userId) {
-        return userData.get(userId);
+        return userData.getUserData(userId).toUserData();
     }
 
     /**
@@ -39,6 +42,6 @@ public class UserDataManager {
      * @return true if database has data of given user, false - otherwise.
      */
     public boolean hasUserData(long userId) {
-        return userData.containsKey(userId);
+        return userData.userExists(userId);
     }
 }

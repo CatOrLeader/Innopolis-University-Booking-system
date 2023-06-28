@@ -98,6 +98,7 @@ public class AuthenticationHandler extends StateHandler {
             return new Response(data, botMessage);
         }
 
+        data.setAuthorized(true);
         data.setEmail(authData.email());
         data.setDialogState(BotState.MAIN_MENU);
 
