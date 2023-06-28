@@ -50,14 +50,13 @@ public class AuthenticationHandler extends StateHandler {
         var usr = data.getUserId();
         var lang = data.getLang();
         var email = msg.text().strip();
-        SendMessage botMessage;
 
         if (isEnterpriseEmail(email)) {
             return trySendCodeOrSorry(usr, lang, email, data, false);
-        } else {
-            data.setDialogState(BotState.ENTER_MAIL);
-            botMessage = new SendMessage(usr, lang.wrongEmail());
         }
+
+        data.setDialogState(BotState.ENTER_MAIL);
+        var botMessage = new SendMessage(usr, lang.wrongEmail());
         return new Response(data, botMessage);
     }
 

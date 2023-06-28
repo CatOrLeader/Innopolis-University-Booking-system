@@ -18,10 +18,8 @@ public interface IText {
     String verificationCodeWrong();
     String verificationCodeExpired(String email);
     String sorryEmailError();
-    String returnToEnterEmail();
     String authorized();
-    String noActualBookings();
-    String hereActualBookings();
+    String actualBookings(List<Booking> bookings);
     String chooseBookingTime();
     String invalidBookingTime();
     String chosenBookingTime(String time, String duration);
@@ -39,16 +37,13 @@ public interface IText {
     String newBookingBtn();
     String myReservationsBtn();
 
-    // Info messages
-    String printReservation(String name, String room, String since, String until);
-
-    // Independent handlers' messages
-    String abortAndToMenu();
-
     // Pop-ups text
     String fullBookingInfo(Booking booking);
 
+    // Transitions
+    String returnToEnterEmail();
     String goToBookings();
+    String abortAndToMenu();
 
     // Keyboards
     ReplyKeyboardMarkup mainMenuMarkup();
