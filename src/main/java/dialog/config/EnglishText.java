@@ -63,12 +63,10 @@ public class EnglishText implements IText {
     }
 
     @Override
-    public String noActualBookings() {
-        return "\uD83D\uDD12 You have no actual bookings\n";
-    }
-
-    @Override
-    public String hereActualBookings() {
+    public String actualBookings(List<Booking> bookings) {
+        if (bookings.isEmpty()) {
+            return "\uD83D\uDD12 You have no actual bookings\n";
+        }
         return "\uD83D\uDD10 You have next actual bookings\n";
     }
 

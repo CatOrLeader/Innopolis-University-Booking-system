@@ -81,7 +81,7 @@ public class UserBookingsHandler extends StateHandler {
                 new EditMessageText(
                         usr,
                         msgId,
-                        lang.hereActualBookings()
+                        lang.actualBookings(bookings)
                 ).replyMarkup(bookingsKb);
 
         return new Response(data, edit);

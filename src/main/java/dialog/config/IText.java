@@ -20,8 +20,7 @@ public interface IText {
     String sorryEmailError();
     String returnToEnterEmail();
     String authorized();
-    String noActualBookings();
-    String hereActualBookings();
+    String actualBookings(List<Booking> bookings);
     String chooseBookingTime();
     String invalidBookingTime();
     String chosenBookingTime(String time, String duration);
