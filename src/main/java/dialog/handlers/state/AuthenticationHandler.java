@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AuthenticationHandler extends StateHandler {
-
     private final Client mailClient = new Client();
     private final Map<Long, AuthData> authMap = new HashMap<>();
 
@@ -85,6 +84,12 @@ public class AuthenticationHandler extends StateHandler {
         }
 
         var authData = authMap.get(usr);
+        // If data lost during runtime fail
+        if (authData == null) {
+            data.setDialogState(BotState.ENTER_MAIL);
+            return new Response(data, new SendMessage(usr, lang.sorryEmailError()));
+        }
+
         var inputCode = msg.text().strip();
 
         if (didExpire(authData)) {
