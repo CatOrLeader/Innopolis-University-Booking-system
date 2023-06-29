@@ -30,6 +30,7 @@ public interface IText {
     String bookingTitle();
     String bookedSuccessfully(String title, String room, String since, String until);
     String bookedUnsuccessfully();
+    String unexpectedErrorGoToMenu();
     String goToMenu();
     String bookingInterfaceClosed();
 

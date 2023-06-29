@@ -119,7 +119,12 @@ public class EnglishText implements IText {
 
     @Override
     public String bookedUnsuccessfully() {
-        return "For certain reasons booking was unsuccessful :( You may try again!";
+        return "For certain reasons booking was unsuccessful ☹️ You may try again!";
+    }
+
+    @Override
+    public String unexpectedErrorGoToMenu() {
+        return "Sorry... an unexpected error has occurred. Returning to menu...";
     }
 
     @Override
