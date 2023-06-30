@@ -87,12 +87,7 @@ public class UpdatesManager {
     public BaseRequest[] handle(Update update) {
         var userId = extractUserId(update);
         if (!dataManager.hasUserData(userId)) {
-            var initialData = new UserData(
-                    userId,
-                    BotState.UNINITIALIZED,
-                    null,
-                    new EnglishText());
-            dataManager.setUserData(userId, initialData);
+            initializeUser(userId);
         }
 
         var userData = dataManager.getUserData(userId);
@@ -133,11 +128,24 @@ public class UpdatesManager {
      * @return user id parsed to string.
      * TODO: Extend variety of updates with sender id
      */
-    private long extractUserId(Update update) {
+    public static long extractUserId(Update update) {
         if (update.message() != null) {
             return update.message().from().id();
         } else {
             return update.callbackQuery().from().id();
         }
+    }
+
+    /**
+     * Method to set initial data for new user.
+     * @param user new user
+     */
+    private void initializeUser(Long user) {
+        var initialData = new UserData(
+                user,
+                BotState.UNINITIALIZED,
+                null,
+                new EnglishText());
+        dataManager.setUserData(user, initialData);
     }
 }
