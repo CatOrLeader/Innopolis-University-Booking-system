@@ -6,6 +6,8 @@ import dialog.UpdatesManager;
 
 import java.util.Arrays;
 
+import dialog.scheduler.JobScheduler;
+
 /**
  * Class describing booking bot functionality.
  */
@@ -31,6 +33,8 @@ public class BookingBot {
      * Method to start listening for user updates.
      */
     public void listen() {
+        JobScheduler jobScheduler = new JobScheduler();
+
         bot.setUpdatesListener(updates -> {
             updates.forEach(update -> {
                 if (update.updateId() > skipUntil) {
