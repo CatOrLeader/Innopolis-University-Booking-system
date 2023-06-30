@@ -12,16 +12,14 @@ public class GoToMenuHandler extends IndependentHandler {
     @Override
     public MaybeResponse handle(Update incomingUpdate, UserData data) {
         var msg = incomingUpdate.message();
-        var state = data.getDialogState();
         var lang = data.getLang();
         var usr = data.getUserId();
 
-        if (notAuthenticated(state) || msg == null) {
+        if (!data.isAuthorized() || msg == null) {
             return new MaybeResponse();
         }
 
-        var text = msg.text();
-        if (!text.strip().equals("/menu")) {
+        if (!isMenuCommand(msg.text())) {
             return new MaybeResponse();
         }
 
@@ -31,9 +29,12 @@ public class GoToMenuHandler extends IndependentHandler {
         return new MaybeResponse(new Response(data, botMessage));
     }
 
-    private boolean notAuthenticated(BotState state) {
-        return state == BotState.UNINITIALIZED ||
-                state == BotState.ENTER_MAIL ||
-                state == BotState.CODE_AWAITING;
+    /**
+     * Method to check whether given command corresponds to '/menu'
+     * @param text given command
+     * @return true if it is '/menu' command, false - otherwise
+     */
+    private boolean isMenuCommand(String text) {
+        return text.strip().equals("/menu");
     }
 }
