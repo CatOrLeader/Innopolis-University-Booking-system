@@ -1,8 +1,9 @@
 package mockJavaServer;
 
-import java.util.ArrayList;
 import APIWrapper.json.Booking;
 import APIWrapper.json.Room;
+
+import java.util.ArrayList;
 
 class DatabaseJSON {
     public final ArrayList<Room> rooms;

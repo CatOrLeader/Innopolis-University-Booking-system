@@ -148,8 +148,18 @@ public class EnglishText implements IText {
     }
 
     @Override
+    public String changeLanguage() {
+        return "\uD83C\uDDF7\uD83C\uDDFA Change language";
+    }
+
+    @Override
     public String abortAndToMenu() {
         return "Aborting all processes and going to menu...";
+    }
+
+    @Override
+    public String languageChanged() {
+        return "Language successfully changed.";
     }
 
     @Override
@@ -169,8 +179,13 @@ public class EnglishText implements IText {
     @Override
     public ReplyKeyboardMarkup mainMenuMarkup() {
         return new ReplyKeyboardMarkup(
-                new KeyboardButton(newBookingBtn()),
-                new KeyboardButton(myReservationsBtn())
+                new KeyboardButton[] {
+                        new KeyboardButton(newBookingBtn()),
+                        new KeyboardButton(myReservationsBtn())
+                },
+                new KeyboardButton[] {
+                        new KeyboardButton(changeLanguage())
+                }
         ).resizeKeyboard(true);
     }
 

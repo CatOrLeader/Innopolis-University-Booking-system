@@ -1,8 +1,10 @@
 package mockTestingForDevs;
 
-import APIWrapper.json.*;
+import APIWrapper.json.BookRoomRequest;
+import APIWrapper.json.Booking;
+import APIWrapper.json.BookingsFilter;
+import APIWrapper.json.QueryBookingsRequest;
 import APIWrapper.requests.Request;
-import com.google.gson.GsonBuilder;
 
 import java.util.ArrayList;
 

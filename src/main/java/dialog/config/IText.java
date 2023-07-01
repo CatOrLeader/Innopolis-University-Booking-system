@@ -37,6 +37,7 @@ public interface IText {
     // Buttons text
     String newBookingBtn();
     String myReservationsBtn();
+    String changeLanguage();
 
     // Pop-ups text
     String fullBookingInfo(Booking booking);
@@ -45,6 +46,7 @@ public interface IText {
     String returnToEnterEmail();
     String goToBookings();
     String abortAndToMenu();
+    String languageChanged();
 
     // Keyboards
     ReplyKeyboardMarkup mainMenuMarkup();

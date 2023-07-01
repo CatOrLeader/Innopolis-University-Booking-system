@@ -1,8 +1,8 @@
 package Database.Controllers;
 
 import Database.DbConnector;
-import Models.UserDataModel;
 import Database.Services.UserDataService;
+import Models.UserDataModel;
 
 /**
  * Controller for the user's data
