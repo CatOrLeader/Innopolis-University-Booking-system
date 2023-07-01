@@ -4,6 +4,8 @@ import APIWrapper.requests.Request;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
+import dialog.config.EnglishText;
+import dialog.config.RussianText;
 import dialog.handlers.Response;
 import dialog.handlers.StateHandler;
 import dialog.userData.BotState;
@@ -21,9 +23,21 @@ public class MainMenuHandler extends StateHandler {
             return handleBookings(data);
         } else if (message.text().equals(data.getLang().newBookingBtn())) {
             return handleNewBooking(data);
+        } else if (message.text().equals(data.getLang().changeLanguage())){
+            return changeLanguage(data);
         } else {
             return new Response(data);
         }
+    }
+
+    private Response changeLanguage(UserData data) {
+        var usr = data.getUserId();
+        var lang = data.getLang();
+        var newLang = (lang instanceof EnglishText ? new RussianText() : new EnglishText());
+        data.setLang(newLang);
+
+        var msg = new SendMessage(usr, newLang.languageChanged()).replyMarkup(newLang.mainMenuMarkup());
+        return new Response(data, msg);
     }
 
     private Response handleBookings(UserData data) {

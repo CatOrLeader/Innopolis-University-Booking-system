@@ -1,6 +1,7 @@
 package Models;
 
 import dialog.config.EnglishText;
+import dialog.config.RussianText;
 import dialog.userData.BotState;
 import dialog.userData.UserData;
 
@@ -23,8 +24,7 @@ public class UserDataModel {
     }
 
     public UserData toUserData() {
-        // TODO: handle language here
-        var lang = (language.equals("ENG") ? new EnglishText() : new EnglishText());
+        var lang = (language.equals("ENG") ? new EnglishText() : new RussianText());
         return new UserData(userId, dialogState, email, lang, isAuthorized);
     }
 }
