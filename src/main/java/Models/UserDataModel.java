@@ -15,7 +15,7 @@ public class UserDataModel {
     public BotState dialogState; // current state of the chat with bot
     public String language; // ENG, RUS
 
-    public UserDataModel(long userId, String email, boolean isAuthorized, BotState dialogState,  String language) {
+    public UserDataModel(long userId, String email, boolean isAuthorized, BotState dialogState, String language) {
         this.userId = userId;
         this.dialogState = dialogState;
         this.email = email;

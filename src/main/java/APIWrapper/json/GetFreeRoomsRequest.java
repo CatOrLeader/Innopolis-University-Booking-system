@@ -3,13 +3,12 @@ package APIWrapper.json;
 import APIWrapper.utilities.DateTime;
 
 public class GetFreeRoomsRequest {
+    private final transient boolean isDurationUsed;
     // Exposed Fields
     public String start;
     public String end;
-
     // Hidden fields
     public transient int duration;
-    private final transient boolean isDurationUsed;
 
     public GetFreeRoomsRequest(String start, String end) {
         this.start = start;

@@ -5,8 +5,8 @@ import APIWrapper.json.*;
 import java.util.ArrayList;
 
 public class Request {
-    private String url;
     private final RequestFormatted formatter;
+    private final String url;
 
     public Request(String url) {
         this.url = url;

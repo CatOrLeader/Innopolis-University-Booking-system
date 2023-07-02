@@ -19,7 +19,8 @@ public class BookRoomRequest {
         this.owner_email = owner_email;
     }
 
-    public BookRoomRequest() {}
+    public BookRoomRequest() {
+    }
 
     // Class constructor
     public void formatToSend() {

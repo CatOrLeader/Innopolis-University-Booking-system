@@ -31,6 +31,7 @@ public class GoToMenuHandler extends IndependentHandler {
 
     /**
      * Method to check whether given command corresponds to '/menu'
+     *
      * @param text given command
      * @return true if it is '/menu' command, false - otherwise
      */

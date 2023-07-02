@@ -23,7 +23,7 @@ public class MainMenuHandler extends StateHandler {
             return handleBookings(data);
         } else if (message.text().equals(data.getLang().newBookingBtn())) {
             return handleNewBooking(data);
-        } else if (message.text().equals(data.getLang().changeLanguage())){
+        } else if (message.text().equals(data.getLang().changeLanguage())) {
             return changeLanguage(data);
         } else {
             return new Response(data);

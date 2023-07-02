@@ -179,11 +179,11 @@ public class EnglishText implements IText {
     @Override
     public ReplyKeyboardMarkup mainMenuMarkup() {
         return new ReplyKeyboardMarkup(
-                new KeyboardButton[] {
+                new KeyboardButton[]{
                         new KeyboardButton(newBookingBtn()),
                         new KeyboardButton(myReservationsBtn())
                 },
-                new KeyboardButton[] {
+                new KeyboardButton[]{
                         new KeyboardButton(changeLanguage())
                 }
         ).resizeKeyboard(true);
@@ -202,12 +202,12 @@ public class EnglishText implements IText {
     @Override
     public InlineKeyboardMarkup bookingDurations() {
         return new InlineKeyboardMarkup(
-                new InlineKeyboardButton[] {
+                new InlineKeyboardButton[]{
                         new InlineKeyboardButton("30 min").callbackData("30"),
                         new InlineKeyboardButton("60 min").callbackData("60"),
                         new InlineKeyboardButton("90 min").callbackData("90")
                 },
-                new InlineKeyboardButton[] {
+                new InlineKeyboardButton[]{
                         new InlineKeyboardButton("120 min").callbackData("120"),
                         new InlineKeyboardButton("150 min").callbackData("150"),
                         new InlineKeyboardButton("180 min").callbackData("180")

@@ -13,8 +13,9 @@ public abstract class StateHandler {
     /**
      * Method to handle incoming update for user with given
      * external data.
+     *
      * @param incomingUpdate update from user
-     * @param data external user data (preferred language, email, ....)
+     * @param data           external user data (preferred language, email, ....)
      * @return instance of Response to allow bot answer this request
      * and update state of the dialog
      */

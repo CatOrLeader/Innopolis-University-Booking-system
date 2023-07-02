@@ -11,7 +11,7 @@ import java.util.Properties;
 public class Client {
 
     private final String SMTP_AUTH_USER = System.getenv("SMTP_AUTH_USER");
-    private final String SMTP_AUTH_PWD  = System.getenv("SMTP_AUTH_PWD");
+    private final String SMTP_AUTH_PWD = System.getenv("SMTP_AUTH_PWD");
 
     private final Session session;
     private final Transport transport;
@@ -36,8 +36,9 @@ public class Client {
 
     /**
      * Method to send authentication code.
+     *
      * @param receptionist one's email who receive authentication code
-     * @param code given code
+     * @param code         given code
      * @throws MessagingException if something went wrong
      */
     public void sendAuthenticationCode(String receptionist, String code) throws MessagingException {
