@@ -5,6 +5,7 @@ import APIWrapper.json.GetFreeRoomsRequest;
 import APIWrapper.json.Room;
 import APIWrapper.requests.Request;
 import APIWrapper.utilities.DateTime;
+import Database.Controllers.RoomController;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
@@ -14,7 +15,6 @@ import dialog.userData.BotState;
 import dialog.userData.UserData;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -23,8 +23,19 @@ import java.util.Map;
 public class NewBookingHandler extends StateHandler {
     private final Map<Long, Booking> bookingInfo = new HashMap<>();
     private final Request outlook = new Request("http://localhost:3000");
-    private final List<Room> rooms =
-            outlook.getAllBookableRooms();
+    private final RoomController roomData = new RoomController();
+
+    public NewBookingHandler() {
+        preloadRoomsFromApi();
+    }
+
+    private void preloadRoomsFromApi() {
+        var rooms = outlook.getAllBookableRooms();
+        for (Room room : rooms) {
+            roomData.addOrUpdateRoom(room.toRoomModel());
+        }
+    }
+
     @Override
     public Response handle(Update incomingUpdate, UserData data) {
         switch (data.getDialogState()) {
@@ -37,7 +48,7 @@ public class NewBookingHandler extends StateHandler {
             case ROOM_AWAITING -> {
                 return handleRoom(incomingUpdate, data);
             }
-            case BOOKING_TITLE_AWAITING ->  {
+            case BOOKING_TITLE_AWAITING -> {
                 return handleTitle(incomingUpdate, data);
             }
             default -> {
@@ -182,20 +193,17 @@ public class NewBookingHandler extends StateHandler {
 
     /**
      * Find room instance by its id
+     *
      * @param roomId given id
      * @return room (it is supposed that given id always correct)
      */
     private Room takeRoomById(String roomId) {
-        for (Room room : rooms) {
-            if (room.id.equals(roomId)) {
-                return room;
-            }
-        }
-        return null;
+        return roomData.getRoomData(roomId).toRoom();
     }
 
     /**
      * Method to return to menu due to unexpected error.
+     *
      * @param data user data
      * @return response to return to menu
      */

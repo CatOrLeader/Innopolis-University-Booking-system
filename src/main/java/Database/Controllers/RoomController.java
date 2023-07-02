@@ -22,7 +22,7 @@ public class RoomController {
      * @param roomModel model of the room
      */
     public void addOrUpdateRoom(RoomModel roomModel) {
-        if (roomService.roomExists(roomModel.id)){
+        if (roomService.roomExists(roomModel.id)) {
             roomService.updateRoomData(roomModel);
         } else {
             roomService.addNewRoom(roomModel);
@@ -36,7 +36,7 @@ public class RoomController {
      * @return model of the room
      */
     public RoomModel getRoomData(String roomId) {
-       return roomService.getRoomData(roomId);
+        return roomService.getRoomData(roomId);
     }
 
     /**

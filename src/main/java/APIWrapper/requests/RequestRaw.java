@@ -14,6 +14,49 @@ import org.jetbrains.annotations.Nullable;
 
 import java.nio.charset.StandardCharsets;
 
+enum Paths {
+    ROOMS {
+        @Override
+        public String getPath() {
+            return "/rooms";
+        }
+    },
+    FREE_ROOMS {
+        @Override
+        public String getPath() {
+            return "/rooms/free";
+        }
+    },
+    BOOK_ROOM {
+        @Override
+        public String getPath(String roomId) {
+            return "/rooms/" + roomId + "/book";
+        }
+    },
+    BOOKINGS {
+        @Override
+        public String getPath() {
+            return "/bookings/query";
+        }
+    },
+    DELETE_BOOKING {
+        @Override
+        public String getPath(String bookingId) {
+            return "/bookings/" + bookingId;
+        }
+    };
+
+    public String getPath() {
+        return null;
+    }
+
+    public String getPath(String id) {
+        return null;
+    }
+}
+
+// Additional Enums for the requests
+
 class RequestRaw {
     private final String stringURL;
 
@@ -21,13 +64,19 @@ class RequestRaw {
         this.stringURL = url;
     }
 
+    public static void main(String[] args) {
+        RequestRaw requestRaw =
+                new RequestRaw("http://localhost:3000/");
+
+//        requestRaw.getFreeRoomsUnformatted();
+    }
+
     // Main requests to the DB
     protected String getAllBookableRoomsUnformatted() {
         String concreteURL = stringURL + Paths.ROOMS.getPath();
 
         try (CloseableHttpClient client = HttpClients.createDefault();
-             CloseableHttpResponse response = client.execute(new HttpGet(concreteURL)))
-        {
+             CloseableHttpResponse response = client.execute(new HttpGet(concreteURL))) {
             printResponseStatus(response);
 
             response.addHeader("Content-Type", "application/json");
@@ -68,8 +117,7 @@ class RequestRaw {
         String concreteURL = stringURL + Paths.DELETE_BOOKING.getPath(bookingsId);
 
         try (CloseableHttpClient client = HttpClients.createDefault();
-             CloseableHttpResponse response = client.execute(new HttpDelete(concreteURL)))
-        {
+             CloseableHttpResponse response = client.execute(new HttpDelete(concreteURL))) {
             printResponseStatus(response);
 
             response.addHeader("Content-Type", "application/json");
@@ -119,8 +167,7 @@ class RequestRaw {
 
     @Nullable
     private String sendPOSTReceiveEntity(String jsonRequestBody, String concreteURL) {
-        try (CloseableHttpClient client = HttpClients.createDefault())
-        {
+        try (CloseableHttpClient client = HttpClients.createDefault()) {
             HttpPost post = createPostRequest(jsonRequestBody, concreteURL);
 
             CloseableHttpResponse response = client.execute(post);
@@ -138,56 +185,6 @@ class RequestRaw {
             printExceptionMsg(e);
         }
 
-        return null;
-    }
-
-    public static void main(String[] args) {
-        RequestRaw requestRaw =
-                new RequestRaw("http://localhost:3000/");
-
-//        requestRaw.getFreeRoomsUnformatted();
-    }
-}
-
-// Additional Enums for the requests
-
-enum Paths {
-    ROOMS {
-        @Override
-        public String getPath() {
-            return "/rooms";
-        }
-    },
-    FREE_ROOMS {
-        @Override
-        public String getPath() {
-            return "/rooms/free";
-        }
-    },
-    BOOK_ROOM {
-        @Override
-        public String getPath(String roomId) {
-            return "/rooms/" + roomId + "/book";
-        }
-    },
-    BOOKINGS {
-        @Override
-        public String getPath() {
-            return "/bookings/query";
-        }
-    },
-    DELETE_BOOKING {
-        @Override
-        public String getPath(String bookingId) {
-            return "/bookings/" + bookingId;
-        }
-    };
-
-    public String getPath() {
-        return null;
-    }
-
-    public String getPath(String id) {
         return null;
     }
 }

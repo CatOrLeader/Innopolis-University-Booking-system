@@ -16,7 +16,7 @@ public class DbConnector {
     /**
      * Default constructor
      */
-    public DbConnector(){
+    public DbConnector() {
 
         try {
             Class.forName("org.postgresql.Driver");
@@ -27,6 +27,7 @@ public class DbConnector {
 
     /**
      * Connects to the database
+     *
      * @return connection value
      */
     public Connection getConnection() {
@@ -34,7 +35,7 @@ public class DbConnector {
             try {
                 connection = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD);
 
-                if (connection != null){
+                if (connection != null) {
                     System.out.println("Database connected successfully");
                 } else {
                     System.out.println("Database connection failed");

@@ -18,12 +18,11 @@ import java.util.concurrent.Future;
 class Server {
     // Server Properties
     private final static int BUFFER_SIZE = 256;
-    private AsynchronousServerSocketChannel server;
     private final HttpHandler handler;
-
     // Additional External classes
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private final Database database = new Database();
+    private AsynchronousServerSocketChannel server;
 
     public Server(HttpHandler handler) throws IOException {
         this.handler = handler;
@@ -57,7 +56,7 @@ class Server {
             HttpRequest request = new HttpRequest(strRequest);
             HttpResponse response = new HttpResponse();
 
-            if (handler != null ) {
+            if (handler != null) {
                 try {
                     String requestPossibleBody = this.handler.handle(request, response, database);
 

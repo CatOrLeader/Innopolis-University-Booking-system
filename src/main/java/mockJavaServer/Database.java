@@ -10,12 +10,12 @@ import com.google.gson.reflect.TypeToken;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-class Database {
-    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
+class Database {
     public final ArrayList<Room> rooms;
     public final ArrayList<Room> freeRooms;
     public final ArrayList<Booking> bookings;
+    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     public Database() {
         rooms = createRooms();
@@ -25,12 +25,14 @@ class Database {
 
     // JSON Parsing
     private String parseToGsonRooms(ArrayList<Room> rooms) {
-        Type type = new TypeToken<ArrayList<Room>>(){}.getType();
+        Type type = new TypeToken<ArrayList<Room>>() {
+        }.getType();
         return gson.toJson(rooms, type);
     }
 
     private String parseToGsonBookings(ArrayList<Booking> bookings) {
-        Type type = new TypeToken<ArrayList<Booking>>(){}.getType();
+        Type type = new TypeToken<ArrayList<Booking>>() {
+        }.getType();
         return gson.toJson(bookings, type);
     }
 
@@ -180,7 +182,7 @@ class Database {
     }
 
     public ArrayList<Booking> takeNeededBookings(DateTime dateTime, ArrayList<String> roomIds,
-                                   ArrayList<String> emails) {
+                                                 ArrayList<String> emails) {
         ArrayList<Booking> output = new ArrayList<>();
 
         for (Booking booking : bookings) {

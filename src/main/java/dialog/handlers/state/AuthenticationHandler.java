@@ -115,6 +115,7 @@ public class AuthenticationHandler extends StateHandler {
 
     /**
      * Simple method to check the correct pattern of IU email.
+     *
      * @param email given email
      * @return true if email has the form of IU email, false otherwise
      */
@@ -124,6 +125,7 @@ public class AuthenticationHandler extends StateHandler {
 
     /**
      * Method to generate code between [10^6, 10^7).
+     *
      * @return code parsed to string
      */
     private String generateCode() {
@@ -135,6 +137,7 @@ public class AuthenticationHandler extends StateHandler {
 
     /**
      * Method to check whether generated code expired.
+     *
      * @param data user authentication data
      * @return true if code expired, false - otherwise
      */
@@ -146,7 +149,8 @@ public class AuthenticationHandler extends StateHandler {
 
     /**
      * Method to check whether user input code coincides with generated one.
-     * @param data user authentication data
+     *
+     * @param data      user authentication data
      * @param inputCode code that user give to bot
      * @return true if codes coincide, false - otherwise
      */
@@ -156,10 +160,11 @@ public class AuthenticationHandler extends StateHandler {
 
     /**
      * Method that tries to send verification code.
-     * @param usr user Telegram ID
-     * @param lang user language (IText)
-     * @param email user email (unconfirmed)
-     * @param data user data
+     *
+     * @param usr     user Telegram ID
+     * @param lang    user language (IText)
+     * @param email   user email (unconfirmed)
+     * @param data    user data
      * @param expired flag to determine message type
      * @return bot response
      */

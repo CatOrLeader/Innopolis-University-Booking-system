@@ -36,6 +36,21 @@ public class UpdatesManager {
     }
 
     /**
+     * Method to get user (that made update) ID for any given update.
+     *
+     * @param update update.
+     * @return user id parsed to string.
+     * TODO: Extend variety of updates with sender id
+     */
+    public static long extractUserId(Update update) {
+        if (update.message() != null) {
+            return update.message().from().id();
+        } else {
+            return update.callbackQuery().from().id();
+        }
+    }
+
+    /**
      * Method to preload handlers for all states.
      */
     // TODO: Handlers!
@@ -81,6 +96,7 @@ public class UpdatesManager {
 
     /**
      * Method to create request for bot to answer on user's update.
+     *
      * @param update given update.
      * @return answer generated for bot.
      */
@@ -108,8 +124,9 @@ public class UpdatesManager {
 
     /**
      * Method to try handle request independently of current state
+     *
      * @param update incoming update
-     * @param data user data
+     * @param data   user data
      * @return MaybeResponse instance. Contains response if handled
      */
     private MaybeResponse handleIndependently(Update update, UserData data) {
@@ -123,21 +140,8 @@ public class UpdatesManager {
     }
 
     /**
-     * Method to get user (that made update) ID for any given update.
-     * @param update update.
-     * @return user id parsed to string.
-     * TODO: Extend variety of updates with sender id
-     */
-    public static long extractUserId(Update update) {
-        if (update.message() != null) {
-            return update.message().from().id();
-        } else {
-            return update.callbackQuery().from().id();
-        }
-    }
-
-    /**
      * Method to set initial data for new user.
+     *
      * @param user new user
      */
     private void initializeUser(Long user) {

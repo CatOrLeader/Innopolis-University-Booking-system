@@ -25,6 +25,7 @@ public class UserDataService {
 
     /**
      * Adds a new bot user to the database
+     *
      * @param userData model of user's data
      */
     public void addUserData(UserDataModel userData) {
@@ -44,6 +45,7 @@ public class UserDataService {
 
     /**
      * Updates data about telegram bot user
+     *
      * @param userData model of user's data
      */
     public void updateUserData(UserDataModel userData) {
@@ -64,6 +66,7 @@ public class UserDataService {
 
     /**
      * Updates user's data
+     *
      * @param tgChatId user's chat id
      * @return model of the user
      */
@@ -82,7 +85,7 @@ public class UserDataService {
                 BotState botState = BotState.valueOf(botStateName);
                 String language = resultSet.getString("Language");
 
-                return new UserDataModel(tgChatId, email, isAuthorized, botState,  language);
+                return new UserDataModel(tgChatId, email, isAuthorized, botState, language);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());

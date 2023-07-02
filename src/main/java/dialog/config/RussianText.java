@@ -179,11 +179,11 @@ public class RussianText implements IText {
     @Override
     public ReplyKeyboardMarkup mainMenuMarkup() {
         return new ReplyKeyboardMarkup(
-                new KeyboardButton[] {
+                new KeyboardButton[]{
                         new KeyboardButton(newBookingBtn()),
                         new KeyboardButton(myReservationsBtn())
                 },
-                new KeyboardButton[] {
+                new KeyboardButton[]{
                         new KeyboardButton(changeLanguage())
                 }
         ).resizeKeyboard(true);
@@ -202,12 +202,12 @@ public class RussianText implements IText {
     @Override
     public InlineKeyboardMarkup bookingDurations() {
         return new InlineKeyboardMarkup(
-                new InlineKeyboardButton[] {
+                new InlineKeyboardButton[]{
                         new InlineKeyboardButton("30 минут").callbackData("30"),
                         new InlineKeyboardButton("60 минут").callbackData("60"),
                         new InlineKeyboardButton("90 минут").callbackData("90")
                 },
-                new InlineKeyboardButton[] {
+                new InlineKeyboardButton[]{
                         new InlineKeyboardButton("120 минут").callbackData("120"),
                         new InlineKeyboardButton("150 минут").callbackData("150"),
                         new InlineKeyboardButton("180 минут").callbackData("180")

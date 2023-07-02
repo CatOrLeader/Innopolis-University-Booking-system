@@ -14,6 +14,7 @@ public class BookingBot {
     private final TelegramBot bot;
     private final UpdatesManager updatesHandler;
     private int skipUntil = 0;
+
     public BookingBot(String token) {
         bot = new TelegramBot(token);
         updatesHandler = new UpdatesManager();
@@ -47,6 +48,7 @@ public class BookingBot {
     /**
      * Method to process all the updates and answer on them.
      * There may be multiple response requests on one update.
+     *
      * @param update incoming update.
      */
     private void process(Update update) {
@@ -60,6 +62,7 @@ public class BookingBot {
 
     /**
      * Method to excuse accidental processes crashes
+     *
      * @param update improperly handled update
      */
     private void excuseProcessCrash(Update update) {
@@ -71,7 +74,7 @@ public class BookingBot {
         var msg = new SendMessage(
                 usr,
                 msgContent
-                );
+        );
         bot.execute(msg);
     }
 }

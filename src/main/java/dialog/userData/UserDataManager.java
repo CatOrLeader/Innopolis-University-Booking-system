@@ -8,14 +8,16 @@ import Database.Controllers.UserDataController;
  */
 public class UserDataManager {
     private final UserDataController userData;
+
     public UserDataManager() {
         userData = new UserDataController();
     }
 
     /**
      * Method to set new user data for given Telegram ID.
+     *
      * @param userId ID of user whose data will be set.
-     * @param data new data.
+     * @param data   new data.
      */
     public void setUserData(long userId, UserData data) {
         var model = data.toUserDataModel();
@@ -28,6 +30,7 @@ public class UserDataManager {
 
     /**
      * Method to get actual data of user with given ID.
+     *
      * @param userId ID of desired user.
      * @return user's data.
      */
@@ -38,6 +41,7 @@ public class UserDataManager {
     /**
      * Method to check whether database has data about
      * user with given ID.
+     *
      * @param userId ID of user to check existence of his data.
      * @return true if database has data of given user, false - otherwise.
      */

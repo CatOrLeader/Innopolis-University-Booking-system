@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 
 public class UserBookingsHandler extends StateHandler {
     private final Request outlook = new Request("http://localhost:3000");
+
     @Override
     public Response handle(Update incomingUpdate, UserData data) {
         var query = incomingUpdate.callbackQuery();
