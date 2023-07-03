@@ -22,7 +22,7 @@ class HttpResponse {
         this.headers.put(key, value);
     }
 
-    public void addHeaders(Map<String, String> headers){
+    public void addHeaders(Map<String, String> headers) {
         this.headers.putAll(headers);
     }
 
@@ -61,22 +61,22 @@ class HttpResponse {
         return body;
     }
 
-    public int getStatusCode() {
-        return statusCode;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
     // Setters
     public void setBody(String body) {
         this.headers.put("Content-Length", String.valueOf(body.length()));
         this.body = body;
     }
 
+    public int getStatusCode() {
+        return statusCode;
+    }
+
     public void setStatusCode(int statusCode) {
         this.statusCode = statusCode;
+    }
+
+    public String getStatus() {
+        return status;
     }
 
     public void setStatus(String status) {

@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AuthenticationHandler extends StateHandler {
-
     private final Client mailClient = new Client();
     private final Map<Long, AuthData> authMap = new HashMap<>();
 
@@ -41,6 +40,13 @@ public class AuthenticationHandler extends StateHandler {
         }
     }
 
+    /**
+     * Handle email input from user
+     *
+     * @param update incoming update
+     * @param data   user data
+     * @return bot response
+     */
     private Response handleEmailEntrance(Update update, UserData data) {
         var msg = update.message();
         if (msg == null) {
@@ -50,17 +56,24 @@ public class AuthenticationHandler extends StateHandler {
         var usr = data.getUserId();
         var lang = data.getLang();
         var email = msg.text().strip();
-        SendMessage botMessage;
 
         if (isEnterpriseEmail(email)) {
             return trySendCodeOrSorry(usr, lang, email, data, false);
-        } else {
-            data.setDialogState(BotState.ENTER_MAIL);
-            botMessage = new SendMessage(usr, lang.wrongEmail());
         }
+
+        data.setDialogState(BotState.ENTER_MAIL);
+        var botMessage = new SendMessage(usr, lang.wrongEmail());
         return new Response(data, botMessage);
     }
 
+    /**
+     * Handle user request to finish authorization
+     * by confirmation code
+     *
+     * @param update incoming update
+     * @param data   user data
+     * @return bot response
+     */
     private Response handleConfirmationCode(Update update, UserData data) {
         var msg = update.message();
         var query = update.callbackQuery();
@@ -86,6 +99,12 @@ public class AuthenticationHandler extends StateHandler {
         }
 
         var authData = authMap.get(usr);
+        // If data lost during runtime fail
+        if (authData == null) {
+            data.setDialogState(BotState.ENTER_MAIL);
+            return new Response(data, new SendMessage(usr, lang.sorryEmailError()));
+        }
+
         var inputCode = msg.text().strip();
 
         if (didExpire(authData)) {
@@ -99,6 +118,7 @@ public class AuthenticationHandler extends StateHandler {
             return new Response(data, botMessage);
         }
 
+        data.setAuthorized(true);
         data.setEmail(authData.email());
         data.setDialogState(BotState.MAIN_MENU);
 
@@ -110,6 +130,7 @@ public class AuthenticationHandler extends StateHandler {
 
     /**
      * Simple method to check the correct pattern of IU email.
+     *
      * @param email given email
      * @return true if email has the form of IU email, false otherwise
      */
@@ -119,6 +140,7 @@ public class AuthenticationHandler extends StateHandler {
 
     /**
      * Method to generate code between [10^6, 10^7).
+     *
      * @return code parsed to string
      */
     private String generateCode() {
@@ -130,6 +152,7 @@ public class AuthenticationHandler extends StateHandler {
 
     /**
      * Method to check whether generated code expired.
+     *
      * @param data user authentication data
      * @return true if code expired, false - otherwise
      */
@@ -141,7 +164,8 @@ public class AuthenticationHandler extends StateHandler {
 
     /**
      * Method to check whether user input code coincides with generated one.
-     * @param data user authentication data
+     *
+     * @param data      user authentication data
      * @param inputCode code that user give to bot
      * @return true if codes coincide, false - otherwise
      */
@@ -151,10 +175,11 @@ public class AuthenticationHandler extends StateHandler {
 
     /**
      * Method that tries to send verification code.
-     * @param usr user Telegram ID
-     * @param lang user language (IText)
-     * @param email user email (unconfirmed)
-     * @param data user data
+     *
+     * @param usr     user Telegram ID
+     * @param lang    user language (IText)
+     * @param email   user email (unconfirmed)
+     * @param data    user data
      * @param expired flag to determine message type
      * @return bot response
      */

@@ -11,7 +11,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
-class ConcreteHandler implements HttpHandler{
+enum PossibleRequests {
+    GET_ROOMS, POST_FREE_ROOMS, BOOK, POST_BOOKINGS, DELETE_BOOKING, DEFAULT
+}
+
+class ConcreteHandler implements HttpHandler {
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
     @Override
@@ -145,8 +149,4 @@ class ConcreteHandler implements HttpHandler{
         writer.write(body);
         writer.close();
     }
-}
-
-enum PossibleRequests {
-    GET_ROOMS, POST_FREE_ROOMS, BOOK, POST_BOOKINGS, DELETE_BOOKING, DEFAULT
 }

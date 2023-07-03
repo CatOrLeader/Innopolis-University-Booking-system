@@ -2,6 +2,7 @@ import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.GetUpdates;
+import com.pengrad.telegrambot.request.SendMessage;
 import dialog.UpdatesManager;
 
 import java.util.Arrays;
@@ -15,6 +16,7 @@ public class BookingBot {
     private final TelegramBot bot;
     private final UpdatesManager updatesHandler;
     private int skipUntil = 0;
+
     public BookingBot(String token) {
         bot = new TelegramBot(token);
         updatesHandler = new UpdatesManager();
@@ -50,11 +52,33 @@ public class BookingBot {
     /**
      * Method to process all the updates and answer on them.
      * There may be multiple response requests on one update.
+     *
      * @param update incoming update.
      */
     private void process(Update update) {
-        // TODO: try-catch
-        var responses = updatesHandler.handle(update);
-        Arrays.stream(responses).forEach(bot::execute);
+        try {
+            var responses = updatesHandler.handle(update);
+            Arrays.stream(responses).forEach(bot::execute);
+        } catch (Exception any) {
+            excuseProcessCrash(update);
+        }
+    }
+
+    /**
+     * Method to excuse accidental processes crashes
+     *
+     * @param update improperly handled update
+     */
+    private void excuseProcessCrash(Update update) {
+        var usr = UpdatesManager.extractUserId(update);
+        var msgContent = """
+                Sorry, something went wrong...
+
+                Извините, что-то пошло не так...""";
+        var msg = new SendMessage(
+                usr,
+                msgContent
+        );
+        bot.execute(msg);
     }
 }

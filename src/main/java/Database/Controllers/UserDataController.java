@@ -1,8 +1,8 @@
 package Database.Controllers;
 
 import Database.DbConnector;
-import Models.UserDataModel;
 import Database.Services.UserDataService;
+import Models.UserDataModel;
 
 /**
  * Controller for the user's data
@@ -18,6 +18,7 @@ public class UserDataController {
 
     /**
      * Adds a new bot user to the database
+     *
      * @param userDataModel model of user's data
      */
     public void addUserData(UserDataModel userDataModel) {
@@ -26,6 +27,7 @@ public class UserDataController {
 
     /**
      * Updates data about telegram bot user
+     *
      * @param userDataModel model of user's data
      */
     public void updateUserData(UserDataModel userDataModel) {
@@ -34,6 +36,7 @@ public class UserDataController {
 
     /**
      * Updates user's data
+     *
      * @param tgChatId user's chat id
      * @return model of the user
      */

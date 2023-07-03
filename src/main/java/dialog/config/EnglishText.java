@@ -22,24 +22,29 @@ public class EnglishText implements IText {
 
     @Override
     public String wrongEmail() {
-        return "It seems to be that provided university email is incorrect \uD83D\uDE22 Please, send new again.";
+        return "It seems that the provided university mail is incorrect \uD83D\uDE22 Please, send new again.";
     }
 
     @Override
     public String verificationCodeSent() {
-        return "Verification code has been sent to this email. It expires in 5 minutes. " +
-                "Send me this code back. You also can update email in case of any issues.";
+        return """
+                A confirmation code was sent to the specified email.
+                It expires in 5 minutes. Send this code to me for authorization.\s
+
+                You also can update email in case of any issues.""";
     }
 
     @Override
     public String verificationCodeWrong() {
-        return "Input code is incorrect. You can input it again or change the email.";
+        return "The entered code is invalid. You can enter it again or change the email.";
     }
 
     @Override
     public String verificationCodeExpired(String email) {
-        return String.format("Verification code has expired. We've sent it to %s. " +
-                "You also can change email if something goes wrong.", email);
+        return String.format("""
+                Verification code has expired. We've sent it again to %s.
+
+                You also can change email if something goes wrong.""", email);
     }
 
     @Override
@@ -58,12 +63,10 @@ public class EnglishText implements IText {
     }
 
     @Override
-    public String noActualBookings() {
-        return "\uD83D\uDD12 You have no actual bookings\n";
-    }
-
-    @Override
-    public String hereActualBookings() {
+    public String actualBookings(List<Booking> bookings) {
+        if (bookings.isEmpty()) {
+            return "\uD83D\uDD12 You have no actual bookings\n";
+        }
         return "\uD83D\uDD10 You have next actual bookings\n";
     }
 
@@ -116,7 +119,12 @@ public class EnglishText implements IText {
 
     @Override
     public String bookedUnsuccessfully() {
-        return "For certain reasons booking was unsuccessful :( You may try again!";
+        return "For certain reasons booking was unsuccessful ☹️ You may try again!";
+    }
+
+    @Override
+    public String unexpectedErrorGoToMenu() {
+        return "Sorry... an unexpected error has occurred. Returning to menu...";
     }
 
     @Override
@@ -140,15 +148,18 @@ public class EnglishText implements IText {
     }
 
     @Override
-    public String printReservation(String name, String room, String since, String until) {
-        return String.format(
-                "%s — at %s since %s until %s", name, room, since, until
-        );
+    public String changeLanguage() {
+        return "\uD83C\uDDF7\uD83C\uDDFA Change language";
     }
 
     @Override
     public String abortAndToMenu() {
         return "Aborting all processes and going to menu...";
+    }
+
+    @Override
+    public String languageChanged() {
+        return "Language successfully changed.";
     }
 
     @Override
@@ -168,8 +179,13 @@ public class EnglishText implements IText {
     @Override
     public ReplyKeyboardMarkup mainMenuMarkup() {
         return new ReplyKeyboardMarkup(
-                new KeyboardButton(newBookingBtn()),
-                new KeyboardButton(myReservationsBtn())
+                new KeyboardButton[]{
+                        new KeyboardButton(newBookingBtn()),
+                        new KeyboardButton(myReservationsBtn())
+                },
+                new KeyboardButton[]{
+                        new KeyboardButton(changeLanguage())
+                }
         ).resizeKeyboard(true);
     }
 
@@ -186,12 +202,12 @@ public class EnglishText implements IText {
     @Override
     public InlineKeyboardMarkup bookingDurations() {
         return new InlineKeyboardMarkup(
-                new InlineKeyboardButton[] {
+                new InlineKeyboardButton[]{
                         new InlineKeyboardButton("30 min").callbackData("30"),
                         new InlineKeyboardButton("60 min").callbackData("60"),
                         new InlineKeyboardButton("90 min").callbackData("90")
                 },
-                new InlineKeyboardButton[] {
+                new InlineKeyboardButton[]{
                         new InlineKeyboardButton("120 min").callbackData("120"),
                         new InlineKeyboardButton("150 min").callbackData("150"),
                         new InlineKeyboardButton("180 min").callbackData("180")

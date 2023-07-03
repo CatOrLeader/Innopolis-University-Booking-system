@@ -9,6 +9,7 @@ public class MaybeResponse {
 
     /**
      * Constructor for handled request's response
+     *
      * @param response resulting response from handler
      */
     public MaybeResponse(Response response) {
@@ -24,6 +25,7 @@ public class MaybeResponse {
 
     /**
      * Method to check whether response exists or not
+     *
      * @return true if response exists, false otherwise
      */
     public boolean hasResponse() {
@@ -32,6 +34,7 @@ public class MaybeResponse {
 
     /**
      * Method to get response
+     *
      * @return response
      */
     public Response getResponse() {

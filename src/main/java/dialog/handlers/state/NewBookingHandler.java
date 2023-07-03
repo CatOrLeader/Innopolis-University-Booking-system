@@ -5,6 +5,7 @@ import APIWrapper.json.GetFreeRoomsRequest;
 import APIWrapper.json.Room;
 import APIWrapper.requests.Request;
 import APIWrapper.utilities.DateTime;
+import Database.Controllers.RoomController;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
@@ -14,18 +15,27 @@ import dialog.userData.BotState;
 import dialog.userData.UserData;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
  * States Group handler
  */
-// TODO: implement a class to work with user booking parameters at parse it to request
 public class NewBookingHandler extends StateHandler {
     private final Map<Long, Booking> bookingInfo = new HashMap<>();
     private final Request outlook = new Request("http://localhost:3000");
-    private final List<Room> rooms =
-            outlook.getAllBookableRooms();
+    private final RoomController roomData = new RoomController();
+
+    public NewBookingHandler() {
+        preloadRoomsFromApi();
+    }
+
+    private void preloadRoomsFromApi() {
+        var rooms = outlook.getAllBookableRooms();
+        for (Room room : rooms) {
+            roomData.addOrUpdateRoom(room.toRoomModel());
+        }
+    }
+
     @Override
     public Response handle(Update incomingUpdate, UserData data) {
         switch (data.getDialogState()) {
@@ -38,7 +48,7 @@ public class NewBookingHandler extends StateHandler {
             case ROOM_AWAITING -> {
                 return handleRoom(incomingUpdate, data);
             }
-            case BOOKING_TITLE_AWAITING ->  {
+            case BOOKING_TITLE_AWAITING -> {
                 return handleTitle(incomingUpdate, data);
             }
             default -> {
@@ -47,33 +57,55 @@ public class NewBookingHandler extends StateHandler {
         }
     }
 
+    /**
+     * Handle entered booking title
+     *
+     * @param update incoming update
+     * @param data   user data
+     * @return bot response
+     */
     private Response handleTitle(Update update, UserData data) {
         var message = update.message();
         if (message == null) {
             return new Response(data);
         }
-
         var user = data.getUserId();
         var lang = data.getLang();
         var info = bookingInfo.get(user);
+
+        // Data loss
+        if (info == null) {
+            return abnormalMenuReturn(data);
+        }
 
         info.title = message.text();
         var response = outlook.bookRoom(info.room.id,
                 info.convertToBookRoomRequest());
 
-        // TODO: Format via response from server
-        var botMessage = new SendMessage(user,
-                        lang.bookedSuccessfully(info.title,
-                                info.room.name,
-                                DateTime.formatToConvenient(info.start),
-                                DateTime.formatToConvenient(info.end))).
-                replyMarkup(lang.mainMenuMarkup());
+        SendMessage botMessage;
+        if (response == null) {
+            botMessage =
+                    new SendMessage(user,
+                            lang.bookedUnsuccessfully());
+        } else {
+            botMessage = new SendMessage(user,
+                    lang.bookedSuccessfully(info.title,
+                            info.room.name,
+                            DateTime.formatToConvenient(info.start),
+                            DateTime.formatToConvenient(info.end)));
+        }
+        botMessage = botMessage.replyMarkup(lang.mainMenuMarkup());
         data.setDialogState(BotState.MAIN_MENU);
         return new Response(data, botMessage);
     }
 
-    // Handle somehow
-
+    /**
+     * Handle user request for room choose
+     *
+     * @param update incoming update
+     * @param data   user data
+     * @return bot response
+     */
     private Response handleRoom(Update update, UserData data) {
         var query = update.callbackQuery();
         if (query == null) {
@@ -86,7 +118,7 @@ public class NewBookingHandler extends StateHandler {
         var chatId = query.message().chat().id();
         var msgId = query.message().messageId();
         var info = bookingInfo.get(user);
-        // TODO: more precise handling of incorrect callbacks
+
         try {
             info.room = takeRoomById(roomId);
             assert info.room != null;
@@ -96,11 +128,18 @@ public class NewBookingHandler extends StateHandler {
                     lang.bookingTitle());
             data.setDialogState(BotState.BOOKING_TITLE_AWAITING);
             return new Response(data, botMessage, updateMessage);
-        } catch (Exception e) {
-            return new Response(data);
+        } catch (Exception e) { // if callback was from another message or data loss
+            return abnormalMenuReturn(data);
         }
     }
 
+    /**
+     * Handle user request for setting new booking duration
+     *
+     * @param update incoming update
+     * @param data   user data
+     * @return bot response
+     */
     private Response handleBookingDuration(Update update, UserData data) {
         var query = update.callbackQuery();
         if (query == null) {
@@ -112,13 +151,12 @@ public class NewBookingHandler extends StateHandler {
         var msgId = query.message().messageId();
         var lang = data.getLang();
         var info = bookingInfo.get(user);
-        // TODO: handle wrong callbacks more precisely
+
         try {
             info.duration = Integer.parseInt(query.data());
-        } catch (Exception e) {
-            return new Response(data);
+        } catch (Exception e) { // data loss
+            return abnormalMenuReturn(data);
         }
-
 
         var updateMessage =
                 new EditMessageText(
@@ -130,7 +168,6 @@ public class NewBookingHandler extends StateHandler {
                 );
 
         // TODO: properly obtain list of available rooms at given time (how to get time?)
-
         var userRooms = outlook.getAllFreeRooms(
                 new GetFreeRoomsRequest("25.05.04 09:26", 90));
 
@@ -139,7 +176,6 @@ public class NewBookingHandler extends StateHandler {
             return new Response(data, new SendMessage(user, data.getLang().noAvailableRooms()).
                     replyMarkup(lang.mainMenuMarkup()), updateMessage);
         } else {
-            // TODO: check here for NOW AVAILABLE rooms
             var keyboardWithRooms = lang.availableRoomsKeyboard(userRooms);
             data.setDialogState(BotState.ROOM_AWAITING);
             return new Response(data, new SendMessage(user, data.getLang().hereAvailableRooms()).
@@ -147,11 +183,17 @@ public class NewBookingHandler extends StateHandler {
         }
     }
 
+    /**
+     * Handle user request with new booking title
+     *
+     * @param update incoming update
+     * @param data   user data
+     * @return bot response
+     */
     private Response handleBookingTime(Update update, UserData data) {
         if (update.message() == null) {
             return new Response(data);
         }
-
         var msg = update.message();
         var usr = data.getUserId();
         var lang = data.getLang();
@@ -179,15 +221,27 @@ public class NewBookingHandler extends StateHandler {
 
     /**
      * Find room instance by its id
+     *
      * @param roomId given id
      * @return room (it is supposed that given id always correct)
      */
     private Room takeRoomById(String roomId) {
-        for (Room room : rooms) {
-            if (room.id.equals(roomId)) {
-                return room;
-            }
-        }
-        return null;
+        return roomData.getRoomData(roomId).toRoom();
+    }
+
+    /**
+     * Method to return to menu due to unexpected error.
+     *
+     * @param data user data
+     * @return response to return to menu
+     */
+    private Response abnormalMenuReturn(UserData data) {
+        var usr = data.getUserId();
+        var lang = data.getLang();
+
+        data.setDialogState(BotState.MAIN_MENU);
+        var msg = new SendMessage(usr,
+                lang.unexpectedErrorGoToMenu()).replyMarkup(lang.mainMenuMarkup());
+        return new Response(data, msg);
     }
 }
