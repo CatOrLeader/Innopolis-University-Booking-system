@@ -7,8 +7,8 @@ import com.pengrad.telegrambot.request.GetUpdates;
 import com.pengrad.telegrambot.request.SendMessage;
 import dialog.UpdatesManager;
 import dialog.config.EnglishText;
-import dialog.data.BookingReminder;
-import dialog.data.BookingDataManager;
+import dialog.config.IText;
+import dialog.data.*;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -18,13 +18,16 @@ import java.util.Arrays;
  */
 public class BookingBot {
     private final TelegramBot bot;
-    private final UpdatesManager updatesHandler;
-    private final BookingDataManager bookingManager = new BookingDataManager();
+    private final UpdatesManager updatesManager;
+    private final BookingDataManager bookingManager;
+    private final UserDataManager userManager;
     private int skipUntil = 0;
 
     public BookingBot(String token) {
         bot = new TelegramBot(token);
-        updatesHandler = new UpdatesManager();
+        updatesManager = new UpdatesManager();
+        userManager = new UserDataManager();
+        bookingManager = new BookingDataManager();
     }
 
     /**
@@ -54,17 +57,20 @@ public class BookingBot {
 
     public void notifyUpcomingBookings() {
         var scheduler = new Scheduler();
-        scheduler.schedule(() -> {
-            bookingManager.getBookingsToConfirm().forEach(this::notifyBooking);
-        }, Schedules.fixedDelaySchedule(Duration.ofMinutes(1)));
+        scheduler.schedule(() ->
+                bookingManager
+                        .getBookingsToConfirm()
+                        .forEach(this::notifyBooking),
+                Schedules.fixedDelaySchedule(Duration.ofMinutes(1)));
     }
 
     private void notifyBooking(BookingReminder bookingReminder) {
         var booking = bookingReminder.getBooking();
         var usr = bookingReminder.getUserId();
+        var lang = userManager.getUserData(usr).getLang();
         var request = new SendMessage(
                 usr,
-                new EnglishText().upcomingBooking(booking)
+                lang.upcomingBooking(booking)
         );
         bot.execute(request);
     }
@@ -76,29 +82,57 @@ public class BookingBot {
      * @param update incoming update.
      */
     private void process(Update update) {
+        var userId = extractUserId(update);
+        if (!userManager.hasUserData(userId)) {
+            initializeUser(userId);
+        }
+        var data = userManager.getUserData(userId);
         try {
-            var responses = updatesHandler.handle(update);
-            Arrays.stream(responses).forEach(bot::execute);
+            var response = updatesManager.handle(update, data);
+            Arrays.stream(response.botResponse()).forEach(bot::execute);
+            userManager.setUserData(userId, response.userData());
         } catch (Exception any) {
-            excuseProcessCrash(update);
+            excuseProcessCrash(userId, data.getLang());
         }
     }
 
     /**
      * Method to excuse accidental processes crashes
-     *
-     * @param update improperly handled update
      */
-    private void excuseProcessCrash(Update update) {
-        var usr = UpdatesManager.extractUserId(update);
-        var msgContent = """
-                Sorry, something went wrong...
-
-                Извините, что-то пошло не так...""";
+    private void excuseProcessCrash(long userId, IText lang) {
         var msg = new SendMessage(
-                usr,
-                msgContent
+                userId,
+                lang.sorryError()
         );
         bot.execute(msg);
+    }
+
+    /**
+     * Method to get user (that made update) ID for any given update.
+     *
+     * @param update update.
+     * @return user id parsed to string.
+     * TODO: Extend variety of updates with sender id
+     */
+    private long extractUserId(Update update) {
+        if (update.message() != null) {
+            return update.message().from().id();
+        } else {
+            return update.callbackQuery().from().id();
+        }
+    }
+
+    /**
+     * Method to set initial data for new user.
+     *
+     * @param user new user
+     */
+    private void initializeUser(Long user) {
+        var initialData = new UserData(
+                user,
+                BotState.UNINITIALIZED,
+                null,
+                new EnglishText());
+        userManager.setUserData(user, initialData);
     }
 }

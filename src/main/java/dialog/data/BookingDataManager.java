@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
+// TODO: DO NOT FORGET ABOUT LOCAL TIME ON DIFFERENT MACHINE!
 public class BookingDataManager {
     private static final Map<String, List<BookingReminder>> bookingData =
             new HashMap<>();

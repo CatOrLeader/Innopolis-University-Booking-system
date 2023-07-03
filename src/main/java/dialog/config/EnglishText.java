@@ -48,6 +48,11 @@ public class EnglishText implements IText {
     }
 
     @Override
+    public String sorryError() {
+        return "Sorry, something went wrong...";
+    }
+
+    @Override
     public String sorryEmailError() {
         return "Sorry.. Unexpected error happen. Please, input your email again.";
     }

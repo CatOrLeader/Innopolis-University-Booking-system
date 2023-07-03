@@ -24,30 +24,13 @@ import java.util.Map;
  * the dialog with user.
  */
 public class UpdatesManager {
-    private final UserDataManager dataManager;
     private final Map<BotState, StateHandler> handlerMap;
     private final List<IndependentHandler> independentHandlers;
 
     public UpdatesManager() {
-        dataManager = new UserDataManager();
         handlerMap = new HashMap<>();
         independentHandlers = new ArrayList<>();
         preloadHandlers();
-    }
-
-    /**
-     * Method to get user (that made update) ID for any given update.
-     *
-     * @param update update.
-     * @return user id parsed to string.
-     * TODO: Extend variety of updates with sender id
-     */
-    public static long extractUserId(Update update) {
-        if (update.message() != null) {
-            return update.message().from().id();
-        } else {
-            return update.callbackQuery().from().id();
-        }
     }
 
     /**
@@ -98,28 +81,22 @@ public class UpdatesManager {
      * Method to create request for bot to answer on user's update.
      *
      * @param update given update.
+     * @param data data of user who send update.
      * @return answer generated for bot.
      */
-    public BaseRequest[] handle(Update update) {
-        var userId = extractUserId(update);
-        if (!dataManager.hasUserData(userId)) {
-            initializeUser(userId);
-        }
+    public Response handle(Update update, UserData data) {
+        var userId = data.getUserId();
 
-        var userData = dataManager.getUserData(userId);
-
-        var independentResponse = handleIndependently(update, userData);
+        var independentResponse = handleIndependently(update, data);
         Response response;
 
         if (!independentResponse.hasResponse()) {
-            var stateHandler = handlerMap.get(userData.getDialogState());
-            response = stateHandler.handle(update, userData);
+            var stateHandler = handlerMap.get(data.getDialogState());
+            response = stateHandler.handle(update, data);
+            return response;
         } else {
-            response = independentResponse.getResponse();
+           return independentResponse.getResponse();
         }
-
-        dataManager.setUserData(userId, response.userData());
-        return response.botResponse();
     }
 
     /**
@@ -137,19 +114,5 @@ public class UpdatesManager {
             }
         }
         return new MaybeResponse();
-    }
-
-    /**
-     * Method to set initial data for new user.
-     *
-     * @param user new user
-     */
-    private void initializeUser(Long user) {
-        var initialData = new UserData(
-                user,
-                BotState.UNINITIALIZED,
-                null,
-                new EnglishText());
-        dataManager.setUserData(user, initialData);
     }
 }

@@ -22,6 +22,8 @@ public interface IText {
 
     String verificationCodeExpired(String email);
 
+    String sorryError();
+
     String sorryEmailError();
 
     String authorized();

@@ -48,6 +48,11 @@ public class RussianText implements IText {
     }
 
     @Override
+    public String sorryError() {
+        return "Извините, что-то пошло не так...";
+    }
+
+    @Override
     public String sorryEmailError() {
         return "Извините... Произошла непредвиденная ошибка. Пожалуйста, введите свой адрес электронной почты еще раз.";
     }
