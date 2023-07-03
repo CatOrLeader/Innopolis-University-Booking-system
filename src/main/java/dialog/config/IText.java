@@ -56,6 +56,9 @@ public interface IText {
 
     String bookingInterfaceClosed();
 
+    String bookingConfirmed();
+    String bookingRevoked();
+
     // Buttons text
     String newBookingBtn();
 
@@ -85,6 +88,8 @@ public interface IText {
     InlineKeyboardMarkup userBookings(List<Booking> bookings);
 
     InlineKeyboardMarkup changeEmail();
+
+    InlineKeyboardMarkup bookingConfirmation(Booking booking);
 
     // Notifications
     String upcomingBooking(Booking booking);

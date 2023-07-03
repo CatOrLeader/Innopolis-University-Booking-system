@@ -143,6 +143,16 @@ public class RussianText implements IText {
     }
 
     @Override
+    public String bookingConfirmed() {
+        return "Бронирование успешно подтверждено!";
+    }
+
+    @Override
+    public String bookingRevoked() {
+        return "Бронирование успешно отменено";
+    }
+
+    @Override
     public String newBookingBtn() {
         return "\uD83D\uDD0F Новая бронь";
     }
@@ -238,6 +248,14 @@ public class RussianText implements IText {
     public InlineKeyboardMarkup changeEmail() {
         return new InlineKeyboardMarkup(
                 new InlineKeyboardButton("\uD83D\uDCE8 Обновить электронную почту").callbackData("update")
+        );
+    }
+
+    @Override
+    public InlineKeyboardMarkup bookingConfirmation(Booking booking) {
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton("✅ Подтвердить").callbackData(String.format("confirm %s", booking.id)),
+                new InlineKeyboardButton("❌ Отменить").callbackData(String.format("revoke %s", booking.id))
         );
     }
 

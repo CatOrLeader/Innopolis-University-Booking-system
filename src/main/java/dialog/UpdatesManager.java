@@ -7,6 +7,7 @@ import dialog.handlers.IndependentHandler;
 import dialog.handlers.MaybeResponse;
 import dialog.handlers.Response;
 import dialog.handlers.StateHandler;
+import dialog.handlers.independent.BookingConfirmationHandler;
 import dialog.handlers.independent.GoToMenuHandler;
 import dialog.handlers.state.*;
 
@@ -44,6 +45,7 @@ public class UpdatesManager {
      */
     private void preloadIndependentHandlers() {
         independentHandlers.add(new GoToMenuHandler());
+        independentHandlers.add(new BookingConfirmationHandler());
     }
 
     /**

@@ -143,6 +143,16 @@ public class EnglishText implements IText {
     }
 
     @Override
+    public String bookingConfirmed() {
+        return "Booking successfully confirmed!";
+    }
+
+    @Override
+    public String bookingRevoked() {
+        return "Booking successfully revoked!";
+    }
+
+    @Override
     public String newBookingBtn() {
         return "\uD83D\uDD0F New booking";
     }
@@ -238,6 +248,14 @@ public class EnglishText implements IText {
     public InlineKeyboardMarkup changeEmail() {
         return new InlineKeyboardMarkup(
                 new InlineKeyboardButton("\uD83D\uDCE8 Update email").callbackData("update")
+        );
+    }
+
+    @Override
+    public InlineKeyboardMarkup bookingConfirmation(Booking booking) {
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton("✅ Confirm").callbackData(String.format("confirm %s", booking.id)),
+                new InlineKeyboardButton("❌ Revoke").callbackData(String.format("revoke %s", booking.id))
         );
     }
 

@@ -78,12 +78,15 @@ public class BookingBot {
         var msg = new SendMessage(
                 usr,
                 lang.upcomingBooking(booking)
-        );
+        ).replyMarkup(lang.bookingConfirmation(booking));
         bot.execute(msg);
     }
 
     private void removeUnconfirmedBooking(BookingReminder bookingReminder) {
         var booking = bookingReminder.getBooking();
+        if (bookingReminder.isConfirmed()) {
+            return;
+        }
         var usr = bookingReminder.getUserId();
         var lang = userManager.getUserData(usr).getLang();
         outlook.deleteBooking(booking.id);
