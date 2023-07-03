@@ -1,17 +1,14 @@
 package dialog;
 
 import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.request.BaseRequest;
-import dialog.config.EnglishText;
+import dialog.data.BotState;
+import dialog.data.UserData;
 import dialog.handlers.IndependentHandler;
 import dialog.handlers.MaybeResponse;
 import dialog.handlers.Response;
 import dialog.handlers.StateHandler;
 import dialog.handlers.independent.GoToMenuHandler;
 import dialog.handlers.state.*;
-import dialog.data.BotState;
-import dialog.data.UserData;
-import dialog.data.UserDataManager;
 
 import javax.mail.NoSuchProviderException;
 import java.util.ArrayList;
@@ -81,12 +78,10 @@ public class UpdatesManager {
      * Method to create request for bot to answer on user's update.
      *
      * @param update given update.
-     * @param data data of user who send update.
+     * @param data   data of user who send update.
      * @return answer generated for bot.
      */
     public Response handle(Update update, UserData data) {
-        var userId = data.getUserId();
-
         var independentResponse = handleIndependently(update, data);
         Response response;
 
@@ -95,7 +90,7 @@ public class UpdatesManager {
             response = stateHandler.handle(update, data);
             return response;
         } else {
-           return independentResponse.getResponse();
+            return independentResponse.getResponse();
         }
     }
 

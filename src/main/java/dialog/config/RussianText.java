@@ -244,9 +244,9 @@ public class RussianText implements IText {
     @Override
     public String upcomingBooking(Booking booking) {
         return String.format("""
-                У Вас есть бронирование через 15 минут — '%s' в %s с %s до %s.
-                
-                Придете ли Вы?""",
+                        У Вас есть бронирование через 15 минут — '%s' в %s с %s до %s.
+                                        
+                        Необходимо подтвердить бронирование в течение 15 минут, иначе оно будет отменено.""",
                 booking.title,
                 booking.room.name,
                 DateTime.formatToConvenient(booking.start),

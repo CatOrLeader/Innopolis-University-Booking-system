@@ -2,10 +2,10 @@ package dialog.handlers.state;
 
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.SendMessage;
-import dialog.handlers.Response;
-import dialog.handlers.StateHandler;
 import dialog.data.BotState;
 import dialog.data.UserData;
+import dialog.handlers.Response;
+import dialog.handlers.StateHandler;
 
 /**
  * Handler for uninitialized user's state.

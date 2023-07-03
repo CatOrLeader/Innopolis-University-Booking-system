@@ -6,10 +6,10 @@ import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
 import dialog.config.EnglishText;
 import dialog.config.RussianText;
-import dialog.handlers.Response;
-import dialog.handlers.StateHandler;
 import dialog.data.BotState;
 import dialog.data.UserData;
+import dialog.handlers.Response;
+import dialog.handlers.StateHandler;
 
 public class MainMenuHandler extends StateHandler {
     private final Request outlook = new Request("http://localhost:3000");

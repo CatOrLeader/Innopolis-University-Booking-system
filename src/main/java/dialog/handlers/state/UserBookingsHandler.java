@@ -6,10 +6,10 @@ import com.pengrad.telegrambot.request.AnswerCallbackQuery;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import dialog.data.BookingDataManager;
-import dialog.handlers.Response;
-import dialog.handlers.StateHandler;
 import dialog.data.BotState;
 import dialog.data.UserData;
+import dialog.handlers.Response;
+import dialog.handlers.StateHandler;
 
 import java.util.regex.Pattern;
 
@@ -115,7 +115,7 @@ public class UserBookingsHandler extends StateHandler {
      * Handle user request to go back from bookings list
      *
      * @param update incoming update
-     * @param data user data
+     * @param data   user data
      * @return bot response
      */
     private Response handleBack(Update update, UserData data) {

@@ -10,10 +10,10 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import dialog.data.BookingDataManager;
-import dialog.handlers.Response;
-import dialog.handlers.StateHandler;
 import dialog.data.BotState;
 import dialog.data.UserData;
+import dialog.handlers.Response;
+import dialog.handlers.StateHandler;
 
 import java.util.HashMap;
 import java.util.Map;

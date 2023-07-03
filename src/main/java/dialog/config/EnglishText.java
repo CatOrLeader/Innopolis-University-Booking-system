@@ -244,9 +244,10 @@ public class EnglishText implements IText {
     @Override
     public String upcomingBooking(Booking booking) {
         return String.format("""
-                You have an upcoming booking in 15 minutes — '%s' at %s since %s until %s.
-                
-                Will you come?""",
+                        You have an upcoming booking in 15 minutes — '%s' at %s since %s until %s.
+                                        
+                        You need to confirm the booking in 15 minutes, otherwise it will be cancelled.
+                        """,
                 booking.title,
                 booking.room.name,
                 DateTime.formatToConvenient(booking.start),

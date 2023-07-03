@@ -6,9 +6,10 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.GetUpdates;
 import com.pengrad.telegrambot.request.SendMessage;
 import dialog.UpdatesManager;
-import dialog.config.EnglishText;
 import dialog.config.IText;
-import dialog.data.*;
+import dialog.data.BookingDataManager;
+import dialog.data.BookingReminder;
+import dialog.data.UserDataManager;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -57,10 +58,11 @@ public class BookingBot {
 
     public void notifyUpcomingBookings() {
         var scheduler = new Scheduler();
-        scheduler.schedule(() ->
-                bookingManager
-                        .getBookingsToConfirm()
-                        .forEach(this::notifyBooking),
+        scheduler.schedule(
+                () ->
+                        bookingManager
+                                .getBookingsToConfirm()
+                                .forEach(this::notifyBooking),
                 Schedules.fixedDelaySchedule(Duration.ofMinutes(1)));
     }
 
@@ -83,9 +85,6 @@ public class BookingBot {
      */
     private void process(Update update) {
         var userId = extractUserId(update);
-        if (!userManager.hasUserData(userId)) {
-            initializeUser(userId);
-        }
         var data = userManager.getUserData(userId);
         try {
             var response = updatesManager.handle(update, data);
@@ -120,19 +119,5 @@ public class BookingBot {
         } else {
             return update.callbackQuery().from().id();
         }
-    }
-
-    /**
-     * Method to set initial data for new user.
-     *
-     * @param user new user
-     */
-    private void initializeUser(Long user) {
-        var initialData = new UserData(
-                user,
-                BotState.UNINITIALIZED,
-                null,
-                new EnglishText());
-        userManager.setUserData(user, initialData);
     }
 }
