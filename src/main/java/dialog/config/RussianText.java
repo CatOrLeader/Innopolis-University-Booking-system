@@ -252,4 +252,9 @@ public class RussianText implements IText {
                 DateTime.formatToConvenient(booking.start),
                 DateTime.formatToConvenient(booking.end));
     }
+
+    @Override
+    public String unconfirmedBookingCancel(Booking booking) {
+        return String.format("Неподтвержденное бронирование '%s' было отменено.", booking.title);
+    }
 }

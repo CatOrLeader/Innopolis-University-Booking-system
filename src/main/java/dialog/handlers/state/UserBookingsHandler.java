@@ -91,7 +91,7 @@ public class UserBookingsHandler extends StateHandler {
         var bookingToDelete = outlook.getBookingsByUser(data.getEmail()).stream().filter(
                 booking -> booking.id.equals(cancelId)
         ).toList().get(0);
-        bookingManager.removeBookingById(bookingToDelete);
+        bookingManager.removeBooking(bookingToDelete);
 
         outlook.deleteBooking(cancelId);
         var bookings = outlook.getBookingsByUser(data.getEmail());

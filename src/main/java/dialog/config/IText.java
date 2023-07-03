@@ -88,4 +88,6 @@ public interface IText {
 
     // Notifications
     String upcomingBooking(Booking booking);
+
+    String unconfirmedBookingCancel(Booking booking);
 }

@@ -253,4 +253,9 @@ public class EnglishText implements IText {
                 DateTime.formatToConvenient(booking.start),
                 DateTime.formatToConvenient(booking.end));
     }
+
+    @Override
+    public String unconfirmedBookingCancel(Booking booking) {
+        return String.format("Unconfirmed booking '%s' was cancelled.", booking.title);
+    }
 }

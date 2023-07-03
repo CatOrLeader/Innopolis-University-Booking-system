@@ -42,7 +42,7 @@ public class BookingDataManager {
         bookingData.get(bookingTime).add(new BookingReminder(userId, booking, false));
     }
 
-    public void removeBookingById(Booking booking) {
+    public void removeBooking(Booking booking) {
         var list = bookingData.get(DateTime.formatToConvenient(booking.start));
         list.removeIf(confirmation -> confirmation.getBooking().equals(booking));
     }
