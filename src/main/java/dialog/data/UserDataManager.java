@@ -1,4 +1,4 @@
-package dialog.userData;
+package dialog.data;
 
 import Database.Controllers.UserDataController;
 

@@ -83,4 +83,7 @@ public interface IText {
     InlineKeyboardMarkup userBookings(List<Booking> bookings);
 
     InlineKeyboardMarkup changeEmail();
+
+    // Notifications
+    String upcomingBooking(Booking booking);
 }

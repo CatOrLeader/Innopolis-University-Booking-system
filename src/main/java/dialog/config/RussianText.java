@@ -235,4 +235,16 @@ public class RussianText implements IText {
                 new InlineKeyboardButton("\uD83D\uDCE8 Обновить электронную почту").callbackData("update")
         );
     }
+
+    @Override
+    public String upcomingBooking(Booking booking) {
+        return String.format("""
+                У Вас есть бронирование через 15 минут — '%s' в %s с %s до %s.
+                
+                Придете ли Вы?""",
+                booking.title,
+                booking.room.name,
+                DateTime.formatToConvenient(booking.start),
+                DateTime.formatToConvenient(booking.end));
+    }
 }

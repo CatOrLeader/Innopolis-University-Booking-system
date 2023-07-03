@@ -1,13 +1,17 @@
+import com.coreoz.wisp.Scheduler;
+import com.coreoz.wisp.schedule.Schedules;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.GetUpdates;
 import com.pengrad.telegrambot.request.SendMessage;
 import dialog.UpdatesManager;
+import dialog.config.EnglishText;
+import dialog.data.BookingReminder;
+import dialog.data.BookingDataManager;
 
+import java.time.Duration;
 import java.util.Arrays;
-
-import dialog.scheduler.JobScheduler;
 
 /**
  * Class describing booking bot functionality.
@@ -15,6 +19,7 @@ import dialog.scheduler.JobScheduler;
 public class BookingBot {
     private final TelegramBot bot;
     private final UpdatesManager updatesHandler;
+    private final BookingDataManager bookingManager = new BookingDataManager();
     private int skipUntil = 0;
 
     public BookingBot(String token) {
@@ -35,8 +40,6 @@ public class BookingBot {
      * Method to start listening for user updates.
      */
     public void listen() {
-        JobScheduler jobScheduler = new JobScheduler();
-
         bot.setUpdatesListener(updates -> {
             updates.forEach(update -> {
                 if (update.updateId() > skipUntil) {
@@ -47,6 +50,23 @@ public class BookingBot {
             });
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
+    }
+
+    public void notifyUpcomingBookings() {
+        var scheduler = new Scheduler();
+        scheduler.schedule(() -> {
+            bookingManager.getBookingsToConfirm().forEach(this::notifyBooking);
+        }, Schedules.fixedDelaySchedule(Duration.ofMinutes(1)));
+    }
+
+    private void notifyBooking(BookingReminder bookingReminder) {
+        var booking = bookingReminder.getBooking();
+        var usr = bookingReminder.getUserId();
+        var request = new SendMessage(
+                usr,
+                new EnglishText().upcomingBooking(booking)
+        );
+        bot.execute(request);
     }
 
     /**

@@ -1,7 +1,7 @@
 package Database.Services;
 
 import Models.UserDataModel;
-import dialog.userData.BotState;
+import dialog.data.BotState;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

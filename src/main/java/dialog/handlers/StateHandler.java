@@ -1,7 +1,7 @@
 package dialog.handlers;
 
 import com.pengrad.telegrambot.model.Update;
-import dialog.userData.UserData;
+import dialog.data.UserData;
 
 /**
  * Class describing a handler for a certain state

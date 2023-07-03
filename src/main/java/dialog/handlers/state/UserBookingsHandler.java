@@ -5,15 +5,17 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.AnswerCallbackQuery;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
+import dialog.data.BookingDataManager;
 import dialog.handlers.Response;
 import dialog.handlers.StateHandler;
-import dialog.userData.BotState;
-import dialog.userData.UserData;
+import dialog.data.BotState;
+import dialog.data.UserData;
 
 import java.util.regex.Pattern;
 
 public class UserBookingsHandler extends StateHandler {
     private final Request outlook = new Request("http://localhost:3000");
+    private final BookingDataManager bookingManager = new BookingDataManager();
 
     @Override
     public Response handle(Update incomingUpdate, UserData data) {
@@ -52,6 +54,7 @@ public class UserBookingsHandler extends StateHandler {
         matches.find();
         var infoId = matches.group();
 
+        // TODO: ask for get BOOKING by id
         var bookings = outlook.getBookingsByUser(email).stream().filter(
                 booking -> booking.id.equals(infoId)
         ).toList();
@@ -83,6 +86,12 @@ public class UserBookingsHandler extends StateHandler {
 
         matches.find();
         var cancelId = matches.group();
+
+        // REMOVING BOOKING FROM OUR DATABASE
+        var bookingToDelete = outlook.getBookingsByUser(data.getEmail()).stream().filter(
+                booking -> booking.id.equals(cancelId)
+        ).toList().get(0);
+        bookingManager.removeBookingById(bookingToDelete);
 
         outlook.deleteBooking(cancelId);
         var bookings = outlook.getBookingsByUser(data.getEmail());

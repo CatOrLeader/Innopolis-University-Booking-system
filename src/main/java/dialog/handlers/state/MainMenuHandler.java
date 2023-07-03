@@ -8,8 +8,8 @@ import dialog.config.EnglishText;
 import dialog.config.RussianText;
 import dialog.handlers.Response;
 import dialog.handlers.StateHandler;
-import dialog.userData.BotState;
-import dialog.userData.UserData;
+import dialog.data.BotState;
+import dialog.data.UserData;
 
 public class MainMenuHandler extends StateHandler {
     private final Request outlook = new Request("http://localhost:3000");

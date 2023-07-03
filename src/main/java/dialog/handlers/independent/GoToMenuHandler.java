@@ -5,8 +5,8 @@ import com.pengrad.telegrambot.request.SendMessage;
 import dialog.handlers.IndependentHandler;
 import dialog.handlers.MaybeResponse;
 import dialog.handlers.Response;
-import dialog.userData.BotState;
-import dialog.userData.UserData;
+import dialog.data.BotState;
+import dialog.data.UserData;
 
 /**
  * Independent handler for transition to menu.

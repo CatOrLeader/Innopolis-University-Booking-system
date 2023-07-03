@@ -9,9 +9,9 @@ import dialog.handlers.Response;
 import dialog.handlers.StateHandler;
 import dialog.handlers.independent.GoToMenuHandler;
 import dialog.handlers.state.*;
-import dialog.userData.BotState;
-import dialog.userData.UserData;
-import dialog.userData.UserDataManager;
+import dialog.data.BotState;
+import dialog.data.UserData;
+import dialog.data.UserDataManager;
 
 import javax.mail.NoSuchProviderException;
 import java.util.ArrayList;

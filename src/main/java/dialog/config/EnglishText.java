@@ -235,4 +235,16 @@ public class EnglishText implements IText {
                 new InlineKeyboardButton("\uD83D\uDCE8 Update email").callbackData("update")
         );
     }
+
+    @Override
+    public String upcomingBooking(Booking booking) {
+        return String.format("""
+                You have an upcoming booking in 15 minutes — '%s' at %s since %s until %s.
+                
+                Will you come?""",
+                booking.title,
+                booking.room.name,
+                DateTime.formatToConvenient(booking.start),
+                DateTime.formatToConvenient(booking.end));
+    }
 }
