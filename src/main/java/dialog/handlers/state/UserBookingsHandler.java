@@ -105,9 +105,9 @@ public class UserBookingsHandler extends StateHandler {
     /**
      * Handle user request to go back from bookings list
      *
-     * @param update
-     * @param data
-     * @return
+     * @param update incoming update
+     * @param data user data
+     * @return bot response
      */
     private Response handleBack(Update update, UserData data) {
         var usr = data.getUserId();
