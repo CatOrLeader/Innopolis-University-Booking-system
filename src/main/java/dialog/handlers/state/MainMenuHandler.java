@@ -30,6 +30,12 @@ public class MainMenuHandler extends StateHandler {
         }
     }
 
+    /**
+     * Handle change language request
+     *
+     * @param data user data
+     * @return bot response
+     */
     private Response changeLanguage(UserData data) {
         var usr = data.getUserId();
         var lang = data.getLang();
@@ -40,6 +46,12 @@ public class MainMenuHandler extends StateHandler {
         return new Response(data, msg);
     }
 
+    /**
+     * Handle transition to list of bookings
+     *
+     * @param data user data
+     * @return bot response
+     */
     private Response handleBookings(UserData data) {
         var usr = data.getUserId();
         var lang = data.getLang();
@@ -58,6 +70,12 @@ public class MainMenuHandler extends StateHandler {
         return new Response(data, transition, bookingsMsg);
     }
 
+    /**
+     * Handle initial stage of booking creation.
+     *
+     * @param data user data
+     * @return bot response
+     */
     private Response handleNewBooking(UserData data) {
         var lang = data.getLang();
         var usr = data.getUserId();

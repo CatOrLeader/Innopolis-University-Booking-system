@@ -40,6 +40,13 @@ public class AuthenticationHandler extends StateHandler {
         }
     }
 
+    /**
+     * Handle email input from user
+     *
+     * @param update incoming update
+     * @param data   user data
+     * @return bot response
+     */
     private Response handleEmailEntrance(Update update, UserData data) {
         var msg = update.message();
         if (msg == null) {
@@ -59,6 +66,14 @@ public class AuthenticationHandler extends StateHandler {
         return new Response(data, botMessage);
     }
 
+    /**
+     * Handle user request to finish authorization
+     * by confirmation code
+     *
+     * @param update incoming update
+     * @param data   user data
+     * @return bot response
+     */
     private Response handleConfirmationCode(Update update, UserData data) {
         var msg = update.message();
         var query = update.callbackQuery();

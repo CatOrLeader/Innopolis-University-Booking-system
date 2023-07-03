@@ -7,6 +7,9 @@ import dialog.handlers.StateHandler;
 import dialog.userData.BotState;
 import dialog.userData.UserData;
 
+/**
+ * Handler for uninitialized user's state.
+ */
 public class UninitializedHandler extends StateHandler {
     @Override
     public Response handle(Update incomingUpdate, UserData data) {

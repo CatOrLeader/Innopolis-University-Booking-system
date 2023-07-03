@@ -8,6 +8,9 @@ import dialog.handlers.Response;
 import dialog.userData.BotState;
 import dialog.userData.UserData;
 
+/**
+ * Independent handler for transition to menu.
+ */
 public class GoToMenuHandler extends IndependentHandler {
     @Override
     public MaybeResponse handle(Update incomingUpdate, UserData data) {

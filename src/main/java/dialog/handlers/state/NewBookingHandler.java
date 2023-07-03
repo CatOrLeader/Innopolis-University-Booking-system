@@ -57,6 +57,13 @@ public class NewBookingHandler extends StateHandler {
         }
     }
 
+    /**
+     * Handle entered booking title
+     *
+     * @param update incoming update
+     * @param data   user data
+     * @return bot response
+     */
     private Response handleTitle(Update update, UserData data) {
         var message = update.message();
         if (message == null) {
@@ -92,6 +99,13 @@ public class NewBookingHandler extends StateHandler {
         return new Response(data, botMessage);
     }
 
+    /**
+     * Handle user request for room choose
+     *
+     * @param update incoming update
+     * @param data   user data
+     * @return bot response
+     */
     private Response handleRoom(Update update, UserData data) {
         var query = update.callbackQuery();
         if (query == null) {
@@ -119,6 +133,13 @@ public class NewBookingHandler extends StateHandler {
         }
     }
 
+    /**
+     * Handle user request for setting new booking duration
+     *
+     * @param update incoming update
+     * @param data   user data
+     * @return bot response
+     */
     private Response handleBookingDuration(Update update, UserData data) {
         var query = update.callbackQuery();
         if (query == null) {
@@ -162,6 +183,13 @@ public class NewBookingHandler extends StateHandler {
         }
     }
 
+    /**
+     * Handle user request with new booking title
+     *
+     * @param update incoming update
+     * @param data   user data
+     * @return bot response
+     */
     private Response handleBookingTime(Update update, UserData data) {
         if (update.message() == null) {
             return new Response(data);

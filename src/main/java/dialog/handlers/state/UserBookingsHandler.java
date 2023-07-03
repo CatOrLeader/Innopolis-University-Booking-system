@@ -32,6 +32,13 @@ public class UserBookingsHandler extends StateHandler {
         }
     }
 
+    /**
+     * Handle request for pop-up notification with booking info
+     *
+     * @param update incoming update
+     * @param data   user data
+     * @return bot response
+     */
     private Response handleInfo(Update update, UserData data) {
         var lang = data.getLang();
         var email = data.getEmail();
@@ -62,6 +69,13 @@ public class UserBookingsHandler extends StateHandler {
         return new Response(data, answer);
     }
 
+    /**
+     * Handle user request for booking cancellation
+     *
+     * @param update incoming update
+     * @param data   user data
+     * @return bot response
+     */
     private Response handleCancel(Update update, UserData data) {
         var text = update.callbackQuery().data();
         var pattern = Pattern.compile("(\\d+)");
@@ -88,6 +102,13 @@ public class UserBookingsHandler extends StateHandler {
         return new Response(data, edit);
     }
 
+    /**
+     * Handle user request to go back from bookings list
+     *
+     * @param update
+     * @param data
+     * @return
+     */
     private Response handleBack(Update update, UserData data) {
         var usr = data.getUserId();
         var lang = data.getLang();
