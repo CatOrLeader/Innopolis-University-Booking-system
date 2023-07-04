@@ -186,7 +186,7 @@ class Database {
         ArrayList<Booking> output = new ArrayList<>();
 
         for (Booking booking : bookings) {
-            if (roomIds.contains(booking.room.id) && emails.contains(booking.owner_email)) {
+            if (emails.contains(booking.owner_email)) {
                 output.add(booking);
             }
         }

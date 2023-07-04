@@ -1,191 +1,99 @@
 package APIWrapper.requests;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.ContentType;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.jetbrains.annotations.Nullable;
+import APIWrapper.json.HTTPValidationError;
+import APIWrapper.requests.APIResponses.ApiResponse;
+import okhttp3.*;
+import okhttp3.Request;
 
-import java.nio.charset.StandardCharsets;
-
-enum Paths {
-    ROOMS {
-        @Override
-        public String getPath() {
-            return "/rooms";
-        }
-    },
-    FREE_ROOMS {
-        @Override
-        public String getPath() {
-            return "/rooms/free";
-        }
-    },
-    BOOK_ROOM {
-        @Override
-        public String getPath(String roomId) {
-            return "/rooms/" + roomId + "/book";
-        }
-    },
-    BOOKINGS {
-        @Override
-        public String getPath() {
-            return "/bookings/query";
-        }
-    },
-    DELETE_BOOKING {
-        @Override
-        public String getPath(String bookingId) {
-            return "/bookings/" + bookingId;
-        }
-    };
-
-    public String getPath() {
-        return null;
-    }
-
-    public String getPath(String id) {
-        return null;
-    }
-}
-
-// Additional Enums for the requests
+import java.io.IOException;
+import java.net.http.HttpResponse;
 
 class RequestRaw {
-    private final String stringURL;
+    // Constants
+    private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
-    public RequestRaw(String url) {
-        this.stringURL = url;
+    // Initial
+    private final OkHttpClient client;
+    private final String url;
+
+    protected RequestRaw(String url) {
+        client = new OkHttpClient();
+        this.url = url;
     }
 
-    public static void main(String[] args) {
-        RequestRaw requestRaw =
-                new RequestRaw("http://localhost:3000/");
+    protected ApiResponse getAllBookableRoomsUnformatted() {
+        String concreteUrl = url + "/rooms";
 
-//        requestRaw.getFreeRoomsUnformatted();
+        Request request = new Request.Builder()
+                .url(concreteUrl)
+                .method("GET", null)
+                .build();
+
+        return execute(request);
     }
 
-    // Main requests to the DB
-    protected String getAllBookableRoomsUnformatted() {
-        String concreteURL = stringURL + Paths.ROOMS.getPath();
+    protected ApiResponse getAllFreeRoomsUnformatted(String jsonRequestBody) {
+        String concreteUrl = url + "/rooms/free";
 
-        try (CloseableHttpClient client = HttpClients.createDefault();
-             CloseableHttpResponse response = client.execute(new HttpGet(concreteURL))) {
-            printResponseStatus(response);
+        Request request = createPOST(concreteUrl, jsonRequestBody);
 
-            response.addHeader("Content-Type", "application/json");
-            response.addHeader("Accept-Language", "en-US");
+        return execute(request);
+    }
 
-            HttpEntity entity = response.getEntity();
+    protected ApiResponse bookRoomUnformatted(String roomId, String jsonRequestBody) {
+        String concreteUrl = url + "/rooms/" + roomId + "/book";
 
-            if (entity != null) {
-                return IOUtils.toString(entity.getContent(), StandardCharsets.UTF_8);
+        Request request = createPOST(concreteUrl, jsonRequestBody);
+
+        return execute(request);
+    }
+
+    protected ApiResponse queryBookingsUnformatted(String jsonRequestBody) {
+        String concreteUrl = url + "/bookings/query";
+
+        Request request = createPOST(concreteUrl, jsonRequestBody);
+
+        return execute(request);
+    }
+
+    protected ApiResponse deleteBookingUnformatted(String bookingId) {
+        String concreteUrl = url + "/bookings/" + bookingId;
+
+        Request request = new Request.Builder()
+                .url(concreteUrl)
+                .method("DELETE", null)
+                .addHeader("Accept", "application/json")
+                .build();
+
+        return execute(request);
+    }
+
+    // Additional methods
+    private Request createPOST(String url, String jsonRequestBody) {
+        return new Request.Builder()
+                .url(url)
+                .post(RequestBody.create(jsonRequestBody, JSON))
+                .addHeader("Accept", "application/json")
+                .build();
+    }
+
+    private ApiResponse execute(Request request) {
+        try (Response response = client.newCall(request).execute()) {
+            System.out.println();
+            System.out.println("----------Last Response----------");
+            System.out.println("Request method: " + request.method());
+            System.out.println("Response code: " + response.code());
+            System.out.println("Response message: " + response.message());
+            System.out.println("---------------------------------");
+            System.out.println();
+            if (response.body() != null) {
+                return new ApiResponse(response.code(), response.body().string());
             }
-        } catch (Exception e) {
-            printExceptionMsg(e);
-        }
-
-        return null;
-    }
-
-    // TODO: Process POST requests correctly
-    protected String getFreeRoomsUnformatted(String jsonFreeRoomRequest) {
-        String concreteURL = stringURL + Paths.FREE_ROOMS.getPath();
-
-        return sendPOSTReceiveEntity(jsonFreeRoomRequest, concreteURL);
-    }
-
-    protected String bookRoomUnformatted(String roomId, String jsonBookRoomRequest) {
-        String concreteURL = stringURL + Paths.BOOK_ROOM.getPath(roomId);
-
-        return sendPOSTReceiveEntity(jsonBookRoomRequest, concreteURL);
-    }
-
-    protected String queryBookingsUnformatted(String jsonQueryBookingsRequest) {
-        String concreteURL = stringURL + Paths.BOOKINGS.getPath();
-
-        return sendPOSTReceiveEntity(jsonQueryBookingsRequest, concreteURL);
-    }
-
-    protected String deleteBookingsUnformatted(String bookingsId) {
-        String concreteURL = stringURL + Paths.DELETE_BOOKING.getPath(bookingsId);
-
-        try (CloseableHttpClient client = HttpClients.createDefault();
-             CloseableHttpResponse response = client.execute(new HttpDelete(concreteURL))) {
-            printResponseStatus(response);
-
-            response.addHeader("Content-Type", "application/json");
-            response.addHeader("Accept-Language", "en-US");
-
-            HttpEntity entity = response.getEntity();
-
-            if (entity != null) {
-                return IOUtils.toString(entity.getContent(), StandardCharsets.UTF_8);
-            }
-        } catch (Exception e) {
-            printExceptionMsg(e);
-        }
-
-        return null;
-    }
-
-    // Additional processes
-    private void printResponseStatus(CloseableHttpResponse response) {
-        System.out.println("Protocol version: " + response.getProtocolVersion());
-        System.out.println("Status code: " + response.getStatusLine().getStatusCode());
-        System.out.println("Reason phrase: " + response.getStatusLine().getReasonPhrase());
-        System.out.println("Status line: " + response.getStatusLine().toString());
-        System.out.println();
-    }
-
-    private void printExceptionMsg(Exception e) {
-        e.printStackTrace();
-        System.out.println(e.getMessage());
-    }
-
-    private HttpPost createPostRequest(String jsonObj, String concreteUrl) {
-        HttpPost post = new HttpPost(concreteUrl);
-
-        StringEntity entity =
-                new StringEntity(
-                        jsonObj,
-                        ContentType.create("application/json", StandardCharsets.UTF_8)
-                );
-
-        post.setEntity(entity);
-
-        post.setHeader("Content-Length: ", String.valueOf(entity.getContentLength()));
-
-        return post;
-    }
-
-    @Nullable
-    private String sendPOSTReceiveEntity(String jsonRequestBody, String concreteURL) {
-        try (CloseableHttpClient client = HttpClients.createDefault()) {
-            HttpPost post = createPostRequest(jsonRequestBody, concreteURL);
-
-            CloseableHttpResponse response = client.execute(post);
-            printResponseStatus(response);
-
-            response.addHeader("Content-Type", "application/json");
-            response.addHeader("Accept-Language", "en-US");
-
-            HttpEntity entity = response.getEntity();
-
-            if (entity != null) {
-                return IOUtils.toString(entity.getContent(), StandardCharsets.UTF_8);
-            }
-        } catch (Exception e) {
-            printExceptionMsg(e);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         return null;
     }
 }
-

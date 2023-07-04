@@ -35,6 +35,14 @@ public class DateTime {
         this.end = this.start.plusMinutes(this.duration.toMinutes());
     }
 
+    public DateTime(String end) {
+        this.start = null;
+        this.end = ZonedDateTime.of(
+                LocalDateTime.from(INPUT_FORMATTER.parse(end)),
+                ZoneOffset.UTC
+        );
+    }
+
     // Outer methods for parsing incoming string time to user-friendly view
     public static String formatToConvenient(String time) {
         return ZonedDateTime.parse(time).format(INPUT_FORMATTER);
@@ -47,14 +55,6 @@ public class DateTime {
         } catch (DateTimeParseException e) {
             return false;
         }
-    }
-
-    public static void main(String[] args) {
-//        DateTime dateTime = new DateTime("25.06.23 01:00", 90);
-//        System.out.println(dateTime.start + " " + dateTime.end);
-//        System.out.println(dateTime.getOutputStart() + " " + dateTime.getOutputEnd());
-//        System.out.println(formatToConvenient(dateTime.getOutputStart()) + " " +
-//                formatToConvenient(dateTime.getOutputEnd()));
     }
 
     // Setters

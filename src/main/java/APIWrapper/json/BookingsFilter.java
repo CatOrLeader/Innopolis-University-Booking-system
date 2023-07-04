@@ -2,6 +2,8 @@ package APIWrapper.json;
 
 import APIWrapper.utilities.DateTime;
 
+import java.util.Date;
+
 public class BookingsFilter {
     // Exposed fields
     public String started_at_or_after;
@@ -16,6 +18,13 @@ public class BookingsFilter {
         this.owner_email_in = owner_email_in;
     }
 
+    public BookingsFilter(String[] room_id_in, String[] owner_email_in) {
+        this.started_at_or_after = null;
+        this.ended_at_or_before = null;
+        this.room_id_in = room_id_in;
+        this.owner_email_in = owner_email_in;
+    }
+
     // Class constructor
     public void formatToSend() {
         parseDateTimeToOutput();
@@ -23,9 +32,21 @@ public class BookingsFilter {
 
     // Additional methods
     private void parseDateTimeToOutput() {
-        DateTime dateTime = new DateTime(started_at_or_after, ended_at_or_before);
+        if (started_at_or_after == null && ended_at_or_before == null) {
+            return;
+        } else if (started_at_or_after == null) {
+            DateTime dateTime = new DateTime(ended_at_or_before);
 
-        started_at_or_after = dateTime.getOutputStart();
-        ended_at_or_before = dateTime.getOutputEnd();
+            ended_at_or_before = dateTime.getOutputEnd();
+        } else if (ended_at_or_before == null) {
+            DateTime dateTime = new DateTime(started_at_or_after, 0);
+
+            started_at_or_after = dateTime.getOutputStart();
+        } else {
+            DateTime dateTime = new DateTime(started_at_or_after, ended_at_or_before);
+
+            started_at_or_after = dateTime.getOutputStart();
+            ended_at_or_before = dateTime.getOutputEnd();
+        }
     }
 }
