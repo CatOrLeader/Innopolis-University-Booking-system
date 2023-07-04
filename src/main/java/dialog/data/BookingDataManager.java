@@ -4,7 +4,10 @@ import APIWrapper.json.Booking;
 import APIWrapper.utilities.DateTime;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -12,7 +15,7 @@ import java.util.Map;
 
 // TODO: DO NOT FORGET ABOUT LOCAL TIME ON DIFFERENT MACHINE!
 public class BookingDataManager {
-    // TODO: get rid of this
+    // TODO: get rid of this, this is instead of database
     private static final Map<String, Booking> bookingById = new HashMap<>();
     private static final Map<String, List<BookingReminder>> bookingData =
             new HashMap<>();
@@ -38,20 +41,24 @@ public class BookingDataManager {
     }
 
     public void addBooking(Booking booking, long userId) {
-        // TODO: determine whether booking really confirmed
         var bookingTime = DateTime.formatToConvenient(booking.start);
         bookingById.put(booking.id, booking);
         bookingData.putIfAbsent(bookingTime, new LinkedList<>());
-        bookingData.get(bookingTime).add(new BookingReminder(userId, booking, false));
+        var dt = ZonedDateTime.parse(booking.start, DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()));
+        var isConfirmed = (ChronoUnit.MINUTES.between(dt, ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault())) <= 15);
+        bookingData.get(bookingTime).add(new BookingReminder(userId, booking, isConfirmed));
     }
 
     public void removeBooking(Booking booking) {
         bookingById.remove(booking.id);
         var list = bookingData.get(DateTime.formatToConvenient(booking.start));
+        if (list == null) {
+            return;
+        }
         list.removeIf(confirmation -> confirmation.getBooking().equals(booking));
     }
 
-    // FIXME: not optimal
+    // FIXME: not optimal, will be better with database
     public void setConfirmed(Booking booking) {
         var time = DateTime.formatToConvenient(booking.start);
         bookingData.get(time).forEach(bookingReminder -> {
