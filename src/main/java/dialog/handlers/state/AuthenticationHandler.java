@@ -4,10 +4,10 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
 import dialog.config.IText;
+import dialog.data.BotState;
+import dialog.data.UserData;
 import dialog.handlers.Response;
 import dialog.handlers.StateHandler;
-import dialog.userData.BotState;
-import dialog.userData.UserData;
 import mail.AuthData;
 import mail.Client;
 

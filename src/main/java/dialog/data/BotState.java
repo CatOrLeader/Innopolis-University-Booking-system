@@ -1,4 +1,4 @@
-package dialog.userData;
+package dialog.data;
 
 /**
  * Enum describing states of the bot-user dialog FSM.

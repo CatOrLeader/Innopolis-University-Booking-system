@@ -1,10 +1,18 @@
+import APIWrapper.requests.Request;
+import com.coreoz.wisp.Scheduler;
+import com.coreoz.wisp.schedule.Schedules;
 import com.pengrad.telegrambot.TelegramBot;
 import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.GetUpdates;
 import com.pengrad.telegrambot.request.SendMessage;
 import dialog.UpdatesManager;
+import dialog.config.IText;
+import dialog.data.BookingDataManager;
+import dialog.data.UserBooking;
+import dialog.data.UserDataManager;
 
+import java.time.Duration;
 import java.util.Arrays;
 
 /**
@@ -12,12 +20,17 @@ import java.util.Arrays;
  */
 public class BookingBot {
     private final TelegramBot bot;
-    private final UpdatesManager updatesHandler;
+    private final UpdatesManager updatesManager;
+    private final BookingDataManager bookingManager;
+    private final UserDataManager userManager;
+    private final Request outlook = new Request("http://localhost:3000");
     private int skipUntil = 0;
 
     public BookingBot(String token) {
         bot = new TelegramBot(token);
-        updatesHandler = new UpdatesManager();
+        updatesManager = new UpdatesManager();
+        userManager = new UserDataManager();
+        bookingManager = new BookingDataManager();
     }
 
     /**
@@ -45,6 +58,43 @@ public class BookingBot {
         });
     }
 
+    public void notifyBookings() {
+        var scheduler = new Scheduler();
+        scheduler.schedule(this::processBookings,
+                Schedules.fixedDelaySchedule(Duration.ofMinutes(1)));
+    }
+
+    private void processBookings() {
+        var bookingsToCancel = bookingManager.getBookingsNow();
+        var upcomingBookings = bookingManager.getBookingsToConfirm();
+        bookingsToCancel.forEach(this::removeUnconfirmedBooking);
+        upcomingBookings.forEach(this::notifyBooking);
+    }
+
+    private void notifyBooking(UserBooking userBooking) {
+        var booking = userBooking.getBooking();
+        var usr = userBooking.getUserId();
+        var lang = userManager.getUserData(usr).getLang();
+        var msg = new SendMessage(
+                usr,
+                lang.upcomingBooking(booking)
+        ).replyMarkup(lang.bookingConfirmation(booking));
+        bot.execute(msg);
+    }
+
+    private void removeUnconfirmedBooking(UserBooking userBooking) {
+        var booking = userBooking.getBooking();
+        if (userBooking.isConfirmed()) {
+            return;
+        }
+        var usr = userBooking.getUserId();
+        var lang = userManager.getUserData(usr).getLang();
+        outlook.deleteBooking(booking.id);
+        bookingManager.removeBooking(booking);
+        var msg = new SendMessage(usr, lang.unconfirmedBookingCancel(booking));
+        bot.execute(msg);
+    }
+
     /**
      * Method to process all the updates and answer on them.
      * There may be multiple response requests on one update.
@@ -52,29 +102,40 @@ public class BookingBot {
      * @param update incoming update.
      */
     private void process(Update update) {
+        var userId = extractUserId(update);
+        var data = userManager.getUserData(userId);
         try {
-            var responses = updatesHandler.handle(update);
-            Arrays.stream(responses).forEach(bot::execute);
+            var response = updatesManager.handle(update, data);
+            Arrays.stream(response.botResponse()).forEach(bot::execute);
+            userManager.setUserData(userId, response.userData());
         } catch (Exception any) {
-            excuseProcessCrash(update);
+            excuseProcessCrash(userId, data.getLang());
         }
     }
 
     /**
      * Method to excuse accidental processes crashes
-     *
-     * @param update improperly handled update
      */
-    private void excuseProcessCrash(Update update) {
-        var usr = UpdatesManager.extractUserId(update);
-        var msgContent = """
-                Sorry, something went wrong...
-
-                Извините, что-то пошло не так...""";
+    private void excuseProcessCrash(long userId, IText lang) {
         var msg = new SendMessage(
-                usr,
-                msgContent
+                userId,
+                lang.sorryError()
         );
         bot.execute(msg);
+    }
+
+    /**
+     * Method to get user (that made update) ID for any given update.
+     *
+     * @param update update.
+     * @return user id parsed to string.
+     * TODO: Extend variety of updates with sender id
+     */
+    private long extractUserId(Update update) {
+        if (update.message() != null) {
+            return update.message().from().id();
+        } else {
+            return update.callbackQuery().from().id();
+        }
     }
 }

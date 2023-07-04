@@ -22,6 +22,8 @@ public interface IText {
 
     String verificationCodeExpired(String email);
 
+    String sorryError();
+
     String sorryEmailError();
 
     String authorized();
@@ -54,6 +56,9 @@ public interface IText {
 
     String bookingInterfaceClosed();
 
+    String bookingConfirmed();
+    String bookingRevoked();
+
     // Buttons text
     String newBookingBtn();
 
@@ -83,4 +88,11 @@ public interface IText {
     InlineKeyboardMarkup userBookings(List<Booking> bookings);
 
     InlineKeyboardMarkup changeEmail();
+
+    InlineKeyboardMarkup bookingConfirmation(Booking booking);
+
+    // Notifications
+    String upcomingBooking(Booking booking);
+
+    String unconfirmedBookingCancel(Booking booking);
 }

@@ -1,4 +1,4 @@
-package dialog.userData;
+package dialog.data;
 
 import Models.UserDataModel;
 import dialog.config.EnglishText;

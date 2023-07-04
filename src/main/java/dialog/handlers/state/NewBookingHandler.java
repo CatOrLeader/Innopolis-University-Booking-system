@@ -9,10 +9,11 @@ import Database.Controllers.RoomController;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
+import dialog.data.BookingDataManager;
+import dialog.data.BotState;
+import dialog.data.UserData;
 import dialog.handlers.Response;
 import dialog.handlers.StateHandler;
-import dialog.userData.BotState;
-import dialog.userData.UserData;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,6 +25,7 @@ public class NewBookingHandler extends StateHandler {
     private final Map<Long, Booking> bookingInfo = new HashMap<>();
     private final Request outlook = new Request("http://localhost:3000");
     private final RoomController roomData = new RoomController();
+    private final BookingDataManager bookingManager = new BookingDataManager();
 
     public NewBookingHandler() {
         preloadRoomsFromApi();
@@ -93,6 +95,7 @@ public class NewBookingHandler extends StateHandler {
                             info.room.name,
                             DateTime.formatToConvenient(info.start),
                             DateTime.formatToConvenient(info.end)));
+            bookingManager.addBooking(response, user);
         }
         botMessage = botMessage.replyMarkup(lang.mainMenuMarkup());
         data.setDialogState(BotState.MAIN_MENU);

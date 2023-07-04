@@ -48,6 +48,11 @@ public class RussianText implements IText {
     }
 
     @Override
+    public String sorryError() {
+        return "Извините, что-то пошло не так...";
+    }
+
+    @Override
     public String sorryEmailError() {
         return "Извините... Произошла непредвиденная ошибка. Пожалуйста, введите свой адрес электронной почты еще раз.";
     }
@@ -135,6 +140,16 @@ public class RussianText implements IText {
     @Override
     public String bookingInterfaceClosed() {
         return "Интерфейс бронирования закрыт.";
+    }
+
+    @Override
+    public String bookingConfirmed() {
+        return "Бронирование успешно подтверждено!";
+    }
+
+    @Override
+    public String bookingRevoked() {
+        return "Бронирование успешно отменено";
     }
 
     @Override
@@ -234,5 +249,30 @@ public class RussianText implements IText {
         return new InlineKeyboardMarkup(
                 new InlineKeyboardButton("\uD83D\uDCE8 Обновить электронную почту").callbackData("update")
         );
+    }
+
+    @Override
+    public InlineKeyboardMarkup bookingConfirmation(Booking booking) {
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton("✅ Подтвердить").callbackData(String.format("confirm %s", booking.id)),
+                new InlineKeyboardButton("❌ Отменить").callbackData(String.format("revoke %s", booking.id))
+        );
+    }
+
+    @Override
+    public String upcomingBooking(Booking booking) {
+        return String.format("""
+                        У Вас есть бронирование через 15 минут — '%s' в %s с %s до %s.
+                                        
+                        Необходимо подтвердить бронирование в течение 15 минут, иначе оно будет отменено.""",
+                booking.title,
+                booking.room.name,
+                DateTime.formatToConvenient(booking.start),
+                DateTime.formatToConvenient(booking.end));
+    }
+
+    @Override
+    public String unconfirmedBookingCancel(Booking booking) {
+        return String.format("Неподтвержденное бронирование '%s' было отменено.", booking.title);
     }
 }

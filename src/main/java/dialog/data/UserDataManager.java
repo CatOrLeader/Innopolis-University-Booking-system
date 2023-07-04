@@ -1,6 +1,7 @@
-package dialog.userData;
+package dialog.data;
 
 import Database.Controllers.UserDataController;
+import dialog.config.EnglishText;
 
 /**
  * Class that allows to work with external user data by his
@@ -35,6 +36,9 @@ public class UserDataManager {
      * @return user's data.
      */
     public UserData getUserData(long userId) {
+        if (!hasUserData(userId)) {
+            initializeUser(userId);
+        }
         return userData.getUserData(userId).toUserData();
     }
 
@@ -47,5 +51,20 @@ public class UserDataManager {
      */
     public boolean hasUserData(long userId) {
         return userData.userExists(userId);
+    }
+
+
+    /**
+     * Method to set initial data for new user.
+     *
+     * @param user new user
+     */
+    private void initializeUser(long user) {
+        var initialData = new UserData(
+                user,
+                BotState.UNINITIALIZED,
+                null,
+                new EnglishText());
+        setUserData(user, initialData);
     }
 }

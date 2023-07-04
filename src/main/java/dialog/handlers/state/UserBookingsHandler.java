@@ -5,15 +5,17 @@ import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.AnswerCallbackQuery;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
+import dialog.data.BookingDataManager;
+import dialog.data.BotState;
+import dialog.data.UserData;
 import dialog.handlers.Response;
 import dialog.handlers.StateHandler;
-import dialog.userData.BotState;
-import dialog.userData.UserData;
 
 import java.util.regex.Pattern;
 
 public class UserBookingsHandler extends StateHandler {
     private final Request outlook = new Request("http://localhost:3000");
+    private final BookingDataManager bookingManager = new BookingDataManager();
 
     @Override
     public Response handle(Update incomingUpdate, UserData data) {
@@ -52,6 +54,7 @@ public class UserBookingsHandler extends StateHandler {
         matches.find();
         var infoId = matches.group();
 
+        // TODO: ask for get BOOKING by id
         var bookings = outlook.getBookingsByUser(email).stream().filter(
                 booking -> booking.id.equals(infoId)
         ).toList();
@@ -59,7 +62,7 @@ public class UserBookingsHandler extends StateHandler {
         AnswerCallbackQuery answer;
         if (bookings.isEmpty()) {
             answer = new AnswerCallbackQuery(query.id()).
-                    text("no data").showAlert(true);
+                    text(lang.sorryError()).showAlert(true);
         } else {
             answer = new AnswerCallbackQuery(query.id()).text(
                     lang.fullBookingInfo(bookings.get(0))
@@ -84,6 +87,12 @@ public class UserBookingsHandler extends StateHandler {
         matches.find();
         var cancelId = matches.group();
 
+        // REMOVING BOOKING FROM OUR DATABASE
+        var bookingToDelete = outlook.getBookingsByUser(data.getEmail()).stream().filter(
+                booking -> booking.id.equals(cancelId)
+        ).toList().get(0);
+        bookingManager.removeBooking(bookingToDelete);
+
         outlook.deleteBooking(cancelId);
         var bookings = outlook.getBookingsByUser(data.getEmail());
 
@@ -106,7 +115,7 @@ public class UserBookingsHandler extends StateHandler {
      * Handle user request to go back from bookings list
      *
      * @param update incoming update
-     * @param data user data
+     * @param data   user data
      * @return bot response
      */
     private Response handleBack(Update update, UserData data) {

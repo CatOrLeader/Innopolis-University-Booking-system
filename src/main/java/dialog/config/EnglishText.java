@@ -48,6 +48,11 @@ public class EnglishText implements IText {
     }
 
     @Override
+    public String sorryError() {
+        return "Sorry, something went wrong...";
+    }
+
+    @Override
     public String sorryEmailError() {
         return "Sorry.. Unexpected error happen. Please, input your email again.";
     }
@@ -135,6 +140,16 @@ public class EnglishText implements IText {
     @Override
     public String bookingInterfaceClosed() {
         return "Booking interface closed.";
+    }
+
+    @Override
+    public String bookingConfirmed() {
+        return "Booking successfully confirmed!";
+    }
+
+    @Override
+    public String bookingRevoked() {
+        return "Booking successfully revoked!";
     }
 
     @Override
@@ -234,5 +249,31 @@ public class EnglishText implements IText {
         return new InlineKeyboardMarkup(
                 new InlineKeyboardButton("\uD83D\uDCE8 Update email").callbackData("update")
         );
+    }
+
+    @Override
+    public InlineKeyboardMarkup bookingConfirmation(Booking booking) {
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton("✅ Confirm").callbackData(String.format("confirm %s", booking.id)),
+                new InlineKeyboardButton("❌ Revoke").callbackData(String.format("revoke %s", booking.id))
+        );
+    }
+
+    @Override
+    public String upcomingBooking(Booking booking) {
+        return String.format("""
+                        You have an upcoming booking in 15 minutes — '%s' at %s since %s until %s.
+                                        
+                        You need to confirm the booking in 15 minutes, otherwise it will be cancelled.
+                        """,
+                booking.title,
+                booking.room.name,
+                DateTime.formatToConvenient(booking.start),
+                DateTime.formatToConvenient(booking.end));
+    }
+
+    @Override
+    public String unconfirmedBookingCancel(Booking booking) {
+        return String.format("Unconfirmed booking '%s' was cancelled.", booking.title);
     }
 }
