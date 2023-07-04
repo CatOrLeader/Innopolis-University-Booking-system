@@ -1,9 +1,9 @@
 package Models;
 
-import dialog.config.EnglishText;
-import dialog.config.RussianText;
-import dialog.data.BotState;
-import dialog.data.UserData;
+import Bot.Dialog.Config.EnglishText;
+import Bot.Dialog.Config.RussianText;
+import Bot.Dialog.Data.BotState;
+import Bot.Dialog.Data.UserData;
 
 /**
  * Model for the User data access in database
