@@ -2,12 +2,12 @@ package dialog.data;
 
 import APIWrapper.json.Booking;
 
-public class BookingReminder {
+public class UserBooking {
     private final long userId;
     private final Booking booking;
     private boolean isConfirmed;
 
-    public BookingReminder(long userId, Booking booking, boolean isConfirmed) {
+    public UserBooking(long userId, Booking booking, boolean isConfirmed) {
         this.userId = userId;
         this.booking = booking;
         this.isConfirmed = isConfirmed;

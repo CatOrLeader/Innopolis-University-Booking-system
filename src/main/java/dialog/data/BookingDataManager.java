@@ -17,18 +17,18 @@ import java.util.Map;
 public class BookingDataManager {
     // TODO: get rid of this, this is instead of database
     private static final Map<String, Booking> bookingById = new HashMap<>();
-    private static final Map<String, List<BookingReminder>> bookingData =
+    private static final Map<String, List<UserBooking>> bookingData =
             new HashMap<>();
 
-    public List<BookingReminder> getBookingsNow() {
+    public List<UserBooking> getBookingsNow() {
         return getBookingsAtTime(LocalDateTime.now());
     }
 
-    public List<BookingReminder> getBookingsToConfirm() {
-        return getBookingsAtTime(LocalDateTime.now().plusMinutes(15));
+    public List<UserBooking> getBookingsToConfirm() {
+        return getBookingsAtTime(LocalDateTime.now().plusMinutes(16));
     }
 
-    private List<BookingReminder> getBookingsAtTime(LocalDateTime time) {
+    private List<UserBooking> getBookingsAtTime(LocalDateTime time) {
         var fTime = formatTime(time);
         if (!bookingData.containsKey(fTime)) {
             return new LinkedList<>();
@@ -46,7 +46,7 @@ public class BookingDataManager {
         bookingData.putIfAbsent(bookingTime, new LinkedList<>());
         var dt = ZonedDateTime.parse(booking.start, DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()));
         var isConfirmed = (ChronoUnit.MINUTES.between(dt, ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault())) <= 15);
-        bookingData.get(bookingTime).add(new BookingReminder(userId, booking, isConfirmed));
+        bookingData.get(bookingTime).add(new UserBooking(userId, booking, isConfirmed));
     }
 
     public void removeBooking(Booking booking) {
@@ -61,9 +61,9 @@ public class BookingDataManager {
     // FIXME: not optimal, will be better with database
     public void setConfirmed(Booking booking) {
         var time = DateTime.formatToConvenient(booking.start);
-        bookingData.get(time).forEach(bookingReminder -> {
-            if (bookingReminder.getBooking().equals(booking)) {
-                bookingReminder.setConfirmed(true);
+        bookingData.get(time).forEach(userBooking -> {
+            if (userBooking.getBooking().equals(booking)) {
+                userBooking.setConfirmed(true);
             }
         });
     }

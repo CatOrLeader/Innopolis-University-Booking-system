@@ -9,7 +9,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import dialog.UpdatesManager;
 import dialog.config.IText;
 import dialog.data.BookingDataManager;
-import dialog.data.BookingReminder;
+import dialog.data.UserBooking;
 import dialog.data.UserDataManager;
 
 import java.time.Duration;
@@ -71,9 +71,9 @@ public class BookingBot {
         upcomingBookings.forEach(this::notifyBooking);
     }
 
-    private void notifyBooking(BookingReminder bookingReminder) {
-        var booking = bookingReminder.getBooking();
-        var usr = bookingReminder.getUserId();
+    private void notifyBooking(UserBooking userBooking) {
+        var booking = userBooking.getBooking();
+        var usr = userBooking.getUserId();
         var lang = userManager.getUserData(usr).getLang();
         var msg = new SendMessage(
                 usr,
@@ -82,12 +82,12 @@ public class BookingBot {
         bot.execute(msg);
     }
 
-    private void removeUnconfirmedBooking(BookingReminder bookingReminder) {
-        var booking = bookingReminder.getBooking();
-        if (bookingReminder.isConfirmed()) {
+    private void removeUnconfirmedBooking(UserBooking userBooking) {
+        var booking = userBooking.getBooking();
+        if (userBooking.isConfirmed()) {
             return;
         }
-        var usr = bookingReminder.getUserId();
+        var usr = userBooking.getUserId();
         var lang = userManager.getUserData(usr).getLang();
         outlook.deleteBooking(booking.id);
         bookingManager.removeBooking(booking);

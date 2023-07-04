@@ -62,7 +62,7 @@ public class UserBookingsHandler extends StateHandler {
         AnswerCallbackQuery answer;
         if (bookings.isEmpty()) {
             answer = new AnswerCallbackQuery(query.id()).
-                    text("no data").showAlert(true);
+                    text(lang.sorryError()).showAlert(true);
         } else {
             answer = new AnswerCallbackQuery(query.id()).text(
                     lang.fullBookingInfo(bookings.get(0))
