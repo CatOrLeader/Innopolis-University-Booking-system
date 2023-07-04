@@ -1,6 +1,6 @@
 package Models;
 
-import APIWrapper.json.Room;
+import APIWrapper.Json.Room;
 
 /**
  * Room representation in the database
@@ -23,10 +23,10 @@ public class RoomModel {
     }
 
     // TODO: get rid of strange code duplication
-    private APIWrapper.json.RoomType toJsonType(RoomType type) {
+    private APIWrapper.Json.RoomType toJsonType(RoomType type) {
         return switch (type) {
-            case MEETING_ROOM -> APIWrapper.json.RoomType.MEETING_ROOM;
-            case AUDITORIUM -> APIWrapper.json.RoomType.AUDITORIUM;
+            case MEETING_ROOM -> APIWrapper.Json.RoomType.MEETING_ROOM;
+            case AUDITORIUM -> APIWrapper.Json.RoomType.AUDITORIUM;
         };
     }
 }
