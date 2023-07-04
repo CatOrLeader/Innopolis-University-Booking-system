@@ -1,13 +1,12 @@
 package APIWrapper.requests;
 
 import APIWrapper.json.*;
+import APIWrapper.requests.APIResponses.ApiResponse;
+import APIWrapper.requests.APIResponses.ApiResponses;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 
@@ -24,46 +23,30 @@ class RequestFormatted {
 
     // Incoming messages processors
     protected ArrayList<Room> getAllBookableRooms() {
-        String content = formatStringToGson(rawRequest.getAllBookableRoomsUnformatted());
+        ApiResponse response = rawRequest.getAllBookableRoomsUnformatted();
 
-        // Catch any exception
-        if (checkIfValidationError(content)) return null;
+        // Catch responses
+        if (isNotOK(response)) return null;
 
-        // Parse to Java Class Objects
-        Type roomArrayList = new TypeToken<ArrayList<Room>>() {
-        }.getType();
-
-        try {
-            updateJson(content);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return gson.fromJson(content, roomArrayList);
+        // Parse to Java Class Object
+        Type roomArrayList = new TypeToken<ArrayList<Room>>() {}.getType();
+        return gson.fromJson(response.getBody(), roomArrayList);
     }
 
     protected ArrayList<Room> getAllFreeRooms(GetFreeRoomsRequest request) {
         request.formatToSend();
         String jsonRequest = gson.toJson(request);
 
-        // Make a request and receive a response
-        String content = formatStringToGson(rawRequest.getFreeRoomsUnformatted(jsonRequest));
+        // Make request
+        ApiResponse response = rawRequest.getAllFreeRoomsUnformatted(jsonRequest);
 
-        // Catch any exception
-        if (checkIfValidationError(content)) return null;
+        // Catch responses
+        if (isNotOK(response)) return null;
 
         // Parse to Java Class Object
         Type roomArrayList = new TypeToken<ArrayList<Room>>() {
         }.getType();
-        ArrayList<Room> rooms = gson.fromJson(content, roomArrayList);
-
-        try {
-            updateJson(content);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return rooms;
+        return gson.fromJson(response.getBody(), roomArrayList);
     }
 
     protected Booking bookRoom(String roomId, BookRoomRequest request) {
@@ -71,22 +54,13 @@ class RequestFormatted {
         String jsonRequest = gson.toJson(request);
 
         // Make a request and receive a response
-        String content = formatStringToGson(rawRequest.bookRoomUnformatted(roomId, jsonRequest));
+        ApiResponse response = rawRequest.bookRoomUnformatted(roomId, jsonRequest);
 
-        // Catch any exceptions
-        if (checkIfValidationError(content)) return null;
-        if (checkIfBookRoomError(content)) return null;
+        // Catch responses
+        if (isNotOK(response)) return null;
 
         // Parse to Java Class Object
-        Booking booking = gson.fromJson(content, Booking.class);
-
-        try {
-            updateJson(content);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return booking;
+        return gson.fromJson(response.getBody(), Booking.class);
     }
 
     protected ArrayList<Booking> queryBookings(QueryBookingsRequest request) {
@@ -94,95 +68,55 @@ class RequestFormatted {
         String jsonRequest = gson.toJson(request);
 
         // Make a request and receive a response
-        String content = formatStringToGson(rawRequest.queryBookingsUnformatted(jsonRequest));
+        ApiResponse response = rawRequest.queryBookingsUnformatted(jsonRequest);
 
-        // Catch any exceptions
-        if (checkIfValidationError(content)) return null;
+        // Catch responses
+        if (isNotOK(response)) return null;
 
         // Parse to Java Class Object
         Type bookingsArrayList = new TypeToken<ArrayList<Booking>>() {
         }.getType();
-        ArrayList<Booking> bookings = gson.fromJson(content, bookingsArrayList);
-
-        try {
-            updateJson(content);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return bookings;
+        return gson.fromJson(response.getBody(), bookingsArrayList);
     }
 
     protected String deleteBooking(String bookingId) {
         // Make a request and receive a response
-        String content = formatStringToGson(rawRequest.deleteBookingsUnformatted(bookingId));
+        ApiResponse response = rawRequest.deleteBookingUnformatted(bookingId);
 
-        // Catch any exceptions
-        if (checkIfValidationError(content)) return null;
+        // Catch responses
+        if (isNotOK(response)) return null;
 
-        // Parse to Java Class Object
-        System.out.println(content);
-        String msg = gson.fromJson(content, String.class);
-
-        try {
-            updateJson(content);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return msg;
+        return response.getBody();
     }
 
-    // Additional Methods
-    private String formatStringToGson(String content) {
-        if (content == null) {
-            return null;
-        }
-
-        String replacement = "\\" + "\"";
-
-        return content.replaceAll("\"", replacement);
-    }
-
-    private void updateJson(String body) throws IOException {
-        if (body == null) return;
-
-        BufferedWriter writer = new BufferedWriter(
-                new FileWriter("src/main/java/mockTestingForDevs/serverResponse.json"));
-        writer.write(body);
-        writer.close();
-    }
-
-    // Exception checkers
-    private boolean checkIfValidationError(String content) {
-        try {
-            HTTPValidationError error = gson.fromJson(content, HTTPValidationError.class);
-            updateJson(content);
-            System.out.println("HTTPValidation error" +
-                    "\nLoc: " + error.detail.loc +
-                    "\nMsg: " + error.detail.msg +
-                    "\nType: " + error.detail.type);
+    // Catchers
+    private boolean isNotOK(ApiResponse response) {
+        if (!(response.getCode() == ApiResponses.OK.code)) {
+            System.out.println(response.getCode() + "\n" + response.getBody());
             return true;
-        } catch (Exception e) {
-            System.out.println("Validation was successfully done");
-            return false;
         }
+
+        return false;
     }
 
-    private boolean checkIfBookRoomError(String content) {
-        try {
-            BookRoomError error = gson.fromJson(content, BookRoomError.class);
-            updateJson(content);
+    public static void main(String[] args) {
+        RequestFormatted requestFormatted = new RequestFormatted("http://localhost:3000");
 
-            // Check if the incoming body satisfy to the BookRoomError Class
-            if (error.message == null) throw new Exception();
+        GetFreeRoomsRequest request = new GetFreeRoomsRequest(
+                "04.07.23 04:00", 90
+        );
 
-            System.out.println("This room cannot be booked for this user during this time period");
-            System.out.println("BookRoomError message: " + error.message);
-            return true;
-        } catch (Exception e) {
-            System.out.println("Booking was successfully done");
-            return false;
-        }
+        BookRoomRequest request1 = new BookRoomRequest(
+                "title", "04.07.23 04:00", 90, "a.mukhutdinov@innopolis.university"
+        );
+
+        QueryBookingsRequest request2 = new QueryBookingsRequest(
+                new BookingsFilter(
+                        null, null,
+                        new String[]{}, new String[]{}
+                )
+        );
+
+        requestFormatted.getAllBookableRooms();
     }
 }

@@ -34,7 +34,7 @@ public class RequestsExamples {
         );
 
 //        ArrayList<Room> rooms = request.getAllBookableRooms();
-//        ArrayList<Room> freeRooms = request.getAllFreeRooms(getFreeRoomsRequest);
+//        ArrayList<Room> freeRooms = request.getAllFreeRoomsUnformatted(getFreeRoomsRequest);
 //        for (Room room : freeRooms) {
 //            System.out.println(room);
 //        }
