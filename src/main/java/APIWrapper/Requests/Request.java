@@ -8,8 +8,8 @@ public class Request {
     private final RequestFormatted formatter;
     private final String url;
 
-    public Request(String url) {
-        this.url = url;
+    public Request() {
+        this.url = System.getenv("MOCK_SERVER_URL");
         formatter = new RequestFormatted(url);
     }
 

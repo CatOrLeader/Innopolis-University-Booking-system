@@ -14,7 +14,7 @@ import com.pengrad.telegrambot.request.EditMessageText;
 
 public class BookingConfirmationHandler extends IndependentHandler {
     private final UserBookingManager bookingManager = new UserBookingManager();
-    private final Request outlook = new Request("http://localhost:3000");
+    private final Request outlook = new Request();
     @Override
     public MaybeResponse handle(Update incomingUpdate, UserData data) {
         var callback = incomingUpdate.callbackQuery();
