@@ -1,25 +1,31 @@
-image: maven:latest
-# тест запуск
-stages:
+stages:          # List of stages for jobs, and their order of execution
   - build
   - test
   - deploy
 
-
-# Сборка 
-build:
+build-job:       # This job runs in the build stage, which runs first.
   stage: build
   script:
-    - mvn clean install
+    - echo "Compiling the code..."
+    - echo "Compile complete."
 
-# Тестирование 
-test:
-  stage: test
+unit-test-job:   # This job runs in the test stage.
+  stage: test    # It only starts when the job in the build stage completes successfully.
   script:
-    - mvn test
+    - echo "Running unit tests... This will take about 60 seconds."
+    - sleep 60
+    - echo "Code coverage is 90%"
 
-# Развертывание 
-deploy:
-  stage: deploy
-  script: 
-    - mvn deploy -DDB_URL=$DB_URL -DDB_USERNAME=$DB_USERNAME -DDB_PASSWORD=$DB_PASSWORD -DBOT_TOKEN=$BOT_TOKEN -DSMTP_AUTH_USER=$SMTP_AUTH_USER -DSMTP_AUTH_PWD=$SMTP_AUTH_PWD -DSMTP_HOST_NAME=$SMTP_HOST_NAME -DSMTP_PORT=$SMTP_PORT -DMOCK_SERVER_URL=$MOCK_SERVER_URL
+lint-test-job:   # This job also runs in the test stage.
+  stage: test    # It can run at the same time as unit-test-job (in parallel).
+  script:
+    - echo "Linting code... This will take about 10 seconds."
+    - sleep 10
+    - echo "No lint issues found."
+
+deploy-job:      # This job runs in the deploy stage.
+  stage: deploy  # It only runs when *both* jobs in the test stage complete successfully.
+  environment: production
+  script:
+    - echo "Deploying application..."
+    - echo "Application successfully deployed."
