@@ -1,12 +1,12 @@
 package Bot.Dialog.Handlers.Independent;
 
-import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.request.SendMessage;
 import Bot.Dialog.Data.BotState;
 import Bot.Dialog.Data.UserData;
 import Bot.Dialog.Handlers.IndependentHandler;
 import Bot.Dialog.Handlers.MaybeResponse;
 import Bot.Dialog.Handlers.Response;
+import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.SendMessage;
 
 /**
  * Independent handler for transition to menu.

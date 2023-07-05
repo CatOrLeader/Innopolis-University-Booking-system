@@ -1,15 +1,15 @@
 package Bot.Dialog;
 
-import com.pengrad.telegrambot.model.Update;
 import Bot.Dialog.Data.BotState;
 import Bot.Dialog.Data.UserData;
+import Bot.Dialog.Handlers.Independent.BookingConfirmationHandler;
+import Bot.Dialog.Handlers.Independent.GoToMenuHandler;
 import Bot.Dialog.Handlers.IndependentHandler;
 import Bot.Dialog.Handlers.MaybeResponse;
 import Bot.Dialog.Handlers.Response;
-import Bot.Dialog.Handlers.StateHandler;
-import Bot.Dialog.Handlers.Independent.BookingConfirmationHandler;
-import Bot.Dialog.Handlers.Independent.GoToMenuHandler;
 import Bot.Dialog.Handlers.State.*;
+import Bot.Dialog.Handlers.StateHandler;
+import com.pengrad.telegrambot.model.Update;
 
 import javax.mail.NoSuchProviderException;
 import java.util.ArrayList;

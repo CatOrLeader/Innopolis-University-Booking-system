@@ -1,8 +1,8 @@
 package APIWrapper.Requests;
 
 import APIWrapper.Requests.APIResponses.ApiResponse;
-import okhttp3.*;
 import okhttp3.Request;
+import okhttp3.*;
 
 import java.io.IOException;
 

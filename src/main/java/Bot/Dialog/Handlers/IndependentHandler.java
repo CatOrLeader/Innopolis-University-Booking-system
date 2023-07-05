@@ -1,7 +1,7 @@
 package Bot.Dialog.Handlers;
 
-import com.pengrad.telegrambot.model.Update;
 import Bot.Dialog.Data.UserData;
+import com.pengrad.telegrambot.model.Update;
 
 /**
  * Class that describes independent (from state) handler.
