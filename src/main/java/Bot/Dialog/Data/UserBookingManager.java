@@ -40,9 +40,13 @@ public class UserBookingManager {
     }
 
     public void removeBookingById(String id) {
-        var booking = getBookingById(id);
-        getBookingsAt(DateTime.formatToConvenient(booking.start)).remove(booking);
-        bookingById.remove(id);
+        try {
+            var booking = getBookingById(id);
+            getBookingsAt(DateTime.formatToConvenient(booking.start)).remove(booking);
+            bookingById.remove(id);
+        } catch (Exception ignored) {
+            // to ignore current async between our db and server
+        }
     }
 
     public void setConfirmed(String id) {
@@ -63,8 +67,10 @@ public class UserBookingManager {
     }
 
     private void initializeConfirmStatus(UserBooking booking) {
-        var dt = ZonedDateTime.parse(booking.start, DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault()));
-        booking.isConfirmed = (ChronoUnit.MINUTES.between(dt,
-                ZonedDateTime.of(LocalDateTime.now(), ZoneId.systemDefault())) <= 15);
+        var bookTime = ZonedDateTime.parse(booking.start,
+                DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault())).minusHours(3);
+        var curTime = ZonedDateTime.now();
+        booking.isConfirmed = (
+                ChronoUnit.MINUTES.between(curTime, bookTime) <= 15);
     }
 }
