@@ -25,7 +25,7 @@ public class BookingBot {
     private final UpdatesManager updatesManager;
     private final UserBookingManager bookingManager;
     private final UserDataManager userManager;
-    private final Request outlook = new Request("http://localhost:3000");
+    private final Request outlook = new Request();
     private int skipUntil = 0;
 
     public BookingBot(String token) {

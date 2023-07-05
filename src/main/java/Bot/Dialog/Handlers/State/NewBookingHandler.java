@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public class NewBookingHandler extends StateHandler {
     private final Map<Long, Booking> bookingInfo = new HashMap<>();
-    private final Request outlook = new Request("http://localhost:3000");
+    private final Request outlook = new Request();
     private final RoomController roomData = new RoomController();
     private final UserBookingManager bookingManager = new UserBookingManager();
 

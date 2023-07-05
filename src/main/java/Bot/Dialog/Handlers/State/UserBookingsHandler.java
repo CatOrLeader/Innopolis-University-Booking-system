@@ -14,7 +14,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 import java.util.regex.Pattern;
 
 public class UserBookingsHandler extends StateHandler {
-    private final Request outlook = new Request("http://localhost:3000");
+    private final Request outlook = new Request();
     private final UserBookingManager bookingManager = new UserBookingManager();
 
     @Override

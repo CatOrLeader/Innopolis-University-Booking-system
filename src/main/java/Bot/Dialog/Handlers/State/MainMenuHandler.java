@@ -12,7 +12,7 @@ import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
 
 public class MainMenuHandler extends StateHandler {
-    private final Request outlook = new Request("http://localhost:3000");
+    private final Request outlook = new Request();
 
     @Override
     public Response handle(Update incomingUpdate, UserData data) {
