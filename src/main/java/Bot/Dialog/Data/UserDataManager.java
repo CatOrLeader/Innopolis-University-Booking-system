@@ -1,7 +1,7 @@
 package Bot.Dialog.Data;
 
-import Database.Controllers.UserDataController;
 import Bot.Dialog.Config.EnglishText;
+import Database.Controllers.UserDataController;
 
 /**
  * Class that allows to work with external user data by his

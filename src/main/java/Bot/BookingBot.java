@@ -1,6 +1,11 @@
 package Bot;
 
 import APIWrapper.Requests.Request;
+import Bot.Dialog.Config.IText;
+import Bot.Dialog.Data.UserBooking;
+import Bot.Dialog.Data.UserBookingManager;
+import Bot.Dialog.Data.UserDataManager;
+import Bot.Dialog.UpdatesManager;
 import com.coreoz.wisp.Scheduler;
 import com.coreoz.wisp.schedule.Schedules;
 import com.pengrad.telegrambot.TelegramBot;
@@ -8,11 +13,6 @@ import com.pengrad.telegrambot.UpdatesListener;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.GetUpdates;
 import com.pengrad.telegrambot.request.SendMessage;
-import Bot.Dialog.UpdatesManager;
-import Bot.Dialog.Config.IText;
-import Bot.Dialog.Data.BookingDataManager;
-import Bot.Dialog.Data.UserBooking;
-import Bot.Dialog.Data.UserDataManager;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -23,7 +23,7 @@ import java.util.Arrays;
 public class BookingBot {
     private final TelegramBot bot;
     private final UpdatesManager updatesManager;
-    private final BookingDataManager bookingManager;
+    private final UserBookingManager bookingManager;
     private final UserDataManager userManager;
     private final Request outlook = new Request("http://localhost:3000");
     private int skipUntil = 0;
@@ -32,7 +32,7 @@ public class BookingBot {
         bot = new TelegramBot(token);
         updatesManager = new UpdatesManager();
         userManager = new UserDataManager();
-        bookingManager = new BookingDataManager();
+        bookingManager = new UserBookingManager();
     }
 
     /**
@@ -68,32 +68,30 @@ public class BookingBot {
 
     private void processBookings() {
         var bookingsToCancel = bookingManager.getBookingsNow();
-        var upcomingBookings = bookingManager.getBookingsToConfirm();
+        var upcomingBookings = bookingManager.getBookingsToNotify();
         bookingsToCancel.forEach(this::removeUnconfirmedBooking);
         upcomingBookings.forEach(this::notifyBooking);
     }
 
     private void notifyBooking(UserBooking userBooking) {
-        var booking = userBooking.getBooking();
-        var usr = userBooking.getUserId();
+        var usr = userBooking.userId;
         var lang = userManager.getUserData(usr).getLang();
         var msg = new SendMessage(
                 usr,
-                lang.upcomingBooking(booking)
-        ).replyMarkup(lang.bookingConfirmation(booking));
+                lang.upcomingBooking(userBooking)
+        ).replyMarkup(lang.bookingConfirmation(userBooking));
         bot.execute(msg);
     }
 
     private void removeUnconfirmedBooking(UserBooking userBooking) {
-        var booking = userBooking.getBooking();
-        if (userBooking.isConfirmed()) {
+        if (userBooking.isConfirmed) {
             return;
         }
-        var usr = userBooking.getUserId();
+        var usr = userBooking.userId;
         var lang = userManager.getUserData(usr).getLang();
-        outlook.deleteBooking(booking.id);
-        bookingManager.removeBooking(booking);
-        var msg = new SendMessage(usr, lang.unconfirmedBookingCancel(booking));
+        outlook.deleteBooking(userBooking.id);
+        bookingManager.removeBookingById(userBooking.id);
+        var msg = new SendMessage(usr, lang.unconfirmedBookingCancel(userBooking));
         bot.execute(msg);
     }
 

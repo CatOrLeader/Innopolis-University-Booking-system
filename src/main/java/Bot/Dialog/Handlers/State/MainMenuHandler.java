@@ -1,15 +1,15 @@
 package Bot.Dialog.Handlers.State;
 
 import APIWrapper.Requests.Request;
-import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
-import com.pengrad.telegrambot.request.SendMessage;
 import Bot.Dialog.Config.EnglishText;
 import Bot.Dialog.Config.RussianText;
 import Bot.Dialog.Data.BotState;
 import Bot.Dialog.Data.UserData;
 import Bot.Dialog.Handlers.Response;
 import Bot.Dialog.Handlers.StateHandler;
+import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
+import com.pengrad.telegrambot.request.SendMessage;
 
 public class MainMenuHandler extends StateHandler {
     private final Request outlook = new Request("http://localhost:3000");

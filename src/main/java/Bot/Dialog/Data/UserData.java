@@ -1,8 +1,8 @@
 package Bot.Dialog.Data;
 
-import Models.UserDataModel;
 import Bot.Dialog.Config.EnglishText;
 import Bot.Dialog.Config.IText;
+import Models.UserDataModel;
 
 /**
  * Class to store external user information.

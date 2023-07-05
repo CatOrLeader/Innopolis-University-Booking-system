@@ -5,15 +5,16 @@ import APIWrapper.Json.GetFreeRoomsRequest;
 import APIWrapper.Json.Room;
 import APIWrapper.Requests.Request;
 import APIWrapper.Utilities.DateTime;
+import Bot.Dialog.Data.BotState;
+import Bot.Dialog.Data.UserBooking;
+import Bot.Dialog.Data.UserBookingManager;
+import Bot.Dialog.Data.UserData;
+import Bot.Dialog.Handlers.Response;
+import Bot.Dialog.Handlers.StateHandler;
 import Database.Controllers.RoomController;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
-import Bot.Dialog.Data.BookingDataManager;
-import Bot.Dialog.Data.BotState;
-import Bot.Dialog.Data.UserData;
-import Bot.Dialog.Handlers.Response;
-import Bot.Dialog.Handlers.StateHandler;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,7 +26,7 @@ public class NewBookingHandler extends StateHandler {
     private final Map<Long, Booking> bookingInfo = new HashMap<>();
     private final Request outlook = new Request("http://localhost:3000");
     private final RoomController roomData = new RoomController();
-    private final BookingDataManager bookingManager = new BookingDataManager();
+    private final UserBookingManager bookingManager = new UserBookingManager();
 
     public NewBookingHandler() {
         preloadRoomsFromApi();
@@ -95,7 +96,7 @@ public class NewBookingHandler extends StateHandler {
                             info.room.name,
                             DateTime.formatToConvenient(info.start),
                             DateTime.formatToConvenient(info.end)));
-            bookingManager.addBooking(response, user);
+            bookingManager.addBooking(new UserBooking(response, user, false));
         }
         botMessage = botMessage.replyMarkup(lang.mainMenuMarkup());
         data.setDialogState(BotState.MAIN_MENU);

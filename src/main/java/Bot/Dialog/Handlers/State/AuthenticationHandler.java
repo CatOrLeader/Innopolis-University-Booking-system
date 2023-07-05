@@ -1,8 +1,5 @@
 package Bot.Dialog.Handlers.State;
 
-import com.pengrad.telegrambot.model.Update;
-import com.pengrad.telegrambot.request.EditMessageText;
-import com.pengrad.telegrambot.request.SendMessage;
 import Bot.Dialog.Config.IText;
 import Bot.Dialog.Data.BotState;
 import Bot.Dialog.Data.UserData;
@@ -10,6 +7,9 @@ import Bot.Dialog.Handlers.Response;
 import Bot.Dialog.Handlers.StateHandler;
 import Mail.AuthData;
 import Mail.Client;
+import com.pengrad.telegrambot.model.Update;
+import com.pengrad.telegrambot.request.EditMessageText;
+import com.pengrad.telegrambot.request.SendMessage;
 
 import javax.mail.MessagingException;
 import javax.mail.NoSuchProviderException;
