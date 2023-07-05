@@ -59,7 +59,8 @@ public class RussianText implements IText {
 
     @Override
     public String returnToEnterEmail() {
-        return "Возвращаемся к вводу электронной почты...";
+        return "Введите, пожалуйста, адрес электронной почты " +
+                "с доменом @innopolis.university";
     }
 
     @Override
@@ -247,7 +248,7 @@ public class RussianText implements IText {
     @Override
     public InlineKeyboardMarkup changeEmail() {
         return new InlineKeyboardMarkup(
-                new InlineKeyboardButton("\uD83D\uDCE8 Обновить электронную почту").callbackData("update")
+                new InlineKeyboardButton("\uD83D\uDCE8 Ввести другую почту").callbackData("update")
         );
     }
 
