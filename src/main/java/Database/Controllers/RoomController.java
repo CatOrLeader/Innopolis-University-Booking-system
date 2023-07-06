@@ -2,7 +2,7 @@ package Database.Controllers;
 
 import Database.DbConnector;
 import Database.Services.RoomService;
-import Models.RoomModel;
+import Models.Room;
 
 /**
  * Controller for the rooms
@@ -19,13 +19,13 @@ public class RoomController {
     /**
      * Adds a new room to the database or updates the existing one
      *
-     * @param roomModel model of the room
+     * @param room model of the room
      */
-    public void addOrUpdateRoom(RoomModel roomModel) {
-        if (roomService.roomExists(roomModel.id)) {
-            roomService.updateRoomData(roomModel);
+    public void addOrUpdateRoom(Room room) {
+        if (roomService.roomExists(room.id)) {
+            roomService.updateRoomData(room);
         } else {
-            roomService.addNewRoom(roomModel);
+            roomService.addNewRoom(room);
         }
     }
 
@@ -35,7 +35,7 @@ public class RoomController {
      * @param roomId room's id
      * @return model of the room
      */
-    public RoomModel getRoomData(String roomId) {
+    public Room getRoomData(String roomId) {
         return roomService.getRoomData(roomId);
     }
 

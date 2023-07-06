@@ -1,6 +1,6 @@
 package APIWrapper.Requests;
 
-import APIWrapper.Json.*;
+import Models.*;
 
 import java.util.ArrayList;
 

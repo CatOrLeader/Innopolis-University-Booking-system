@@ -1,6 +1,6 @@
 package Database.Services;
 
-import Models.RoomModel;
+import Models.Room;
 import Models.RoomType;
 
 import java.sql.Connection;
@@ -26,16 +26,16 @@ public class RoomService {
     /**
      * Adds a new room to the database
      *
-     * @param roomModel model of the room
+     * @param room model of the room
      */
-    public void addNewRoom(RoomModel roomModel) {
+    public void addNewRoom(Room room) {
         String query = "INSERT INTO \"Room\" (\"Id\", \"Name\", \"Capacity\", \"RoomType\") VALUES (?, ?, ?, ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, roomModel.id);
-            statement.setString(2, roomModel.name);
-            statement.setInt(3, roomModel.capacity);
-            statement.setObject(4, roomModel.roomType, Types.OTHER);
+            statement.setString(1, room.id);
+            statement.setString(2, room.name);
+            statement.setInt(3, room.capacity);
+            statement.setObject(4, room.type, Types.OTHER);
             statement.executeUpdate();
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -45,17 +45,17 @@ public class RoomService {
     /**
      * Updates particular room data
      *
-     * @param roomModel model of the room
+     * @param room model of the room
      */
-    public void updateRoomData(RoomModel roomModel) {
+    public void updateRoomData(Room room) {
         String query = "UPDATE \"Room\" SET \"Name\" = ?, \"Capacity\" = ?, " +
                 "\"RoomType\" = ? WHERE \"Id\" = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, roomModel.name);
-            statement.setInt(2, roomModel.capacity);
-            statement.setObject(3, roomModel.roomType, Types.OTHER);
-            statement.setString(4, roomModel.id);
+            statement.setString(1, room.name);
+            statement.setInt(2, room.capacity);
+            statement.setObject(3, room.type, Types.OTHER);
+            statement.setString(4, room.id);
             statement.executeUpdate();
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -68,7 +68,7 @@ public class RoomService {
      * @param roomId room's id
      * @return model of the room
      */
-    public RoomModel getRoomData(String roomId) {
+    public Room getRoomData(String roomId) {
         String query = "SELECT \"Name\", \"Capacity\", \"RoomType\" " +
                 "FROM \"Room\" WHERE \"Id\" = ?";
 
@@ -81,7 +81,7 @@ public class RoomService {
                 int capacity = resultSet.getInt("Capacity");
                 RoomType roomType = RoomType.valueOf(resultSet.getString("RoomType"));
 
-                return new RoomModel(roomId, name, capacity, roomType);
+                return new Room(name, roomId, roomType, capacity);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
