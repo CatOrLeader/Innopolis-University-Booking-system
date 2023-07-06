@@ -69,7 +69,11 @@ public class EnglishText implements IText {
 
     @Override
     public String chooseBookingTime() {
-        return "Choose preferred booking start time in the format of 'DD.MM.YY HH:MM' (without quotes)";
+        return """
+                Choose preferred booking start time in the format of 'DD.MM.YY HH:MM' (without quotes).
+                
+                Booking periods are only available in 15-minute increments (0, 15, 30, 45)!
+                """;
     }
 
     @Override
