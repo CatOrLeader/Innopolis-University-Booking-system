@@ -16,6 +16,8 @@ import com.pengrad.telegrambot.request.SendMessage;
 
 import java.time.Duration;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Class describing booking bot functionality.
@@ -26,7 +28,7 @@ public class BookingBot {
     private final UserBookingManager bookingManager;
     private final UserDataManager userManager;
     private final Request outlook = new Request();
-    private int skipUntil = 0;
+    private final Set<Integer> updatesToSkip = new HashSet<>();
 
     public BookingBot(String token) {
         bot = new TelegramBot(token);
@@ -36,12 +38,15 @@ public class BookingBot {
     }
 
     /**
-     * Method to skip updates on bot startup.
-     * Saves the max Update ID that should be skipped.
+     * Skip updates that come to bot in offline
+     * @param flag true - need to skip, false - process them
      */
-    public void skipUpdates() {
-        var updates = bot.execute(new GetUpdates()).updates();
-        updates.forEach(update -> skipUntil = Math.max(skipUntil, update.updateId()));
+    public void skipUpdates(boolean flag) {
+        updatesToSkip.clear();
+        if (flag) {
+            var updates = bot.execute(new GetUpdates()).updates();
+            updates.forEach(update -> updatesToSkip.add(update.updateId()));
+        }
     }
 
     /**
@@ -49,13 +54,7 @@ public class BookingBot {
      */
     public void listen() {
         bot.setUpdatesListener(updates -> {
-            updates.forEach(update -> {
-                if (update.updateId() > skipUntil) {
-                    process(update);
-                } else if (update.updateId() == skipUntil) {
-                    skipUntil = 0;
-                }
-            });
+            updates.forEach(this::process);
             return UpdatesListener.CONFIRMED_UPDATES_ALL;
         });
     }
@@ -102,6 +101,9 @@ public class BookingBot {
      * @param update incoming update.
      */
     private void process(Update update) {
+        if (needIgnore(update)) {
+            return;
+        }
         var userId = extractUserId(update);
         if (userId == null) { // if user was not extracted -- no need to handle
             return;
@@ -114,6 +116,19 @@ public class BookingBot {
         } catch (Exception any) {
             excuseProcessCrash(userId, data.getLang());
         }
+    }
+
+    /**
+     * Check whether this update should be skipped
+     * @param update incoming update
+     * @return true if this update should be skipped, false otherwise
+     */
+    private boolean needIgnore(Update update) {
+        if (updatesToSkip.contains(update.updateId())) {
+            updatesToSkip.remove(update.updateId());
+            return true;
+        }
+        return false;
     }
 
     /**
