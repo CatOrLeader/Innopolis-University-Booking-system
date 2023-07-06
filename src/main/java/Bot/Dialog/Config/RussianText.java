@@ -15,15 +15,6 @@ import java.util.List;
  */
 public class RussianText implements IText {
     @Override
-    public String initial() {
-        return """
-                Hello! Let's start by choosing a language we feel comfortable speaking.
-                
-                Привет! Давай для начала выберем язык, на котором будет удобно общаться.
-                """;
-    }
-
-    @Override
     public String wrongEmail() {
         return "Кажется, что предоставленная университетская почта некорректна \uD83D\uDE22 Пожалуйста, отправьте другую еще раз.";
     }
@@ -182,16 +173,6 @@ public class RussianText implements IText {
     }
 
     @Override
-    public InlineKeyboardMarkup languageSelection() {
-        return new InlineKeyboardMarkup(
-                new InlineKeyboardButton("\uD83C\uDDF7\uD83C\uDDFA Russian").
-                        callbackData("language rus"),
-                new InlineKeyboardButton("\uD83C\uDDEC\uD83C\uDDE7 English").
-                        callbackData("language eng")
-        );
-    }
-
-    @Override
     public String fullBookingInfo(Booking booking) {
         return String.format("'%s' будет проведено в %s с %s до %s",
                 booking.title,
@@ -203,29 +184,6 @@ public class RussianText implements IText {
     @Override
     public String goToBookings() {
         return "Перехожу к Вашим броням...";
-    }
-
-    @Override
-    public ReplyKeyboardMarkup mainMenuMarkup() {
-        return new ReplyKeyboardMarkup(
-                new KeyboardButton[]{
-                        new KeyboardButton(newBookingBtn()),
-                        new KeyboardButton(myReservationsBtn())
-                },
-                new KeyboardButton[]{
-                        new KeyboardButton(changeLanguage())
-                }
-        ).resizeKeyboard(true);
-    }
-
-    @Override
-    public InlineKeyboardMarkup availableRoomsKeyboard(List<Room> rooms) {
-        var roomButtons = rooms.stream().
-                map(room ->
-                        new InlineKeyboardButton[]{
-                                new InlineKeyboardButton(room.name).callbackData(room.id)}).
-                toArray(InlineKeyboardButton[][]::new);
-        return new InlineKeyboardMarkup(roomButtons);
     }
 
     @Override
@@ -276,7 +234,7 @@ public class RussianText implements IText {
     @Override
     public String upcomingBooking(Booking booking) {
         return String.format("""
-                        У Вас есть бронирование через 15 минут — '%s' в %s с %s до %s.
+                        У Вас есть предстоящее бронирование — '%s' в %s с %s до %s.
                                         
                         Необходимо подтвердить бронирование в течение 15 минут, иначе оно будет отменено.""",
                 booking.title,

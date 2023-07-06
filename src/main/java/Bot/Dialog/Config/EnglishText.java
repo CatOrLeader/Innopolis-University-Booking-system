@@ -15,15 +15,6 @@ import java.util.List;
  */
 public class EnglishText implements IText {
     @Override
-    public String initial() {
-        return """
-                Hello! Let's start by choosing a language we feel comfortable speaking.
-                
-                Привет! Давай для начала выберем язык, на котором будет удобно общаться.
-                """;
-    }
-
-    @Override
     public String wrongEmail() {
         return "It seems that the provided university mail is incorrect \uD83D\uDE22 Please, send new again.";
     }
@@ -180,15 +171,6 @@ public class EnglishText implements IText {
         return "Language successfully changed.";
     }
 
-    @Override
-    public InlineKeyboardMarkup languageSelection() {
-        return new InlineKeyboardMarkup(
-                new InlineKeyboardButton("\uD83C\uDDF7\uD83C\uDDFA Russian").
-                        callbackData("language rus"),
-                new InlineKeyboardButton("\uD83C\uDDEC\uD83C\uDDE7 English").
-                        callbackData("language eng")
-        );
-    }
 
     @Override
     public String fullBookingInfo(Booking booking) {
@@ -202,29 +184,6 @@ public class EnglishText implements IText {
     @Override
     public String goToBookings() {
         return "Going to your bookings...";
-    }
-
-    @Override
-    public ReplyKeyboardMarkup mainMenuMarkup() {
-        return new ReplyKeyboardMarkup(
-                new KeyboardButton[]{
-                        new KeyboardButton(newBookingBtn()),
-                        new KeyboardButton(myReservationsBtn())
-                },
-                new KeyboardButton[]{
-                        new KeyboardButton(changeLanguage())
-                }
-        ).resizeKeyboard(true);
-    }
-
-    @Override
-    public InlineKeyboardMarkup availableRoomsKeyboard(List<Room> rooms) {
-        var roomButtons = rooms.stream().
-                map(room ->
-                        new InlineKeyboardButton[]{
-                                new InlineKeyboardButton(room.name).callbackData(room.id)}).
-                toArray(InlineKeyboardButton[][]::new);
-        return new InlineKeyboardMarkup(roomButtons);
     }
 
     @Override
@@ -275,7 +234,7 @@ public class EnglishText implements IText {
     @Override
     public String upcomingBooking(Booking booking) {
         return String.format("""
-                        You have an upcoming booking in 15 minutes — '%s' at %s since %s until %s.
+                        You have an upcoming booking — '%s' at %s since %s until %s.
                                         
                         You need to confirm the booking in 15 minutes, otherwise it will be cancelled.
                         """,
