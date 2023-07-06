@@ -63,6 +63,8 @@ public class UpdatesManager {
 
         handlerMap.put(BotState.UNINITIALIZED, new UninitializedHandler());
 
+        handlerMap.put(BotState.INITIAL_LANGUAGE_SETTING, new InitialLanguageHandler());
+
         handlerMap.put(BotState.ENTER_MAIL, authenticationHandler);
         handlerMap.put(BotState.CODE_AWAITING, authenticationHandler);
 
