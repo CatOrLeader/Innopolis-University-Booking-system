@@ -94,7 +94,7 @@ public interface IText {
                 new InlineKeyboardButton("\uD83C\uDDEC\uD83C\uDDE7 English").
                         callbackData("language eng")
         );
-    };
+    }
     default ReplyKeyboardMarkup mainMenuMarkup() {
         return new ReplyKeyboardMarkup(
                 new KeyboardButton[]{
@@ -105,7 +105,7 @@ public interface IText {
                         new KeyboardButton(changeLanguage())
                 }
         ).resizeKeyboard(true);
-    };
+    }
 
     default InlineKeyboardMarkup availableRoomsKeyboard(List<Room> rooms) {
         var roomButtons = rooms.stream().
