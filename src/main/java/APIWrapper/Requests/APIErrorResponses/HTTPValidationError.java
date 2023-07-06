@@ -1,4 +1,4 @@
-package APIWrapper.Json;
+package APIWrapper.Requests.APIErrorResponses;
 
 public class HTTPValidationError {
     public final ValidationError detail;

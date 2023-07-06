@@ -1,4 +1,4 @@
-package APIWrapper.Json;
+package APIWrapper.Requests.APIErrorResponses;
 
 public class ValidationError {
     public final String loc;

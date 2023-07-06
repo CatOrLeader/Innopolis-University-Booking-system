@@ -1,7 +1,7 @@
 package Bot.Dialog.Config;
 
-import APIWrapper.Json.Booking;
-import APIWrapper.Json.Room;
+import Models.Booking;
+import Models.Room;
 import APIWrapper.Utilities.DateTime;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
@@ -31,7 +31,7 @@ public class EnglishText implements IText {
                 A confirmation code was sent to the specified email.
                 It expires in 5 minutes. Send this code to me for authorization.\s
 
-                You also can update email in case of any issues.""";
+                You also can input another email in case of any issues.""";
     }
 
     @Override
@@ -59,7 +59,7 @@ public class EnglishText implements IText {
 
     @Override
     public String returnToEnterEmail() {
-        return "Returning back to email entering...";
+        return "Please, enter your email with @innopolis.university domain.";
     }
 
     @Override
@@ -247,7 +247,7 @@ public class EnglishText implements IText {
     @Override
     public InlineKeyboardMarkup changeEmail() {
         return new InlineKeyboardMarkup(
-                new InlineKeyboardButton("\uD83D\uDCE8 Update email").callbackData("update")
+                new InlineKeyboardButton("\uD83D\uDCE8 Use another email").callbackData("update")
         );
     }
 

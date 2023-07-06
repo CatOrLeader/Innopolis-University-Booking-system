@@ -1,7 +1,7 @@
 package Bot.Dialog.Config;
 
-import APIWrapper.Json.Booking;
-import APIWrapper.Json.Room;
+import Models.Booking;
+import Models.Room;
 import APIWrapper.Utilities.DateTime;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
@@ -59,7 +59,8 @@ public class RussianText implements IText {
 
     @Override
     public String returnToEnterEmail() {
-        return "Возвращаемся к вводу электронной почты...";
+        return "Введите, пожалуйста, адрес электронной почты " +
+                "с доменом @innopolis.university";
     }
 
     @Override
@@ -247,7 +248,7 @@ public class RussianText implements IText {
     @Override
     public InlineKeyboardMarkup changeEmail() {
         return new InlineKeyboardMarkup(
-                new InlineKeyboardButton("\uD83D\uDCE8 Обновить электронную почту").callbackData("update")
+                new InlineKeyboardButton("\uD83D\uDCE8 Ввести другую почту").callbackData("update")
         );
     }
 

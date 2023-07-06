@@ -103,6 +103,9 @@ public class BookingBot {
      */
     private void process(Update update) {
         var userId = extractUserId(update);
+        if (userId == null) { // if user was not extracted -- no need to handle
+            return;
+        }
         var data = userManager.getUserData(userId);
         try {
             var response = updatesManager.handle(update, data);
@@ -131,11 +134,12 @@ public class BookingBot {
      * @return user id parsed to string.
      * TODO: Extend variety of updates with sender id
      */
-    private long extractUserId(Update update) {
+    private Long extractUserId(Update update) {
         if (update.message() != null) {
             return update.message().from().id();
-        } else {
+        } else if (update.callbackQuery() != null) {
             return update.callbackQuery().from().id();
         }
+        return null; // in order not to handle third-party updates
     }
 }
