@@ -16,8 +16,11 @@ import java.util.List;
 public class EnglishText implements IText {
     @Override
     public String initial() {
-        return "Hello! To start using bot, " +
-                "send me your email with the domain @innopolis.university";
+        return """
+                Hello! Let's start by choosing a language we feel comfortable speaking.
+                
+                Привет! Давай для начала выберем язык, на котором будет удобно общаться.
+                """;
     }
 
     @Override
@@ -58,8 +61,8 @@ public class EnglishText implements IText {
     }
 
     @Override
-    public String returnToEnterEmail() {
-        return "Please, enter your email with @innopolis.university domain.";
+    public String enterEmail() {
+        return "Please, enter your email with @innopolis.university domain in order to use this bot.";
     }
 
     @Override
@@ -175,6 +178,16 @@ public class EnglishText implements IText {
     @Override
     public String languageChanged() {
         return "Language successfully changed.";
+    }
+
+    @Override
+    public InlineKeyboardMarkup languageSelection() {
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton("\uD83C\uDDF7\uD83C\uDDFA Russian").
+                        callbackData("language rus"),
+                new InlineKeyboardButton("\uD83C\uDDEC\uD83C\uDDE7 English").
+                        callbackData("language eng")
+        );
     }
 
     @Override

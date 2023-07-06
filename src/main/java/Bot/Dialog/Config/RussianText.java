@@ -16,8 +16,11 @@ import java.util.List;
 public class RussianText implements IText {
     @Override
     public String initial() {
-        return "Здравствуйте! Чтобы начать использовать бота, " +
-                "пришлите мне свой адрес электронной почты с доменом @innopolis.university";
+        return """
+                Hello! Let's start by choosing a language we feel comfortable speaking.
+                
+                Привет! Давай для начала выберем язык, на котором будет удобно общаться.
+                """;
     }
 
     @Override
@@ -58,9 +61,9 @@ public class RussianText implements IText {
     }
 
     @Override
-    public String returnToEnterEmail() {
+    public String enterEmail() {
         return "Введите, пожалуйста, адрес электронной почты " +
-                "с доменом @innopolis.university";
+                "с доменом @innopolis.university чтобы использовать данного бота.";
     }
 
     @Override
@@ -176,6 +179,16 @@ public class RussianText implements IText {
     @Override
     public String languageChanged() {
         return "Язык успешно изменен.";
+    }
+
+    @Override
+    public InlineKeyboardMarkup languageSelection() {
+        return new InlineKeyboardMarkup(
+                new InlineKeyboardButton("\uD83C\uDDF7\uD83C\uDDFA Russian").
+                        callbackData("language rus"),
+                new InlineKeyboardButton("\uD83C\uDDEC\uD83C\uDDE7 English").
+                        callbackData("language eng")
+        );
     }
 
     @Override

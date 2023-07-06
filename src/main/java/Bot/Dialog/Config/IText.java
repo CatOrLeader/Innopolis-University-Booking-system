@@ -70,7 +70,7 @@ public interface IText {
     String fullBookingInfo(Booking booking);
 
     // Transitions
-    String returnToEnterEmail();
+    String enterEmail();
 
     String goToBookings();
 
@@ -79,6 +79,7 @@ public interface IText {
     String languageChanged();
 
     // Keyboards
+    InlineKeyboardMarkup languageSelection();
     ReplyKeyboardMarkup mainMenuMarkup();
 
     InlineKeyboardMarkup availableRoomsKeyboard(List<Room> rooms);

@@ -19,8 +19,9 @@ public class UninitializedHandler extends StateHandler {
         if (message == null) {
             return new Response(data);
         }
-        var botMessage = new SendMessage(data.getUserId(), lang.initial());
-        data.setDialogState(BotState.ENTER_MAIL);
+        var botMessage =
+                new SendMessage(data.getUserId(), lang.initial()).replyMarkup(lang.languageSelection());
+        data.setDialogState(BotState.INITIAL_LANGUAGE_SETTING);
         return new Response(data, botMessage);
     }
 }
