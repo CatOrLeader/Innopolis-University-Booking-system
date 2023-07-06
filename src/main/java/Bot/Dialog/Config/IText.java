@@ -1,7 +1,7 @@
 package Bot.Dialog.Config;
 
-import APIWrapper.Json.Booking;
-import APIWrapper.Json.Room;
+import Models.Booking;
+import Models.Room;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 

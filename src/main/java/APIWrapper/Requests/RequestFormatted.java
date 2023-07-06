@@ -1,8 +1,8 @@
 package APIWrapper.Requests;
 
-import APIWrapper.Json.*;
 import APIWrapper.Requests.APIResponses.ApiResponse;
 import APIWrapper.Requests.APIResponses.ApiResponses;
+import Models.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;

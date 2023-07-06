@@ -1,8 +1,8 @@
 package Bot.Dialog.Handlers.State;
 
-import APIWrapper.Json.Booking;
-import APIWrapper.Json.GetFreeRoomsRequest;
-import APIWrapper.Json.Room;
+import Models.Booking;
+import Models.GetFreeRoomsRequest;
+import Models.Room;
 import APIWrapper.Requests.Request;
 import APIWrapper.Utilities.DateTime;
 import Bot.Dialog.Data.BotState;
@@ -35,7 +35,7 @@ public class NewBookingHandler extends StateHandler {
     private void preloadRoomsFromApi() {
         var rooms = outlook.getAllBookableRooms();
         for (Room room : rooms) {
-            roomData.addOrUpdateRoom(room.toRoomModel());
+            roomData.addOrUpdateRoom(room);
         }
     }
 
@@ -230,7 +230,7 @@ public class NewBookingHandler extends StateHandler {
      * @return room (it is supposed that given id always correct)
      */
     private Room takeRoomById(String roomId) {
-        return roomData.getRoomData(roomId).toRoom();
+        return roomData.getRoomData(roomId);
     }
 
     /**

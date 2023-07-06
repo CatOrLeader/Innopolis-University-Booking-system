@@ -1,4 +1,4 @@
-package APIWrapper.Json;
+package Models;
 
 public class QueryBookingsRequest {
     public BookingsFilter filter;

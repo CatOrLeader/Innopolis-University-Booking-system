@@ -1,7 +1,7 @@
 package Bot.Dialog.Data;
 
-import APIWrapper.Json.Booking;
-import APIWrapper.Json.Room;
+import Models.Booking;
+import Models.Room;
 
 public class UserBooking extends Booking {
     public long userId;
