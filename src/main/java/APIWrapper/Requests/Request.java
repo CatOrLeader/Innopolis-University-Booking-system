@@ -6,10 +6,9 @@ import java.util.ArrayList;
 
 public class Request {
     private final RequestFormatted formatter;
-    private final String url;
 
     public Request() {
-        this.url = System.getenv("MOCK_SERVER_URL");
+        String url = System.getenv("MOCK_SERVER_URL");
         formatter = new RequestFormatted(url);
     }
 
@@ -44,5 +43,18 @@ public class Request {
         );
 
         return queryBookings(new QueryBookingsRequest(bookingsFilter));
+    }
+
+    public Booking getBookingById(String bookingId) {
+        BookingsFilter bookingsFilter = new BookingsFilter(
+                null,
+                null,
+                new String[]{},
+                new String[]{}
+        );
+
+        return queryBookings(new QueryBookingsRequest(bookingsFilter)).stream().filter(
+                booking -> booking.id.equals(bookingId)
+        ).findFirst().orElse(null);
     }
 }
