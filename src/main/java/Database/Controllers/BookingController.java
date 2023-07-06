@@ -52,7 +52,7 @@ public class BookingController {
     }
 
     /**
-     * Filter for bookings by time
+     * Filter for bookings by time period
      *
      * @param start start date time (nullable)
      * @param end   end date time (nullable)
@@ -60,6 +60,16 @@ public class BookingController {
      */
     public ArrayList<BookingModel> getBookingsByTimePeriod(Timestamp start, Timestamp end) {
         return bookingService.getBookingsByTimePeriod(start, end);
+    }
+
+    /**
+     * Filter for bookings by start time
+     *
+     * @param start start date time
+     * @return list of bookings
+     */
+    public ArrayList<BookingModel> getBookingsByTimeStart(Timestamp start) {
+        return bookingService.getBookingsByTimeStart(start);
     }
 
     /**

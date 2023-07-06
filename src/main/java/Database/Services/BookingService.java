@@ -136,7 +136,7 @@ public class BookingService {
     }
 
     /**
-     * Filter for bookings by time
+     * Filter for bookings by time period
      *
      * @param start start date time (nullable)
      * @param end   end date time (nullable)
@@ -163,6 +163,41 @@ public class BookingService {
             if (end != null) {
                 statement.setTimestamp(parameterIndex++, end);
             }
+
+            var resultSet = statement.executeQuery();
+
+            while (resultSet.next()) {
+                String id = resultSet.getString("Id");
+                long tgChatId = resultSet.getLong("TgChatId");
+                String title = resultSet.getString("Title");
+                String roomId = resultSet.getString("RoomId");
+                Timestamp bookingStart = resultSet.getTimestamp("Start");
+                Timestamp bookingEnd = resultSet.getTimestamp("End");
+                boolean isConfirmed = resultSet.getBoolean("isConfirmed");
+
+                BookingModel booking = new BookingModel(id, tgChatId, title, roomId, bookingStart, bookingEnd, isConfirmed);
+                bookings.add(booking);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return bookings;
+    }
+
+    /**
+     * Filter for bookings by time start
+     *
+     * @param start start date time
+     * @return list of bookings
+     */
+    public ArrayList<BookingModel> getBookingsByTimeStart(Timestamp start) {
+        ArrayList<BookingModel> bookings = new ArrayList<>();
+        String query = "SELECT \"Id\", \"TgChatId\", \"Title\", \"RoomId\", \"Start\", \"End\", \"isConfirmed\" " +
+                "FROM \"Booking\" WHERE \"Start\" = ?";
+
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setTimestamp(1, start);
 
             var resultSet = statement.executeQuery();
 

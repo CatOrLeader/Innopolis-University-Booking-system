@@ -24,6 +24,7 @@ public class TestDb {
         System.out.println(bookingController.getBookingsByTimePeriod(Timestamp.valueOf(start), Timestamp.valueOf(end)));
         System.out.println(bookingController.getBookingsByTimePeriod(Timestamp.valueOf(start), null));
         System.out.println(bookingController.getBookingsByTimePeriod(null, Timestamp.valueOf(end)));
+        System.out.println(bookingController.getBookingsByTimeStart(Timestamp.valueOf(start)));
         bookingController.deleteBooking("sdfdsf");
     }
 }
