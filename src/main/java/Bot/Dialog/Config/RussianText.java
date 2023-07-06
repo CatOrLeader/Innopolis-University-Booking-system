@@ -1,12 +1,9 @@
 package Bot.Dialog.Config;
 
 import Models.Booking;
-import Models.Room;
 import APIWrapper.Utilities.DateTime;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.model.request.KeyboardButton;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 
 import java.util.List;
 
@@ -14,12 +11,6 @@ import java.util.List;
  * Russian bot interface localization.
  */
 public class RussianText implements IText {
-    @Override
-    public String initial() {
-        return "Здравствуйте! Чтобы начать использовать бота, " +
-                "пришлите мне свой адрес электронной почты с доменом @innopolis.university";
-    }
-
     @Override
     public String wrongEmail() {
         return "Кажется, что предоставленная университетская почта некорректна \uD83D\uDE22 Пожалуйста, отправьте другую еще раз.";
@@ -58,9 +49,9 @@ public class RussianText implements IText {
     }
 
     @Override
-    public String returnToEnterEmail() {
+    public String enterEmail() {
         return "Введите, пожалуйста, адрес электронной почты " +
-                "с доменом @innopolis.university";
+                "с доменом @innopolis.university чтобы использовать данного бота.";
     }
 
     @Override
@@ -193,29 +184,6 @@ public class RussianText implements IText {
     }
 
     @Override
-    public ReplyKeyboardMarkup mainMenuMarkup() {
-        return new ReplyKeyboardMarkup(
-                new KeyboardButton[]{
-                        new KeyboardButton(newBookingBtn()),
-                        new KeyboardButton(myReservationsBtn())
-                },
-                new KeyboardButton[]{
-                        new KeyboardButton(changeLanguage())
-                }
-        ).resizeKeyboard(true);
-    }
-
-    @Override
-    public InlineKeyboardMarkup availableRoomsKeyboard(List<Room> rooms) {
-        var roomButtons = rooms.stream().
-                map(room ->
-                        new InlineKeyboardButton[]{
-                                new InlineKeyboardButton(room.name).callbackData(room.id)}).
-                toArray(InlineKeyboardButton[][]::new);
-        return new InlineKeyboardMarkup(roomButtons);
-    }
-
-    @Override
     public InlineKeyboardMarkup bookingDurations() {
         return new InlineKeyboardMarkup(
                 new InlineKeyboardButton[]{
@@ -263,7 +231,7 @@ public class RussianText implements IText {
     @Override
     public String upcomingBooking(Booking booking) {
         return String.format("""
-                        У Вас есть бронирование через 15 минут — '%s' в %s с %s до %s.
+                        У Вас есть предстоящее бронирование — '%s' в %s с %s до %s.
                                         
                         Необходимо подтвердить бронирование в течение 15 минут, иначе оно будет отменено.""",
                 booking.title,
