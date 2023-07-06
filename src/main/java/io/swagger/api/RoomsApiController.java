@@ -54,7 +54,6 @@ public class RoomsApiController implements RoomsApi {
         return new ResponseEntity<List<Room>>(database.rooms, HttpStatus.OK);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000")
     public ResponseEntity getFreeRoomsRoomsFreePost(@Parameter(in = ParameterIn.DEFAULT, description = "", required=true, schema=@Schema()) @Valid @RequestBody GetFreeRoomsRequest body,@Parameter(in = ParameterIn.HEADER, description = "" ,schema=@Schema( defaultValue="en-US")) @RequestHeader(value="Accept-Language", required=false) String acceptLanguage) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
