@@ -1,4 +1,4 @@
-package APIWrapper.Json;
+package Models;
 
 import APIWrapper.Utilities.DateTime;
 
