@@ -1,7 +1,7 @@
 package Bot.Dialog.Config;
 
 import Models.Booking;
-import APIWrapper.Utilities.DateTime;
+import Utilities.DateTime;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 
@@ -156,6 +156,11 @@ public class RussianText implements IText {
     @Override
     public String myReservationsBtn() {
         return "\uD83D\uDD10 Мои брони";
+    }
+
+    @Override
+    public String openWebAppBtn() {
+        return "Новая бронь (WebApp)";
     }
 
     @Override

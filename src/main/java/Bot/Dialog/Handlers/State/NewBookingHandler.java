@@ -1,17 +1,16 @@
 package Bot.Dialog.Handlers.State;
 
-import Models.Booking;
-import Models.GetFreeRoomsRequest;
-import Models.Room;
 import APIWrapper.Requests.Request;
-import APIWrapper.Utilities.DateTime;
 import Bot.Dialog.Data.BotState;
-import Bot.Dialog.Data.UserBooking;
-import Bot.Dialog.Data.UserBookingManager;
 import Bot.Dialog.Data.UserData;
 import Bot.Dialog.Handlers.Response;
 import Bot.Dialog.Handlers.StateHandler;
 import Database.Controllers.RoomController;
+import Models.Booking;
+import Models.GetFreeRoomsRequest;
+import Models.Room;
+import Utilities.BookingRoomHelper;
+import Utilities.DateTime;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
@@ -26,7 +25,7 @@ public class NewBookingHandler extends StateHandler {
     private final Map<Long, Booking> bookingInfo = new HashMap<>();
     private final Request outlook = new Request();
     private final RoomController roomData = new RoomController();
-    private final UserBookingManager bookingManager = new UserBookingManager();
+    private final BookingRoomHelper bookingHelper = new BookingRoomHelper();
 
     public NewBookingHandler() {
         preloadRoomsFromApi();
@@ -73,7 +72,6 @@ public class NewBookingHandler extends StateHandler {
             return new Response(data);
         }
         var user = data.getUserId();
-        var lang = data.getLang();
         var info = bookingInfo.get(user);
 
         // Data loss
@@ -85,22 +83,7 @@ public class NewBookingHandler extends StateHandler {
         var response = outlook.bookRoom(info.room.id,
                 info.convertToBookRoomRequest());
 
-        SendMessage botMessage;
-        if (response == null) {
-            botMessage =
-                    new SendMessage(user,
-                            lang.bookedUnsuccessfully());
-        } else {
-            botMessage = new SendMessage(user,
-                    lang.bookedSuccessfully(info.title,
-                            info.room.name,
-                            DateTime.formatToConvenient(info.start),
-                            DateTime.formatToConvenient(info.end)));
-            bookingManager.addBooking(new UserBooking(response, user, false));
-        }
-        botMessage = botMessage.replyMarkup(lang.mainMenuMarkup());
-        data.setDialogState(BotState.MAIN_MENU);
-        return new Response(data, botMessage);
+        return bookingHelper.processResponse(response, data);
     }
 
     /**
@@ -204,7 +187,8 @@ public class NewBookingHandler extends StateHandler {
 
         var maybeDate = msg.text().strip();
 
-        if (!DateTime.isValid(maybeDate)) {
+        Boolean isValidated = DateTime.isValid(maybeDate);
+        if (isValidated == null || !isValidated) {
             return new Response(data, new SendMessage(usr, lang.invalidBookingTime()));
         }
 

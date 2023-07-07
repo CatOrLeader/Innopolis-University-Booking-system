@@ -1,6 +1,6 @@
 package Models;
 
-import APIWrapper.Utilities.DateTime;
+import Utilities.DateTime;
 
 public class Booking {
     // Exposed fields
@@ -47,6 +47,19 @@ public class Booking {
 
         // It is necessary to make actions in this order
         parseDateTimeToOutput();
+
+        return request;
+    }
+
+    public BookRoomRequest convertToBookRoomRequestFromWebapp() {
+        BookRoomRequest request = new BookRoomRequest(
+                title,
+                start,
+                end,
+                owner_email
+        );
+
+        request.isWebapp = true;
 
         return request;
     }
