@@ -6,7 +6,6 @@ image: maven:latest
 stages:
   - build
   - test
-  - lint
   - package
   - deploy
 
@@ -32,14 +31,12 @@ test_job:
     - "mvn verify"
   artifacts:
     when: always
-    paths:
-      - target/surefire-reports/
     reports:
       junit:
         - target/surefire-reports/TEST-*.xml
 
 lint_job:
-  stage: lint
+  stage: test
   tags:
     - docker
   script:
