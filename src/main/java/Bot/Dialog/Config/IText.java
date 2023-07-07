@@ -2,6 +2,7 @@ package Bot.Dialog.Config;
 
 import Models.Room;
 import Models.Booking;
+import com.pengrad.telegrambot.model.WebAppInfo;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.KeyboardButton;
@@ -74,6 +75,8 @@ public interface IText {
 
     String changeLanguage();
 
+    String openWebAppBtn();
+
     // Pop-ups text
     String fullBookingInfo(Booking booking);
 
@@ -103,6 +106,10 @@ public interface IText {
                 },
                 new KeyboardButton[]{
                         new KeyboardButton(changeLanguage())
+                },
+                new KeyboardButton[] {
+                        new KeyboardButton(openWebAppBtn())
+                                .webAppInfo(new WebAppInfo("https://mgregarious-beijinho-155625.netlify.app/"))
                 }
         ).resizeKeyboard(true);
     }

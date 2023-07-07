@@ -1,6 +1,6 @@
 package Models;
 
-import APIWrapper.Utilities.DateTime;
+import Utilities.DateTime;
 
 public class GetFreeRoomsRequest {
     private final transient boolean isDurationUsed;
