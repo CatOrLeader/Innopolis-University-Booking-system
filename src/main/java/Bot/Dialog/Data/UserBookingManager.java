@@ -1,5 +1,6 @@
 package Bot.Dialog.Data;
 
+import Utilities.Config;
 import Utilities.DateTime;
 
 import java.time.*;
@@ -26,7 +27,7 @@ public class UserBookingManager {
     }
 
     public List<UserBooking> getBookingsToNotify() {
-        return getBookingsAt(formatTime(LocalDateTime.now().plusMinutes(13)));
+        return getBookingsAt(formatTime(LocalDateTime.now().plusMinutes(Config.bookingReminderPeriod())));
     }
 
     public void addBooking(UserBooking booking) {
@@ -71,8 +72,11 @@ public class UserBookingManager {
                         ZoneOffset.UTC),
                 ZoneOffset.UTC
         );
-        var curTime = ZonedDateTime.now();
+        var curTime = ZonedDateTime.of(
+                LocalDateTime.now(),
+                ZoneOffset.UTC
+        );
         booking.isConfirmed = (
-                ChronoUnit.MINUTES.between(curTime, bookTime) <= 15);
+                ChronoUnit.MINUTES.between(curTime, bookTime) <= Config.bookingSafePeriod());
     }
 }

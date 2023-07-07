@@ -1,6 +1,7 @@
 package Bot.Dialog.Config;
 
 import Models.Booking;
+import Utilities.Config;
 import Utilities.DateTime;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
@@ -83,7 +84,7 @@ public class RussianText implements IText {
 
     @Override
     public String chosenBookingTime(String time, String duration) {
-        return String.format("Ищу комнаты, свободные с %s в течении %s минут...", time, duration);
+        return String.format("Ищу комнаты, свободные с %s в течение %s минут...", time, duration);
     }
 
     @Override
@@ -194,18 +195,7 @@ public class RussianText implements IText {
 
     @Override
     public InlineKeyboardMarkup bookingDurations() {
-        return new InlineKeyboardMarkup(
-                new InlineKeyboardButton[]{
-                        new InlineKeyboardButton("30 минут").callbackData("30"),
-                        new InlineKeyboardButton("60 минут").callbackData("60"),
-                        new InlineKeyboardButton("90 минут").callbackData("90")
-                },
-                new InlineKeyboardButton[]{
-                        new InlineKeyboardButton("120 минут").callbackData("120"),
-                        new InlineKeyboardButton("150 минут").callbackData("150"),
-                        new InlineKeyboardButton("180 минут").callbackData("180")
-                }
-        );
+        return _localizedBookingDurations("минут");
     }
 
     @Override
@@ -242,11 +232,12 @@ public class RussianText implements IText {
         return String.format("""
                         У Вас есть предстоящее бронирование — '%s' в %s с %s до %s.
                                         
-                        Необходимо подтвердить бронирование в течение 15 минут, иначе оно будет отменено.""",
+                        Необходимо подтвердить бронирование в течение %d минут, иначе оно будет отменено.""",
                 booking.title,
                 booking.room.name,
                 DateTime.formatToConvenient(booking.start),
-                DateTime.formatToConvenient(booking.end));
+                DateTime.formatToConvenient(booking.end),
+                Config.bookingReminderPeriod());
     }
 
     @Override

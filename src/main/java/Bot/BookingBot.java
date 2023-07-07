@@ -73,6 +73,9 @@ public class BookingBot {
     }
 
     private void notifyBooking(UserBooking userBooking) {
+        if (userBooking.isConfirmed) {
+            return;
+        }
         var usr = userBooking.userId;
         var lang = userManager.getUserData(usr).getLang();
         var msg = new SendMessage(
