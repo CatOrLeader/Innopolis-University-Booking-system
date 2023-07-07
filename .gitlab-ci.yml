@@ -6,6 +6,7 @@ image: maven:latest
 stages:
     - build
     - test
+    - lint
     - package
     - deploy
 
@@ -34,6 +35,17 @@ test_job:
     - echo "Maven test started"
     - "mvn test"
 
+lint_job:
+  stage: lint
+  tags:
+    - docker
+
+  script:
+    - echo "Running linters"
+    - "mvn checkstyle:checkstyle"
+    - "mvn spotbugs:check"
+    # Add more linters or static analysis tools as needed
+    
 package_job:
   stage: package
   tags:
