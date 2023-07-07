@@ -6,7 +6,6 @@ image: maven:latest
 stages:
     - build
     - test
-    - lint
     - package
     - deploy
 
@@ -40,7 +39,7 @@ test_job:
 
 
 lint_job:
-  stage: lint
+  stage: test
   tags:
     - docker
 
