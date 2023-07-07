@@ -1,12 +1,10 @@
 package Bot.Dialog.Config;
 
 import Models.Booking;
-import Models.Room;
+
 import APIWrapper.Utilities.DateTime;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
-import com.pengrad.telegrambot.model.request.KeyboardButton;
-import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 
 import java.util.List;
 
@@ -14,12 +12,6 @@ import java.util.List;
  * English bot interface localization.
  */
 public class EnglishText implements IText {
-    @Override
-    public String initial() {
-        return "Hello! To start using bot, " +
-                "send me your email with the domain @innopolis.university";
-    }
-
     @Override
     public String wrongEmail() {
         return "It seems that the provided university mail is incorrect \uD83D\uDE22 Please, send new again.";
@@ -58,8 +50,8 @@ public class EnglishText implements IText {
     }
 
     @Override
-    public String returnToEnterEmail() {
-        return "Please, enter your email with @innopolis.university domain.";
+    public String enterEmail() {
+        return "Please, enter your email with @innopolis.university domain in order to use this bot.";
     }
 
     @Override
@@ -77,7 +69,11 @@ public class EnglishText implements IText {
 
     @Override
     public String chooseBookingTime() {
-        return "Choose preferred booking start time in the format of 'DD.MM.YY HH:MM' (without quotes)";
+        return """
+                Choose preferred booking start time in the format of 'DD.MM.YY HH:MM' (without quotes).
+                
+                Booking periods are only available in 15-minute increments (0, 15, 30, 45)!
+                """;
     }
 
     @Override
@@ -177,6 +173,7 @@ public class EnglishText implements IText {
         return "Language successfully changed.";
     }
 
+
     @Override
     public String fullBookingInfo(Booking booking) {
         return String.format("'%s' will take place at %s since %s until %s",
@@ -189,29 +186,6 @@ public class EnglishText implements IText {
     @Override
     public String goToBookings() {
         return "Going to your bookings...";
-    }
-
-    @Override
-    public ReplyKeyboardMarkup mainMenuMarkup() {
-        return new ReplyKeyboardMarkup(
-                new KeyboardButton[]{
-                        new KeyboardButton(newBookingBtn()),
-                        new KeyboardButton(myReservationsBtn())
-                },
-                new KeyboardButton[]{
-                        new KeyboardButton(changeLanguage())
-                }
-        ).resizeKeyboard(true);
-    }
-
-    @Override
-    public InlineKeyboardMarkup availableRoomsKeyboard(List<Room> rooms) {
-        var roomButtons = rooms.stream().
-                map(room ->
-                        new InlineKeyboardButton[]{
-                                new InlineKeyboardButton(room.name).callbackData(room.id)}).
-                toArray(InlineKeyboardButton[][]::new);
-        return new InlineKeyboardMarkup(roomButtons);
     }
 
     @Override
@@ -262,7 +236,7 @@ public class EnglishText implements IText {
     @Override
     public String upcomingBooking(Booking booking) {
         return String.format("""
-                        You have an upcoming booking in 15 minutes — '%s' at %s since %s until %s.
+                        You have an upcoming booking — '%s' at %s since %s until %s.
                                         
                         You need to confirm the booking in 15 minutes, otherwise it will be cancelled.
                         """,

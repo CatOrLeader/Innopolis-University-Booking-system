@@ -1,16 +1,23 @@
 package APIWrapper.Utilities;
 
+import jdk.jshell.execution.LoaderDelegate;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAccessor;
+import java.util.Date;
 
 public class DateTime {
     // Additional values
-    private static final DateTimeFormatter INPUT_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yy HH:mm");
+    private static final DateTimeFormatter INPUT_FORMATTER = DateTimeFormatter.ofPattern("dd.MM.uu HH:mm");
     private static final DateTimeFormatter OUTPUT_FORMATTER = DateTimeFormatter.ISO_INSTANT;
     // Initial values
     private final ZonedDateTime start;
@@ -49,12 +56,34 @@ public class DateTime {
     }
 
     public static boolean isValid(String time) {
+        LocalDateTime suspect;
+
         try {
-            INPUT_FORMATTER.parse(time);
-            return true;
+            suspect = LocalDateTime.parse(
+                    time,
+                    INPUT_FORMATTER.withResolverStyle(ResolverStyle.STRICT)
+            );
         } catch (DateTimeParseException e) {
+            System.out.println("DateTime log\n----incorrect format of the string: " + time + "----" +
+                    "Given: " + time);
             return false;
         }
+
+        if (LocalDateTime.now().isAfter(suspect)) {
+            System.out.println("DateTime Log\n" +
+                    "----Booking in the past is prohibited (*_*)----\n" +
+                    "Now: " + LocalDateTime.now().format(INPUT_FORMATTER) + "\n__vs.__\nGiven: " + time);
+            return false;
+        }
+
+        if (suspect.getMinute() % 15 != 0) {
+            System.out.println("DateTime Log\n" +
+                    "----Booking time is not satisfy the criterion (division by 15 w\\out reminder)----\n" +
+                    "Given: " + time);
+            return false;
+        }
+
+        return true;
     }
 
     // Setters

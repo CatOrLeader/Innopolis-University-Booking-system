@@ -91,7 +91,7 @@ public class AuthenticationHandler extends StateHandler {
                     new EditMessageText(
                             usr,
                             query.message().messageId(),
-                            lang.returnToEnterEmail()
+                            lang.enterEmail()
                     );
             return new Response(data, updateMessage);
         } else if (query != null) {
