@@ -32,6 +32,8 @@ test_job:
     - "mvn verify"
   artifacts:
     when: always
+    paths:
+      - target/surefire-reports/
     reports:
       junit:
         - target/surefire-reports/TEST-*.xml
@@ -45,9 +47,8 @@ lint_job:
     - "mvn checkstyle:checkstyle"
   artifacts:
     when: always
-    reports:
-      codequality:
-        - target/checkstyle-result.xml
+    paths:
+      - target/checkstyle-result.xml
 
 package_job:
   stage: package
