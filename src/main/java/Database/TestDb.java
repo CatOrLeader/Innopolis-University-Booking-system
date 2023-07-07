@@ -16,7 +16,7 @@ public class TestDb {
         BookingController bookingController = new BookingController();
 
         bookingController.addOrUpdateBooking(bookingModel);
-        System.out.println(bookingController.getBookingDataById("sdfdsf"));
+        System.out.println(bookingController.getBookingDataById("sdfdsf").userEmail);
         System.out.println(bookingController.getBookingsByUserChatId(759652782));
         bookingController.confirmBooking("sdfdsf");
         BookingModel bookingModelUpd = new BookingModel("sdfdsf", 759652782, "booking 1 upd", "100", Timestamp.valueOf(start), Timestamp.valueOf(end), false);
