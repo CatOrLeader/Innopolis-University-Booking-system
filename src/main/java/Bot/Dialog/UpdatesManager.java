@@ -4,6 +4,8 @@ import Bot.Dialog.Data.BotState;
 import Bot.Dialog.Data.UserData;
 import Bot.Dialog.Handlers.Independent.BookingConfirmationHandler;
 import Bot.Dialog.Handlers.Independent.GoToMenuHandler;
+import Bot.Dialog.Handlers.Independent.WebAppInfoHandler;
+import Bot.Dialog.Handlers.Independent.WebAppOpeningHandler;
 import Bot.Dialog.Handlers.IndependentHandler;
 import Bot.Dialog.Handlers.MaybeResponse;
 import Bot.Dialog.Handlers.Response;
@@ -44,8 +46,11 @@ public class UpdatesManager {
      * Method to preload independent handlers.
      */
     private void preloadIndependentHandlers() {
+        // It is necessary to create in this order, else error
+        independentHandlers.add(new WebAppInfoHandler());
         independentHandlers.add(new GoToMenuHandler());
         independentHandlers.add(new BookingConfirmationHandler());
+        independentHandlers.add(new WebAppOpeningHandler());
     }
 
     /**

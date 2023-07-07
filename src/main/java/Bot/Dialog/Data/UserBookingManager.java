@@ -1,10 +1,9 @@
 package Bot.Dialog.Data;
 
-import APIWrapper.Utilities.DateTime;
+import Utilities.Config;
+import Utilities.DateTime;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -28,7 +27,7 @@ public class UserBookingManager {
     }
 
     public List<UserBooking> getBookingsToNotify() {
-        return getBookingsAt(formatTime(LocalDateTime.now().plusMinutes(16)));
+        return getBookingsAt(formatTime(LocalDateTime.now().plusMinutes(Config.bookingReminderPeriod())));
     }
 
     public void addBooking(UserBooking booking) {
@@ -67,10 +66,17 @@ public class UserBookingManager {
     }
 
     private void initializeConfirmStatus(UserBooking booking) {
-        var bookTime = ZonedDateTime.parse(booking.start,
-                DateTimeFormatter.ISO_INSTANT.withZone(ZoneId.systemDefault())).minusHours(3);
-        var curTime = ZonedDateTime.now();
+        var bookTime = ZonedDateTime.of(
+                LocalDateTime.ofInstant(
+                        Instant.from(DateTimeFormatter.ISO_INSTANT.parse(booking.start)),
+                        ZoneOffset.UTC),
+                ZoneOffset.UTC
+        );
+        var curTime = ZonedDateTime.of(
+                LocalDateTime.now(),
+                ZoneOffset.UTC
+        );
         booking.isConfirmed = (
-                ChronoUnit.MINUTES.between(curTime, bookTime) <= 15);
+                ChronoUnit.MINUTES.between(curTime, bookTime) <= Config.bookingSafePeriod());
     }
 }

@@ -2,11 +2,14 @@ package Bot.Dialog.Config;
 
 import Models.Room;
 import Models.Booking;
+import Utilities.Config;
+import com.pengrad.telegrambot.model.WebAppInfo;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
 import com.pengrad.telegrambot.model.request.InlineKeyboardMarkup;
 import com.pengrad.telegrambot.model.request.KeyboardButton;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardMarkup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -74,6 +77,8 @@ public interface IText {
 
     String changeLanguage();
 
+    String openWebAppBtn();
+
     // Pop-ups text
     String fullBookingInfo(Booking booking);
 
@@ -103,6 +108,10 @@ public interface IText {
                 },
                 new KeyboardButton[]{
                         new KeyboardButton(changeLanguage())
+                },
+                new KeyboardButton[] {
+                        new KeyboardButton(openWebAppBtn())
+                                .webAppInfo(new WebAppInfo("https://mgregarious-beijinho-155625.netlify.app/"))
                 }
         ).resizeKeyboard(true);
     }
@@ -117,6 +126,23 @@ public interface IText {
     }
 
     InlineKeyboardMarkup bookingDurations();
+
+    default InlineKeyboardMarkup _localizedBookingDurations(String sentence) {
+        var durations = Config.bookingDurations();
+        List<InlineKeyboardButton> firstRow = new ArrayList<>();
+        List<InlineKeyboardButton> secondRow = new ArrayList<>();
+        for (int ind = 0; ind < durations.size(); ind++) {
+            var row = (ind < durations.size() / 2 ? firstRow : secondRow);
+            var duration = durations.get(ind);
+            row.add(
+                    new InlineKeyboardButton(
+                            String.format("%d %s", duration, sentence)
+                    ).callbackData(duration.toString()));
+        }
+        return new InlineKeyboardMarkup(
+                firstRow.toArray(InlineKeyboardButton[]::new),
+                secondRow.toArray(InlineKeyboardButton[]::new));
+    }
 
     InlineKeyboardMarkup userBookings(List<Booking> bookings);
 

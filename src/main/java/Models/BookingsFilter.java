@@ -1,6 +1,6 @@
 package Models;
 
-import APIWrapper.Utilities.DateTime;
+import Utilities.DateTime;
 
 public class BookingsFilter {
     // Exposed fields
