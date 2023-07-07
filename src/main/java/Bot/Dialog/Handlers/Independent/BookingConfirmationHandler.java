@@ -17,20 +17,20 @@ public class BookingConfirmationHandler extends IndependentHandler {
     private final Request outlook = new Request();
     @Override
     public MaybeResponse handle(Update incomingUpdate, UserData data) {
-        var callback = incomingUpdate.callbackQuery();
-        if (callback == null) {
+        if (!(isBookingConfirmation(incomingUpdate) || isBookingRevoke(incomingUpdate))) {
             return new MaybeResponse();
         }
+        var callback = incomingUpdate.callbackQuery();
         var usr = data.getUserId();
         var lang = data.getLang();
         var text = callback.data();
         var msgId = callback.message().messageId();
-        if (isBookingConfirmation(text)) {
+        if (isBookingConfirmation(incomingUpdate)) {
             var confirmId = text.split(" ")[1];
             bookingManager.setConfirmed(confirmId);
             var edit = new EditMessageText(usr, msgId, lang.bookingConfirmed());
             return new MaybeResponse(new Response(data, edit));
-        } else if (isBookingRevoke(text)) {
+        } else if (isBookingRevoke(incomingUpdate)) {
             var revokeId = text.split(" ")[1];
             outlook.deleteBooking(revokeId);
             bookingManager.removeBookingById(revokeId);
@@ -41,11 +41,11 @@ public class BookingConfirmationHandler extends IndependentHandler {
         }
     }
 
-    private boolean isBookingConfirmation(String data) {
-        return data.startsWith("confirm ");
+    private boolean isBookingConfirmation(Update update) {
+        return update.callbackQuery() != null && update.callbackQuery().data().startsWith("confirm ");
     }
 
-    private boolean isBookingRevoke(String data) {
-        return data.startsWith("revoke ");
+    private boolean isBookingRevoke(Update update) {
+        return update.callbackQuery() != null && update.callbackQuery().data().startsWith("revoke ");
     }
 }

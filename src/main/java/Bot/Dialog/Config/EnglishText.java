@@ -1,7 +1,6 @@
 package Bot.Dialog.Config;
 
 import Models.Booking;
-
 import Utilities.Config;
 import Utilities.DateTime;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
@@ -160,25 +159,14 @@ public class EnglishText implements IText {
     }
 
     @Override
-    public String openWebAppBtn() {
-        return "New Booking (WebApp)";
-    }
-
-    @Override
-    public String changeLanguage() {
-        return "\uD83C\uDDF7\uD83C\uDDFA Change language";
-    }
-
-    @Override
     public String abortAndToMenu() {
         return "Aborting all processes and going to menu...";
     }
 
     @Override
-    public String languageChanged() {
-        return "Language successfully changed.";
+    public String languageChangedAndToMenu() {
+        return "Language successfully changed. Return to menu.";
     }
-
 
     @Override
     public String fullBookingInfo(Booking booking) {
