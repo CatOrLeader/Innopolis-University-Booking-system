@@ -1,49 +1,32 @@
 package Bot.Dialog.Handlers.State;
 
 import APIWrapper.Requests.Request;
-import Bot.Dialog.Config.EnglishText;
-import Bot.Dialog.Config.RussianText;
 import Bot.Dialog.Data.BotState;
 import Bot.Dialog.Data.UserData;
 import Bot.Dialog.Handlers.Response;
 import Bot.Dialog.Handlers.StateHandler;
+import Models.Booking;
+import Utilities.BookingRoomHelper;
+import Utilities.DateTime;
+import Utilities.WebAppMsgParser;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
 
 public class MainMenuHandler extends StateHandler {
     private final Request outlook = new Request();
-
+    private final WebAppMsgParser parser = new WebAppMsgParser();
+    private final BookingRoomHelper bookingHelper = new BookingRoomHelper();
     @Override
     public Response handle(Update incomingUpdate, UserData data) {
-        var message = incomingUpdate.message();
-        if (message == null) {
-            return new Response(data);
-        } else if (message.text().equals(data.getLang().myReservationsBtn())) {
+        if (isMyBookingsTransition(incomingUpdate, data)) {
             return handleBookings(data);
-        } else if (message.text().equals(data.getLang().newBookingBtn())) {
-            return handleNewBooking(data);
-        } else if (message.text().equals(data.getLang().changeLanguage())) {
-            return changeLanguage(data);
+        } else if (isWebAppInfo(incomingUpdate)) {
+            System.out.println("webapp");
+            return handleWebAppInfo(incomingUpdate, data);
         } else {
             return new Response(data);
         }
-    }
-
-    /**
-     * Handle change language request
-     *
-     * @param data user data
-     * @return bot response
-     */
-    private Response changeLanguage(UserData data) {
-        var usr = data.getUserId();
-        var lang = data.getLang();
-        var newLang = (lang instanceof EnglishText ? new RussianText() : new EnglishText());
-        data.setLang(newLang);
-
-        var msg = new SendMessage(usr, newLang.languageChanged()).replyMarkup(newLang.mainMenuMarkup());
-        return new Response(data, msg);
     }
 
     /**
@@ -71,20 +54,47 @@ public class MainMenuHandler extends StateHandler {
     }
 
     /**
-     * Handle initial stage of booking creation.
-     *
+     * Handle obtaining of info from WebApp
+     * @param incomingUpdate incoming update
      * @param data user data
      * @return bot response
      */
-    private Response handleNewBooking(UserData data) {
+    private Response handleWebAppInfo(Update incomingUpdate, UserData data) {
+        var msg = incomingUpdate.message();
         var lang = data.getLang();
-        var usr = data.getUserId();
+        var user = data.getUserId();
 
-        var botMessage = new SendMessage(
-                usr, lang.chooseBookingTime())
-                .replyMarkup(new ReplyKeyboardRemove());
+        if (!data.isAuthorized() || msg == null) {
+            return new Response(data);
+        }
 
-        data.setDialogState(BotState.BOOKING_TIME_AWAITING);
-        return new Response(data, botMessage);
+        try {
+            Booking info = parser.constructFromWebapp(msg.webAppData().data(), data);
+
+            Boolean isValidated = DateTime.isValid(info.start);
+            if (isValidated == null || !isValidated) {
+                        new Response(
+                                data, new SendMessage(user, lang.invalidBookingTime())
+                        );
+            }
+
+            var response = outlook.bookRoom(info.room.id,
+                    info.convertToBookRoomRequestFromWebapp());
+            return bookingHelper.processResponse(response, data);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return bookingHelper.abnormalMenuReturn(data);
+        }
+    }
+
+    private boolean isWebAppInfo(Update update) {
+        return update.message() != null &&
+                update.message().webAppData() != null;
+    }
+
+    private boolean isMyBookingsTransition(Update update, UserData data) {
+        return update.message() != null &&
+                update.message().text() != null &&
+                update.message().text().equals(data.getLang().myReservationsBtn());
     }
 }

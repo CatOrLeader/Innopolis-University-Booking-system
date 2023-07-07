@@ -160,23 +160,13 @@ public class RussianText implements IText {
     }
 
     @Override
-    public String openWebAppBtn() {
-        return "Новая бронь (WebApp)";
-    }
-
-    @Override
-    public String changeLanguage() {
-        return "🇬🇧 Сменить язык";
-    }
-
-    @Override
     public String abortAndToMenu() {
         return "Прерываю все процессы и перехожу в меню...";
     }
 
     @Override
-    public String languageChanged() {
-        return "Язык успешно изменен.";
+    public String languageChangedAndToMenu() {
+        return "Язык успешно изменен. Перехожу в меню.";
     }
 
     @Override

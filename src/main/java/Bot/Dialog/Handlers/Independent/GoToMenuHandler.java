@@ -14,15 +14,15 @@ import com.pengrad.telegrambot.request.SendMessage;
 public class GoToMenuHandler extends IndependentHandler {
     @Override
     public MaybeResponse handle(Update incomingUpdate, UserData data) {
+        if (!isMenuCommand(incomingUpdate)) {
+            return new MaybeResponse();
+        }
+
         var msg = incomingUpdate.message();
         var lang = data.getLang();
         var usr = data.getUserId();
 
         if (!data.isAuthorized() || msg == null) {
-            return new MaybeResponse();
-        }
-
-        if (!isMenuCommand(msg.text())) {
             return new MaybeResponse();
         }
 
@@ -32,13 +32,9 @@ public class GoToMenuHandler extends IndependentHandler {
         return new MaybeResponse(new Response(data, botMessage));
     }
 
-    /**
-     * Method to check whether given command corresponds to '/menu'
-     *
-     * @param text given command
-     * @return true if it is '/menu' command, false - otherwise
-     */
-    private boolean isMenuCommand(String text) {
-        return text.strip().equals("/menu");
+    private boolean isMenuCommand(Update update) {
+        return update.message() != null &&
+                update.message().text() != null &&
+                 update.message().text().strip().equals("/menu");
     }
 }
