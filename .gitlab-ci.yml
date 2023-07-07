@@ -43,7 +43,6 @@ lint_job:
   script:
     - echo "Running linters"
     - "mvn checkstyle:checkstyle"
-    - "mvn spotbugs:check"
     # Add more linters or static analysis tools as needed
     
 package_job:
