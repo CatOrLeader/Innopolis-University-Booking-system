@@ -150,6 +150,11 @@ public class RussianText implements IText {
     }
 
     @Override
+    public String bookingDoesNotExist() {
+        return "Данного бронирования не существует.";
+    }
+
+    @Override
     public String newBookingBtn() {
         return "\uD83D\uDD0F Новая бронь";
     }
@@ -232,6 +237,6 @@ public class RussianText implements IText {
 
     @Override
     public String unconfirmedBookingCancel(Booking booking) {
-        return String.format("Неподтвержденное бронирование '%s' было отменено.", booking.title);
+        return String.format("⚠️ Неподтвержденное бронирование '%s' было отменено.", booking.title);
     }
 }

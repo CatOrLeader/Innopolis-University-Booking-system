@@ -1,7 +1,10 @@
 package Bot.Dialog.Data;
 
 import Models.Booking;
+import Models.BookingModel;
 import Models.Room;
+
+import static Utilities.DateTime.parseISOToTimestamp;
 
 public class UserBooking extends Booking {
     public long userId;
@@ -25,5 +28,17 @@ public class UserBooking extends Booking {
                 booking.end, booking.room, booking.owner_email);
         this.userId = userId;
         this.isConfirmed = isConfirmed;
+    }
+
+    public BookingModel toBookingModel() {
+        return new BookingModel(
+                id,
+                userId,
+                owner_email,
+                title,
+                room.id,
+                parseISOToTimestamp(start),
+                parseISOToTimestamp(end),
+                isConfirmed);
     }
 }
