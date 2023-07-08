@@ -69,6 +69,7 @@ public interface IText {
 
     String bookingConfirmed();
     String bookingRevoked();
+    String bookingDoesNotExist();
 
     // Buttons text
     String newBookingBtn();

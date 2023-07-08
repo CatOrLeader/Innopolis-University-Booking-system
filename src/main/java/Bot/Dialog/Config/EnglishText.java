@@ -149,6 +149,11 @@ public class EnglishText implements IText {
     }
 
     @Override
+    public String bookingDoesNotExist() {
+        return "This booking does not exist.";
+    }
+
+    @Override
     public String newBookingBtn() {
         return "\uD83D\uDD0F New booking";
     }
@@ -232,6 +237,6 @@ public class EnglishText implements IText {
 
     @Override
     public String unconfirmedBookingCancel(Booking booking) {
-        return String.format("Unconfirmed booking '%s' was cancelled.", booking.title);
+        return String.format("⚠️ Unconfirmed booking '%s' was cancelled.", booking.title);
     }
 }

@@ -22,7 +22,6 @@ public class MainMenuHandler extends StateHandler {
         if (isMyBookingsTransition(incomingUpdate, data)) {
             return handleBookings(data);
         } else if (isWebAppInfo(incomingUpdate)) {
-            System.out.println("webapp");
             return handleWebAppInfo(incomingUpdate, data);
         } else {
             return new Response(data);

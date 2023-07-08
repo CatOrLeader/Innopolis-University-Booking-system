@@ -16,7 +16,7 @@ public class Config {
      */
     private static final Properties properties;
     static {
-        var propsPath = Path.of("src/main/java/properties.cfg");
+        var propsPath = Path.of("properties.cfg");
         try {
             var stream = Files.newBufferedReader(propsPath);
             properties = new Properties();
