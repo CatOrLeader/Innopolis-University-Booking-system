@@ -2,6 +2,7 @@ package Utilities;
 
 import org.jetbrains.annotations.Nullable;
 
+import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -187,6 +188,23 @@ public class DateTime {
 
     public String getOutputEnd() {
         return end.format(OUTPUT_FORMATTER);
+    }
+
+    public static Timestamp parseISOToTimestamp(String time) {
+        return Timestamp.valueOf(ZonedDateTime.of(
+                LocalDateTime.ofInstant(
+                        Instant.from(DateTimeFormatter.ISO_INSTANT.parse(time)),
+                        ZoneOffset.UTC).truncatedTo(ChronoUnit.MINUTES),
+                ZoneOffset.UTC
+        ).toLocalDateTime());
+    }
+
+    public static String formatTimestampToISO(Timestamp timestamp) {
+        return timestamp.
+                toLocalDateTime().
+                atZone(ZoneId.systemDefault()).
+                plusHours(3).
+                format(DateTimeFormatter.ISO_INSTANT);
     }
 }
 

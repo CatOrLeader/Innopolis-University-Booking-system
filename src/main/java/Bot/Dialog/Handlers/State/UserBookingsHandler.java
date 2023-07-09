@@ -43,7 +43,6 @@ public class UserBookingsHandler extends StateHandler {
      */
     private Response handleInfo(Update update, UserData data) {
         var lang = data.getLang();
-        var email = data.getEmail();
 
         var query = update.callbackQuery();
         var text = query.data();
@@ -54,18 +53,14 @@ public class UserBookingsHandler extends StateHandler {
         matches.find();
         var infoId = matches.group();
 
-        // TODO: ask for get BOOKING by id
-        var bookings = outlook.getBookingsByUser(email).stream().filter(
-                booking -> booking.id.equals(infoId)
-        ).toList();
+        // TODO: join request to api and database
+        var booking = outlook.getBookingById(infoId);
 
-        AnswerCallbackQuery answer;
-        if (bookings.isEmpty()) {
-            answer = new AnswerCallbackQuery(query.id()).
-                    text(lang.sorryError()).showAlert(true);
-        } else {
+        AnswerCallbackQuery answer = new AnswerCallbackQuery(query.id()).
+                text(lang.sorryError()).showAlert(true);
+        if (booking != null) {
             answer = new AnswerCallbackQuery(query.id()).text(
-                    lang.fullBookingInfo(bookings.get(0))
+                    lang.fullBookingInfo(booking)
             ).showAlert(true);
         }
 

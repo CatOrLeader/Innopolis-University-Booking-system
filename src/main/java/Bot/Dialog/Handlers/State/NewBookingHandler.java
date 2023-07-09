@@ -107,7 +107,7 @@ public class NewBookingHandler extends StateHandler {
         var info = bookingInfo.get(user);
 
         try {
-            info.room = takeRoomById(roomId);
+            info.room = roomData.getRoomData(roomId);
             assert info.room != null;
             var updateMessage = new EditMessageText(chatId, msgId, lang.chosenRoom(info.room.name));
             var botMessage = new SendMessage(
@@ -154,7 +154,6 @@ public class NewBookingHandler extends StateHandler {
                                 String.valueOf(info.duration))
                 );
 
-        // TODO: properly obtain list of available rooms at given time (how to get time?)
         var userRooms = outlook.getAllFreeRooms(
                 new GetFreeRoomsRequest(info.start, info.duration));
 
@@ -206,16 +205,6 @@ public class NewBookingHandler extends StateHandler {
     }
 
     // Utils methods
-
-    /**
-     * Find room instance by its id
-     *
-     * @param roomId given id
-     * @return room (it is supposed that given id always correct)
-     */
-    private Room takeRoomById(String roomId) {
-        return roomData.getRoomData(roomId);
-    }
 
     /**
      * Method to return to menu due to unexpected error.

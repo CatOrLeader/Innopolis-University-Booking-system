@@ -4,11 +4,10 @@ variables:
 image: maven:latest
 
 stages:
-    - build
-    - test
-    - package
-    - deploy
-
+  - build
+  - test
+  - package
+  - deploy
 
 cache:
   paths:
@@ -18,19 +17,18 @@ cache:
 build_job:
   stage: build
   tags:
-    - docker 
-
-  script: 
+    - docker
+  script:
     - echo "Maven compile started"
     - "mvn compile"
-
 
 test_job:
   stage: test
   tags:
-    - docker 
+    - docker
   script:
-  - mvn verify
+    - echo "Maven test started"
+    - "mvn verify"
   artifacts:
     when: always
     reports:
@@ -42,25 +40,25 @@ lint_job:
   stage: test
   tags:
     - docker
-
   script:
     - echo "Running linters"
     - "mvn checkstyle:checkstyle"
+  artifacts:
+    when: always
+    paths:
+      - target/checkstyle-result.xml
 
 package_job:
   stage: package
   tags:
-    - docker 
-
-  script: 
+    - docker
+  script:
     - echo "Maven packaging started"
     - "mvn package"
 
-
-Deploy_job:
+deploy_job:
   stage: deploy
   tags:
-    - docker 
-
-  script: 
+    - docker
+  script:
     - echo "Maven deploy started"

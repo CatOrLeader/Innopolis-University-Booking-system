@@ -1,7 +1,7 @@
 package Bot.Dialog.Config;
 
-import Models.Room;
 import Models.Booking;
+import Models.Room;
 import Utilities.Config;
 import com.pengrad.telegrambot.model.WebAppInfo;
 import com.pengrad.telegrambot.model.request.InlineKeyboardButton;
@@ -69,15 +69,12 @@ public interface IText {
 
     String bookingConfirmed();
     String bookingRevoked();
+    String bookingDoesNotExist();
 
     // Buttons text
     String newBookingBtn();
 
     String myReservationsBtn();
-
-    String changeLanguage();
-
-    String openWebAppBtn();
 
     // Pop-ups text
     String fullBookingInfo(Booking booking);
@@ -89,7 +86,7 @@ public interface IText {
 
     String abortAndToMenu();
 
-    String languageChanged();
+    String languageChangedAndToMenu();
 
     // Keyboards
     default InlineKeyboardMarkup languageSelection() {
@@ -102,18 +99,8 @@ public interface IText {
     }
     default ReplyKeyboardMarkup mainMenuMarkup() {
         return new ReplyKeyboardMarkup(
-                new KeyboardButton[]{
-                        new KeyboardButton(newBookingBtn()),
-                        new KeyboardButton(myReservationsBtn())
-                },
-                new KeyboardButton[]{
-                        new KeyboardButton(changeLanguage())
-                },
-                new KeyboardButton[] {
-                        new KeyboardButton(openWebAppBtn())
-                                .webAppInfo(new WebAppInfo("https://mgregarious-beijinho-155625.netlify.app/"))
-                }
-        ).resizeKeyboard(true);
+                new KeyboardButton(newBookingBtn()).webAppInfo(new WebAppInfo("https://mgregarious-beijinho-155625.netlify.app/")),
+                new KeyboardButton(myReservationsBtn())).resizeKeyboard(true);
     }
 
     default InlineKeyboardMarkup availableRoomsKeyboard(List<Room> rooms) {
