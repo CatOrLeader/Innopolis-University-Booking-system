@@ -1,11 +1,8 @@
 package Bot;
 
-import APIWrapper.Requests.Request;
 import Bot.Dialog.Config.IText;
-import Bot.Dialog.Data.UserBooking;
-import Bot.Dialog.Data.UserBookingManager;
-import Bot.Dialog.Data.UserDataManager;
-import Bot.Dialog.UpdatesManager;
+import Models.Booking;
+import Utilities.Services;
 import com.coreoz.wisp.Scheduler;
 import com.coreoz.wisp.schedule.Schedules;
 import com.pengrad.telegrambot.TelegramBot;
@@ -24,17 +21,10 @@ import java.util.Set;
  */
 public class BookingBot {
     private final TelegramBot bot;
-    private final UpdatesManager updatesManager;
-    private final UserBookingManager bookingManager;
-    private final UserDataManager userManager;
-    private final Request outlook = new Request();
     private final Set<Integer> updatesToSkip = new HashSet<>();
 
     public BookingBot(String token) {
         bot = new TelegramBot(token);
-        updatesManager = new UpdatesManager();
-        userManager = new UserDataManager();
-        bookingManager = new UserBookingManager();
     }
 
     /**
@@ -66,18 +56,18 @@ public class BookingBot {
     }
 
     private void processBookings() {
-        var bookingsToCancel = bookingManager.getBookingsNow();
-        var upcomingBookings = bookingManager.getBookingsToNotify();
+        var bookingsToCancel = Services.bookingController.getBookingsNow();
+        var upcomingBookings = Services.bookingController.getBookingsToNotify();
         bookingsToCancel.forEach(this::removeUnconfirmedBooking);
         upcomingBookings.forEach(this::notifyBooking);
     }
 
-    private void notifyBooking(UserBooking userBooking) {
+    private void notifyBooking(Booking userBooking) {
         if (userBooking.isConfirmed) {
             return;
         }
         var usr = userBooking.userId;
-        var lang = userManager.getUserData(usr).getLang();
+        var lang = Services.userDataController.getUserData(usr).getLang();
         var msg = new SendMessage(
                 usr,
                 lang.upcomingBooking(userBooking)
@@ -85,14 +75,14 @@ public class BookingBot {
         bot.execute(msg);
     }
 
-    private void removeUnconfirmedBooking(UserBooking userBooking) {
+    private void removeUnconfirmedBooking(Booking userBooking) {
         if (userBooking.isConfirmed) {
             return;
         }
         var usr = userBooking.userId;
-        var lang = userManager.getUserData(usr).getLang();
-        outlook.deleteBooking(userBooking.id);
-        bookingManager.removeBookingById(userBooking.id);
+        var lang = Services.userDataController.getUserData(usr).getLang();
+        Services.outlook.deleteBooking(userBooking.id);
+        Services.bookingController.removeBooking(userBooking.id);
         var msg = new SendMessage(usr, lang.unconfirmedBookingCancel(userBooking));
         bot.execute(msg);
     }
@@ -111,11 +101,11 @@ public class BookingBot {
         if (userId == null) { // if user was not extracted -- no need to handle
             return;
         }
-        var data = userManager.getUserData(userId);
+        var data = Services.userDataController.getUserData(userId);
         try {
-            var response = updatesManager.handle(update, data);
+            var response = Services.updatesManager.handle(update, data);
             Arrays.stream(response.botResponse()).forEach(bot::execute);
-            userManager.setUserData(userId, response.userData());
+            Services.userDataController.setUserData(userId, response.userData());
         } catch (Exception any) {
             excuseProcessCrash(userId, data.getLang());
         }

@@ -16,13 +16,6 @@ public class BookingsFilter {
         this.owner_email_in = owner_email_in;
     }
 
-    public BookingsFilter(String[] room_id_in, String[] owner_email_in) {
-        this.started_at_or_after = null;
-        this.ended_at_or_before = null;
-        this.room_id_in = room_id_in;
-        this.owner_email_in = owner_email_in;
-    }
-
     // Class constructor
     public void formatToSend() {
         parseDateTimeToOutput();

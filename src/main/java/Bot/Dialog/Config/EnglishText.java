@@ -239,4 +239,9 @@ public class EnglishText implements IText {
     public String unconfirmedBookingCancel(Booking booking) {
         return String.format("⚠️ Unconfirmed booking '%s' was cancelled.", booking.title);
     }
+
+    @Override
+    public String abbreviation() {
+        return "ENG";
+    }
 }

@@ -1,8 +1,10 @@
 package Database.Controllers;
 
+import Bot.Dialog.Config.EnglishText;
+import Bot.Dialog.Data.BotState;
+import Bot.Dialog.Data.UserData;
 import Database.DbConnector;
 import Database.Services.UserDataService;
-import Models.UserDataModel;
 
 /**
  * Controller for the user's data
@@ -17,31 +19,30 @@ public class UserDataController {
     }
 
     /**
-     * Adds a new bot user to the database
+     * Method to set new user data for given Telegram ID.
      *
-     * @param userDataModel model of user's data
+     * @param userId ID of user whose data will be set.
+     * @param data   new data.
      */
-    public void addUserData(UserDataModel userDataModel) {
-        userDataService.addUserData(userDataModel);
+    public void setUserData(long userId, UserData data) {
+        if (userExists(userId)) {
+            userDataService.updateUserData(data);
+        } else {
+            userDataService.addUserData(data);
+        }
     }
 
     /**
-     * Updates data about telegram bot user
+     * Get user's data by ID
      *
-     * @param userDataModel model of user's data
-     */
-    public void updateUserData(UserDataModel userDataModel) {
-        userDataService.updateUserData(userDataModel);
-    }
-
-    /**
-     * Updates user's data
-     *
-     * @param tgChatId user's chat id
+     * @param userId user's chat id
      * @return model of the user
      */
-    public UserDataModel getUserData(long tgChatId) {
-        return userDataService.getUserData(tgChatId);
+    public UserData getUserData(long userId) {
+        if (!userExists(userId)) {
+            initializeUser(userId);
+        }
+        return userDataService.getUserData(userId);
     }
 
     /**
@@ -62,5 +63,19 @@ public class UserDataController {
      */
     public boolean isAuthorized(long tgChatId) {
         return userDataService.isAuthorized(tgChatId);
+    }
+
+    /**
+     * Method to set initial data for new user.
+     *
+     * @param user new user
+     */
+    private void initializeUser(long user) {
+        var initialData = new UserData(
+                user,
+                BotState.UNINITIALIZED,
+                null,
+                new EnglishText());
+        setUserData(user, initialData);
     }
 }

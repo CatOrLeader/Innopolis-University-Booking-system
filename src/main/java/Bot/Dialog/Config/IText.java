@@ -141,4 +141,7 @@ public interface IText {
     String upcomingBooking(Booking booking);
 
     String unconfirmedBookingCancel(Booking booking);
+
+    // Abbreviation
+    String abbreviation();
 }

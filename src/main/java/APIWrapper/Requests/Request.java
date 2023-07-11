@@ -12,7 +12,7 @@ public class Request {
         formatter = new RequestFormatted(url);
     }
 
-    // Endpoints
+
     public ArrayList<Room> getAllBookableRooms() {
         return formatter.getAllBookableRooms();
     }
@@ -33,7 +33,6 @@ public class Request {
         return formatter.deleteBooking(bookingId);
     }
 
-    // Additional methods
     public ArrayList<Booking> getBookingsByUser(String email) {
         BookingsFilter bookingsFilter = new BookingsFilter(
                 null,
