@@ -1,16 +1,14 @@
 package Bot.Dialog.Handlers.State;
 
-import APIWrapper.Requests.Request;
 import Bot.Dialog.Data.BotState;
 import Bot.Dialog.Data.UserData;
 import Bot.Dialog.Handlers.Response;
 import Bot.Dialog.Handlers.StateHandler;
-import Database.Controllers.RoomController;
 import Models.Booking;
 import Models.GetFreeRoomsRequest;
 import Models.Room;
-import Utilities.BookingRoomHelper;
 import Utilities.DateTime;
+import Utilities.Services;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
@@ -23,18 +21,15 @@ import java.util.Map;
  */
 public class NewBookingHandler extends StateHandler {
     private final Map<Long, Booking> bookingInfo = new HashMap<>();
-    private final Request outlook = new Request();
-    private final RoomController roomData = new RoomController();
-    private final BookingRoomHelper bookingHelper = new BookingRoomHelper();
 
     public NewBookingHandler() {
         preloadRoomsFromApi();
     }
 
     private void preloadRoomsFromApi() {
-        var rooms = outlook.getAllBookableRooms();
+        var rooms = Services.outlook.getAllBookableRooms();
         for (Room room : rooms) {
-            roomData.addOrUpdateRoom(room);
+            Services.roomController.addOrUpdateRoom(room);
         }
     }
 
@@ -80,10 +75,8 @@ public class NewBookingHandler extends StateHandler {
         }
 
         info.title = message.text();
-        var response = outlook.bookRoom(info.room.id,
-                info.convertToBookRoomRequest());
 
-        return bookingHelper.processResponse(response, data);
+        return info.post();
     }
 
     /**
@@ -107,7 +100,7 @@ public class NewBookingHandler extends StateHandler {
         var info = bookingInfo.get(user);
 
         try {
-            info.room = roomData.getRoomData(roomId);
+            info.room = Services.roomController.getRoomData(roomId);
             assert info.room != null;
             var updateMessage = new EditMessageText(chatId, msgId, lang.chosenRoom(info.room.name));
             var botMessage = new SendMessage(
@@ -154,7 +147,7 @@ public class NewBookingHandler extends StateHandler {
                                 String.valueOf(info.duration))
                 );
 
-        var userRooms = outlook.getAllFreeRooms(
+        var userRooms = Services.outlook.getAllFreeRooms(
                 new GetFreeRoomsRequest(info.start, info.duration));
 
         if (userRooms.isEmpty()) {
@@ -193,6 +186,7 @@ public class NewBookingHandler extends StateHandler {
 
         bookingInfo.put(usr, new Booking());
         bookingInfo.get(usr).owner_email = data.getEmail();
+        bookingInfo.get(usr).userId = usr;
         bookingInfo.get(usr).start = msg.text();
 
         var botMsg =

@@ -239,4 +239,9 @@ public class RussianText implements IText {
     public String unconfirmedBookingCancel(Booking booking) {
         return String.format("⚠️ Неподтвержденное бронирование '%s' было отменено.", booking.title);
     }
+
+    @Override
+    public String abbreviation() {
+        return "RUS";
+    }
 }

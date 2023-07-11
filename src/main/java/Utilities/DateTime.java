@@ -202,7 +202,7 @@ public class DateTime {
     public static String formatTimestampToISO(Timestamp timestamp) {
         return timestamp.
                 toLocalDateTime().
-                atZone(ZoneId.systemDefault()).
+                atZone(ZoneOffset.UTC).
                 plusHours(3).
                 format(DateTimeFormatter.ISO_INSTANT);
     }

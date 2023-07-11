@@ -1,22 +1,18 @@
 package Bot.Dialog.Handlers.State;
 
-import APIWrapper.Requests.Request;
 import Bot.Dialog.Data.BotState;
 import Bot.Dialog.Data.UserData;
 import Bot.Dialog.Handlers.Response;
 import Bot.Dialog.Handlers.StateHandler;
 import Models.Booking;
-import Utilities.BookingRoomHelper;
 import Utilities.DateTime;
-import Utilities.WebAppMsgParser;
+import Utilities.Services;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.model.request.ReplyKeyboardRemove;
 import com.pengrad.telegrambot.request.SendMessage;
 
 public class MainMenuHandler extends StateHandler {
-    private final Request outlook = new Request();
-    private final WebAppMsgParser parser = new WebAppMsgParser();
-    private final BookingRoomHelper bookingHelper = new BookingRoomHelper();
+
     @Override
     public Response handle(Update incomingUpdate, UserData data) {
         if (isMyBookingsTransition(incomingUpdate, data)) {
@@ -38,7 +34,7 @@ public class MainMenuHandler extends StateHandler {
         var usr = data.getUserId();
         var lang = data.getLang();
 
-        var bookings = outlook.getBookingsByUser(data.getEmail());
+        var bookings = Services.outlook.getBookingsByUser(data.getEmail());
         var actualBookings = lang.actualBookings(bookings);
 
         var transition = new SendMessage(
@@ -68,21 +64,19 @@ public class MainMenuHandler extends StateHandler {
         }
 
         try {
-            Booking info = parser.constructFromWebapp(msg.webAppData().data(), data);
+            Booking info = new Booking(msg.webAppData().data(), data);
 
             Boolean isValidated = DateTime.isValid(info.start);
             if (isValidated == null || !isValidated) {
-                        new Response(
+                        return new Response(
                                 data, new SendMessage(user, lang.invalidBookingTime())
                         );
             }
 
-            var response = outlook.bookRoom(info.room.id,
-                    info.convertToBookRoomRequestFromWebapp());
-            return bookingHelper.processResponse(response, data);
+            return info.post();
         } catch (Exception e) {
             e.printStackTrace();
-            return bookingHelper.abnormalMenuReturn(data);
+            return abnormalMenuReturn(data);
         }
     }
 
@@ -95,5 +89,21 @@ public class MainMenuHandler extends StateHandler {
         return update.message() != null &&
                 update.message().text() != null &&
                 update.message().text().equals(data.getLang().myReservationsBtn());
+    }
+
+    /**
+     * Method to return to menu due to unexpected error.
+     *
+     * @param data user data
+     * @return response to return to menu
+     */
+    public Response abnormalMenuReturn(UserData data) {
+        var usr = data.getUserId();
+        var lang = data.getLang();
+
+        data.setDialogState(BotState.MAIN_MENU);
+        var msg = new SendMessage(usr,
+                lang.unexpectedErrorGoToMenu()).replyMarkup(lang.mainMenuMarkup());
+        return new Response(data, msg);
     }
 }

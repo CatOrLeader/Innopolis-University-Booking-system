@@ -1,11 +1,10 @@
 package Bot.Dialog.Handlers.State;
 
-import APIWrapper.Requests.Request;
 import Bot.Dialog.Data.BotState;
-import Bot.Dialog.Data.UserBookingManager;
 import Bot.Dialog.Data.UserData;
 import Bot.Dialog.Handlers.Response;
 import Bot.Dialog.Handlers.StateHandler;
+import Utilities.Services;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.AnswerCallbackQuery;
 import com.pengrad.telegrambot.request.EditMessageText;
@@ -14,9 +13,6 @@ import com.pengrad.telegrambot.request.SendMessage;
 import java.util.regex.Pattern;
 
 public class UserBookingsHandler extends StateHandler {
-    private final Request outlook = new Request();
-    private final UserBookingManager bookingManager = new UserBookingManager();
-
     @Override
     public Response handle(Update incomingUpdate, UserData data) {
         var query = incomingUpdate.callbackQuery();
@@ -54,7 +50,7 @@ public class UserBookingsHandler extends StateHandler {
         var infoId = matches.group();
 
         // TODO: join request to api and database
-        var booking = outlook.getBookingById(infoId);
+        var booking = Services.outlook.getBookingById(infoId);
 
         AnswerCallbackQuery answer = new AnswerCallbackQuery(query.id()).
                 text(lang.sorryError()).showAlert(true);
@@ -83,10 +79,10 @@ public class UserBookingsHandler extends StateHandler {
         var cancelId = matches.group();
 
         // REMOVING BOOKING FROM OUR DATABASE
-        bookingManager.removeBookingById(cancelId);
+        Services.bookingController.removeBooking(cancelId);
 
-        outlook.deleteBooking(cancelId);
-        var bookings = outlook.getBookingsByUser(data.getEmail());
+        Services.outlook.deleteBooking(cancelId);
+        var bookings = Services.outlook.getBookingsByUser(data.getEmail());
 
         var msgId = update.callbackQuery().message().messageId();
         var usr = data.getUserId();

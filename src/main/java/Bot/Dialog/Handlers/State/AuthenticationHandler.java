@@ -6,7 +6,7 @@ import Bot.Dialog.Data.UserData;
 import Bot.Dialog.Handlers.Response;
 import Bot.Dialog.Handlers.StateHandler;
 import Mail.AuthData;
-import Mail.Client;
+import Utilities.Services;
 import com.pengrad.telegrambot.model.Update;
 import com.pengrad.telegrambot.request.EditMessageText;
 import com.pengrad.telegrambot.request.SendMessage;
@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AuthenticationHandler extends StateHandler {
-    private final Client mailClient = new Client();
     private final Map<Long, AuthData> authMap = new HashMap<>();
 
     public AuthenticationHandler() throws NoSuchProviderException {
@@ -186,7 +185,7 @@ public class AuthenticationHandler extends StateHandler {
     private Response trySendCodeOrSorry(Long usr, IText lang, String email, UserData data, boolean expired) {
         var code = generateCode();
         try {
-            mailClient.sendAuthenticationCode(email, code);
+            Services.mailClient.sendAuthenticationCode(email, code);
             authMap.put(usr, new AuthData(email, code, Instant.now()));
             data.setDialogState(BotState.CODE_AWAITING);
             var text = (expired ? lang.verificationCodeExpired(email) : lang.verificationCodeSent());

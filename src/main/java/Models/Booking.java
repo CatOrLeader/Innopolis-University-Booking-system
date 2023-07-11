@@ -1,6 +1,12 @@
 package Models;
 
+import Bot.Dialog.Config.IText;
+import Bot.Dialog.Data.BotState;
+import Bot.Dialog.Data.UserData;
+import Bot.Dialog.Handlers.Response;
 import Utilities.DateTime;
+import Utilities.Services;
+import com.pengrad.telegrambot.request.SendMessage;
 
 public class Booking {
     // Exposed fields
@@ -12,63 +18,95 @@ public class Booking {
     public String owner_email;
 
     // Hidden fields
+    public transient long userId;
+    public transient boolean isConfirmed = false;
     public transient int duration;
 
-    public Booking(String id, String title, String start, String end, Room room, String owner_email) {
+    public Booking(
+            String id,
+            long userId,
+            String title,
+            String start,
+            String end,
+            String roomId,
+            String owner_email,
+            boolean isConfirmed
+    ) {
         this.id = id;
+        this.userId = userId;
         this.title = title;
         this.start = start;
         this.end = end;
-        this.room = room;
+        this.room = Services.roomController.getRoomData(roomId);
         this.owner_email = owner_email;
+        this.isConfirmed = isConfirmed;
     }
 
-    public Booking(String id, String title, String start, int duration, Room room, String owner_email) {
-        this.id = id;
-        this.title = title;
-        this.room = room;
-        this.owner_email = owner_email;
-        this.start = start;
-        this.duration = duration;
+    public Booking(String webAppData, UserData userData) throws Exception {
+        Booking temp = Services.gson.fromJson(webAppData, Booking.class);
+
+        this.title = temp.title;
+        this.start = temp.start;
+        this.end = temp.end;
+        room = Services.roomController.getRoomData(temp.room.id);
+
+        userId = userData.getUserId();
+        owner_email = userData.getEmail();
     }
 
     public Booking() {
 
     }
 
-    // Class constructor
-    public BookRoomRequest convertToBookRoomRequest() {
-        BookRoomRequest request = new BookRoomRequest(
-                title,
-                start,
-                duration,
-                owner_email
-        );
-
-        // It is necessary to make actions in this order
-        parseDateTimeToOutput();
-
-        return request;
+    // Class constructors
+    public BookRoomRequest toBookRoomRequest() {
+        if (end == null) {
+            return new BookRoomRequest(
+                    title,
+                    start,
+                    duration,
+                    owner_email
+            );
+        } else {
+            return new BookRoomRequest(
+                    title,
+                    start,
+                    end,
+                    owner_email
+            );
+        }
     }
 
-    public BookRoomRequest convertToBookRoomRequestFromWebapp() {
-        BookRoomRequest request = new BookRoomRequest(
-                title,
-                start,
-                end,
-                owner_email
-        );
+    // Main methods to POST booking on the server and synchronise it with the local DB
+    public Response post() {
+        Booking response = Services.outlook.bookRoom(room.id, toBookRoomRequest());
+        UserData userData = Services.userDataController.getUserData(userId);
 
-        request.isWebapp = true;
+        long userId = userData.getUserId();
+        IText lang = userData.getLang();
 
-        return request;
+        SendMessage botMessage;
+        if (response == null) {
+            botMessage =
+                    new SendMessage(userId,
+                            lang.bookedUnsuccessfully());
+        } else {
+            botMessage = new SendMessage(userId,
+                    lang.bookedSuccessfully(response.title,
+                            response.room.name,
+                            DateTime.formatToConvenient(response.start),
+                            DateTime.formatToConvenient(response.end)));
+            Services.bookingController.addOrUpdateBooking(response.complete(this));
+        }
+        botMessage = botMessage.replyMarkup(lang.mainMenuMarkup());
+        userData.setDialogState(BotState.MAIN_MENU);
+        return new Response(userData, botMessage);
     }
 
-    // Additional methods
-    private void parseDateTimeToOutput() {
-        DateTime dateTime = new DateTime(start, duration);
-
-        start = dateTime.getOutputStart();
-        end = dateTime.getOutputEnd();
+    // Utils methods
+    private Booking complete(Booking origin) {
+        if (id == null) id = origin.id;
+        if (userId == 0) userId = origin.userId;
+        return this;
     }
 }

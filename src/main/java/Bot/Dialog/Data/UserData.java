@@ -1,8 +1,6 @@
 package Bot.Dialog.Data;
 
-import Bot.Dialog.Config.EnglishText;
 import Bot.Dialog.Config.IText;
-import Models.UserDataModel;
 
 /**
  * Class to store external user information.
@@ -22,7 +20,7 @@ public class UserData {
         this.lang = lang;
     }
 
-    public UserData(long userId, BotState dialogState, String email, IText lang, boolean isAuthorized) {
+    public UserData(long userId, String email, boolean isAuthorized, BotState dialogState, IText lang) {
         this.userId = userId;
         this.dialogState = dialogState;
         this.email = email;
@@ -65,10 +63,5 @@ public class UserData {
 
     public void setAuthorized(boolean authorized) {
         isAuthorized = authorized;
-    }
-
-    public UserDataModel toUserDataModel() {
-        var language = (lang instanceof EnglishText ? "ENG" : "RUS");
-        return new UserDataModel(userId, email, isAuthorized, dialogState, language);
     }
 }

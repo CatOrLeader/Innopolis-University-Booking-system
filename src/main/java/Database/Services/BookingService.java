@@ -1,11 +1,14 @@
 package Database.Services;
 
-import Models.BookingModel;
+import Models.Booking;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+
+import static Utilities.DateTime.formatTimestampToISO;
+import static Utilities.DateTime.parseISOToTimestamp;
 
 /**
  * Class for the bookings data access in database
@@ -26,19 +29,19 @@ public class BookingService {
     /**
      * Adds a new booking to the database
      *
-     * @param bookingModel model of the booking
+     * @param booking model of the booking
      */
-    public void addNewBooking(BookingModel bookingModel) {
+    public void addNewBooking(Booking booking) {
         String query = "INSERT INTO \"Booking\" (\"Id\", \"TgChatId\", \"Title\", \"RoomId\", \"Start\", \"End\", \"isConfirmed\") VALUES (?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setString(1, bookingModel.id);
-            statement.setLong(2, bookingModel.tgChatId);
-            statement.setString(3, bookingModel.title);
-            statement.setString(4, bookingModel.roomId);
-            statement.setTimestamp(5, bookingModel.start);
-            statement.setTimestamp(6, bookingModel.end);
-            statement.setBoolean(7, bookingModel.isConfirmed);
+            statement.setString(1, booking.id);
+            statement.setLong(2, booking.userId);
+            statement.setString(3, booking.title);
+            statement.setString(4, booking.room.id);
+            statement.setTimestamp(5, parseISOToTimestamp(booking.start));
+            statement.setTimestamp(6, parseISOToTimestamp(booking.end));
+            statement.setBoolean(7, booking.isConfirmed);
             statement.executeUpdate();
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -48,21 +51,21 @@ public class BookingService {
     /**
      * Updates particular booking data
      *
-     * @param bookingModel model of the booking
+     * @param booking model of the booking
      */
-    public void updateBooking(BookingModel bookingModel) {
+    public void updateBooking(Booking booking) {
         String query = "UPDATE \"Booking\" SET \"TgChatId\" = ?, \"Title\" = ?, " +
                 "\"RoomId\" = ?, \"Start\" = ?, \"End\" = ?, \"isConfirmed\" = ? " +
                 " WHERE \"Id\" = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setLong(1, bookingModel.tgChatId);
-            statement.setString(2, bookingModel.title);
-            statement.setString(3, bookingModel.roomId);
-            statement.setTimestamp(4, bookingModel.start);
-            statement.setTimestamp(5, bookingModel.end);
-            statement.setBoolean(6, bookingModel.isConfirmed);
-            statement.setString(7, bookingModel.id);
+            statement.setLong(1, booking.userId);
+            statement.setString(2, booking.title);
+            statement.setString(3, booking.room.id);
+            statement.setTimestamp(4, parseISOToTimestamp(booking.start));
+            statement.setTimestamp(5, parseISOToTimestamp(booking.end));
+            statement.setBoolean(6, booking.isConfirmed);
+            statement.setString(7, booking.id);
             statement.executeUpdate();
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -76,7 +79,7 @@ public class BookingService {
      * @param bookingId id of the booking
      * @return model of the booking
      */
-    public BookingModel getBookingDataById(String bookingId) {
+    public Booking getBookingDataById(String bookingId) {
         String query = "SELECT b.\"TgChatId\", b.\"Title\", b.\"RoomId\", b.\"Start\", b.\"End\", b.\"isConfirmed\", tg.\"UserEmail\" " +
                 "FROM \"Booking\" b " +
                 "JOIN \"TgChat\" tg ON b.\"TgChatId\" = tg.\"Id\" " +
@@ -87,7 +90,7 @@ public class BookingService {
             var resultSet = statement.executeQuery();
 
             if (resultSet.next()) {
-                long tgChatId = resultSet.getLong("TgChatId");
+                long userId = resultSet.getLong("TgChatId");
                 String userEmail = resultSet.getString("UserEmail");
                 String title = resultSet.getString("Title");
                 String roomId = resultSet.getString("RoomId");
@@ -95,7 +98,14 @@ public class BookingService {
                 Timestamp end = resultSet.getTimestamp("End");
                 boolean isConfirmed = resultSet.getBoolean("isConfirmed");
 
-                return new BookingModel(bookingId, tgChatId, userEmail, title, roomId, start, end, isConfirmed);
+                return new Booking(bookingId,
+                        userId,
+                        title,
+                        formatTimestampToISO(start),
+                        formatTimestampToISO(end),
+                        roomId,
+                        userEmail,
+                        isConfirmed);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -108,18 +118,18 @@ public class BookingService {
      * Returns data about the bookings
      * by user's chat ID
      *
-     * @param tgChatId ID of the user chat
+     * @param UserId ID of the user chat
      * @return list of user's bookings
      */
-    public ArrayList<BookingModel> getBookingsByUserChatId(long tgChatId) {
-        ArrayList<BookingModel> bookings = new ArrayList<>();
+    public ArrayList<Booking> getBookingsByUserChatId(long UserId) {
+        ArrayList<Booking> bookings = new ArrayList<>();
         String query = "SELECT b.\"Id\", b.\"Title\", b.\"RoomId\", b.\"Start\", b.\"End\", b.\"isConfirmed\", tg.\"UserEmail\" " +
                 "FROM \"Booking\" b " +
                 "JOIN \"TgChat\" tg ON b.\"TgChatId\" = tg.\"Id\" " +
                 "WHERE b.\"TgChatId\" = ?";
 
         try (PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setLong(1, tgChatId);
+            statement.setLong(1, UserId);
             var resultSet = statement.executeQuery();
 
             while (resultSet.next()) {
@@ -131,8 +141,14 @@ public class BookingService {
                 Timestamp end = resultSet.getTimestamp("End");
                 boolean isConfirmed = resultSet.getBoolean("isConfirmed");
 
-                BookingModel booking = new BookingModel(id, tgChatId, userEmail, title, roomId, start, end, isConfirmed);
-                bookings.add(booking);
+                bookings.add(new Booking(id,
+                        UserId,
+                        title,
+                        formatTimestampToISO(start),
+                        formatTimestampToISO(end),
+                        roomId,
+                        userEmail,
+                        isConfirmed));
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -148,8 +164,8 @@ public class BookingService {
      * @param end   end date time (nullable)
      * @return list of bookings
      */
-    public ArrayList<BookingModel> getBookingsByTimePeriod(Timestamp start, Timestamp end) {
-        ArrayList<BookingModel> bookings = new ArrayList<>();
+    public ArrayList<Booking> getBookingsByTimePeriod(Timestamp start, Timestamp end) {
+        ArrayList<Booking> bookings = new ArrayList<>();
         String query = "SELECT b.\"Id\", b.\"TgChatId\", b.\"Title\", b.\"RoomId\", b.\"Start\", b.\"End\", b.\"isConfirmed\", tg.\"UserEmail\" " +
                 "FROM \"Booking\" b " +
                 "JOIN \"TgChat\" tg ON b.\"TgChatId\" = tg.\"Id\" " +
@@ -176,7 +192,7 @@ public class BookingService {
 
             while (resultSet.next()) {
                 String id = resultSet.getString("Id");
-                long tgChatId = resultSet.getLong("TgChatId");
+                long userId = resultSet.getLong("TgChatId");
                 String userEmail = resultSet.getString("UserEmail");
                 String title = resultSet.getString("Title");
                 String roomId = resultSet.getString("RoomId");
@@ -184,8 +200,14 @@ public class BookingService {
                 Timestamp bookingEnd = resultSet.getTimestamp("End");
                 boolean isConfirmed = resultSet.getBoolean("isConfirmed");
 
-                BookingModel booking = new BookingModel(id, tgChatId, userEmail, title, roomId, bookingStart, bookingEnd, isConfirmed);
-                bookings.add(booking);
+                bookings.add(new Booking(id,
+                        userId,
+                        title,
+                        formatTimestampToISO(bookingStart),
+                        formatTimestampToISO(bookingEnd),
+                        roomId,
+                        userEmail,
+                        isConfirmed));
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -200,8 +222,8 @@ public class BookingService {
      * @param start start date time
      * @return list of bookings
      */
-    public ArrayList<BookingModel> getBookingsByTimeStart(Timestamp start) {
-        ArrayList<BookingModel> bookings = new ArrayList<>();
+    public ArrayList<Booking> getBookingsByTimeStart(Timestamp start) {
+        ArrayList<Booking> bookings = new ArrayList<>();
         String query = "SELECT b.\"Id\", b.\"TgChatId\", b.\"Title\", b.\"RoomId\", b.\"Start\", b.\"End\", b.\"isConfirmed\", tg.\"UserEmail\" " +
                 "FROM \"Booking\" b " +
                 "JOIN \"TgChat\" tg ON b.\"TgChatId\" = tg.\"Id\" " +
@@ -214,7 +236,7 @@ public class BookingService {
 
             while (resultSet.next()) {
                 String id = resultSet.getString("Id");
-                long tgChatId = resultSet.getLong("TgChatId");
+                long userId = resultSet.getLong("TgChatId");
                 String userEmail = resultSet.getString("UserEmail");
                 String title = resultSet.getString("Title");
                 String roomId = resultSet.getString("RoomId");
@@ -222,8 +244,14 @@ public class BookingService {
                 Timestamp bookingEnd = resultSet.getTimestamp("End");
                 boolean isConfirmed = resultSet.getBoolean("isConfirmed");
 
-                BookingModel booking = new BookingModel(id, tgChatId, userEmail, title, roomId, bookingStart, bookingEnd, isConfirmed);
-                bookings.add(booking);
+                bookings.add(new Booking(id,
+                        userId,
+                        title,
+                        formatTimestampToISO(bookingStart),
+                        formatTimestampToISO(bookingEnd),
+                        roomId,
+                        userEmail,
+                        isConfirmed));
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());

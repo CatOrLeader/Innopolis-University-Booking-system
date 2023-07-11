@@ -11,13 +11,15 @@ public class BookRoomRequest {
 
     // Hidden fields
     public transient int duration;
-    public transient boolean isWebapp;
+    private transient boolean fromWebapp;
 
     public BookRoomRequest(String title, String start, int duration, String owner_email) {
         this.title = title;
         this.start = start;
         this.duration = duration;
         this.owner_email = owner_email;
+
+        fromWebapp = false;
     }
 
     public BookRoomRequest(String title, String start, String end, String owner_email) {
@@ -25,6 +27,8 @@ public class BookRoomRequest {
         this.start = start;
         this.end = end;
         this.owner_email = owner_email;
+
+        fromWebapp = true;
     }
 
     public BookRoomRequest() {
@@ -32,7 +36,7 @@ public class BookRoomRequest {
 
     // Class constructor
     public void formatToSend() {
-        if (isWebapp) return;
+        if (fromWebapp) return;
 
         parseDateTimeToOutput();
     }
