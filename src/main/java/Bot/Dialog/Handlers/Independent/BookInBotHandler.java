@@ -11,7 +11,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 public class BookInBotHandler extends IndependentHandler {
     @Override
     public MaybeResponse handle(Update incomingUpdate, UserData data) {
-        if (!isNewBookingCommand(incomingUpdate)) {
+        if (!isNewBookingCommand(incomingUpdate) || !data.isAuthorized()) {
             return new MaybeResponse();
         }
         var usr = data.getUserId();

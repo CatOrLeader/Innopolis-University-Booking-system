@@ -13,7 +13,7 @@ import com.pengrad.telegrambot.request.SendMessage;
 public class SwitchLanguageHandler extends IndependentHandler {
     @Override
     public MaybeResponse handle(Update incomingUpdate, UserData data) {
-        if (!isSwitchLanguageCommand(incomingUpdate)) {
+        if (!isSwitchLanguageCommand(incomingUpdate) || !data.isAuthorized()) {
             return new MaybeResponse();
         }
         var usr = data.getUserId();
