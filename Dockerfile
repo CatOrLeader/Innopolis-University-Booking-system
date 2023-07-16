@@ -6,7 +6,7 @@
 FROM maven:3.9.2 AS build
 COPY src /home/bot/src
 COPY pom.xml /home/bot
-COPY usefulMaterials/DbBackups/IUBookingBotDb.backup /home/bot
+COPY dockersys /home/bot
 RUN mvn -f /home/bot/pom.xml clean compile assembly:single
 
 #
