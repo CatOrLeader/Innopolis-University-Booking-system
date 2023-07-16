@@ -2,10 +2,7 @@ package Bot.Dialog;
 
 import Bot.Dialog.Data.BotState;
 import Bot.Dialog.Data.UserData;
-import Bot.Dialog.Handlers.Independent.BookInBotHandler;
-import Bot.Dialog.Handlers.Independent.BookingConfirmationHandler;
-import Bot.Dialog.Handlers.Independent.GoToMenuHandler;
-import Bot.Dialog.Handlers.Independent.SwitchLanguageHandler;
+import Bot.Dialog.Handlers.Independent.*;
 import Bot.Dialog.Handlers.IndependentHandler;
 import Bot.Dialog.Handlers.MaybeResponse;
 import Bot.Dialog.Handlers.Response;
