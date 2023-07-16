@@ -17,13 +17,16 @@ public class GoToMenuHandler extends IndependentHandler {
         if (!isMenuCommand(incomingUpdate)) {
             return new MaybeResponse();
         }
-
-        var msg = incomingUpdate.message();
         var lang = data.getLang();
         var usr = data.getUserId();
 
-        if (!data.isAuthorized() || msg == null) {
-            return new MaybeResponse();
+        if (!data.isAuthorized()) {
+            var botMessage =
+                    new SendMessage(
+                            data.getUserId(),
+                            lang.initial()).replyMarkup(lang.languageSelection());
+            data.setDialogState(BotState.INITIAL_LANGUAGE_SETTING);
+            return new MaybeResponse(new Response(data, botMessage));
         }
 
         data.setDialogState(BotState.MAIN_MENU);

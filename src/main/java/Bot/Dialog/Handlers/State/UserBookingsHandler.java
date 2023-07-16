@@ -53,7 +53,7 @@ public class UserBookingsHandler extends StateHandler {
         var booking = Services.outlook.getBookingById(infoId);
 
         AnswerCallbackQuery answer = new AnswerCallbackQuery(query.id()).
-                text(lang.sorryError()).showAlert(true);
+                text(lang.sorryError()).showAlert(true).cacheTime(0);
         if (booking != null) {
             answer = new AnswerCallbackQuery(query.id()).text(
                     lang.fullBookingInfo(booking)
