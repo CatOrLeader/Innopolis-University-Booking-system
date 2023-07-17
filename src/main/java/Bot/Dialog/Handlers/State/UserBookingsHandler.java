@@ -57,7 +57,7 @@ public class UserBookingsHandler extends StateHandler {
         if (booking != null) {
             answer = new AnswerCallbackQuery(query.id()).text(
                     lang.fullBookingInfo(booking)
-            ).showAlert(true);
+            ).showAlert(true).cacheTime(0);
         }
 
         return new Response(data, answer);
