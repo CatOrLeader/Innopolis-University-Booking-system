@@ -15,4 +15,4 @@ FROM openjdk:19-alpine
 ENV JAR_FILE=swagger-spring-1.0.0.jar
 COPY --from=build /home/mock/target/${JAR_FILE} /home/main.jar
 EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/home/main.jar", "-b"]
+CMD ["java", "-jar", "/home/main.jar", "-b"]
