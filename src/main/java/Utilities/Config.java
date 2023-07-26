@@ -16,9 +16,8 @@ public class Config {
      */
     private static final Properties properties;
     static {
-        var propsPath = Path.of("properties.cfg");
         try {
-            var stream = Files.newBufferedReader(propsPath);
+            var stream = Config.class.getResourceAsStream("/properties.cfg");
             properties = new Properties();
             properties.load(stream);
         } catch (IOException e) {

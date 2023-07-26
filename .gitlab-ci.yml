@@ -1,7 +1,7 @@
-variables:
-  MAVEN_OPTS: -Dmaven.repo.local=.m2/repository
+image : gradle:latest 
 
-image: maven:latest
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
 
 stages:
   - build
@@ -12,23 +12,23 @@ stages:
 cache:
   paths:
     - .m2/repository
-    - target
+    - gradle
 
 build_job:
   stage: build
   tags:
     - docker
   script:
-    - echo "Maven compile started"
-    - "mvn compile"
+    - echo "Gradle build started"
+    - "gradle clean check"
 
 test_job:
   stage: test
   tags:
     - docker
   script:
-    - echo "Maven test started"
-    - "mvn verify"
+    - echo "Gradle test started"
+    - "gradle test"
   artifacts:
     when: always
     reports:
@@ -42,7 +42,7 @@ lint_job:
     - docker
   script:
     - echo "Running linters"
-    - "mvn checkstyle:checkstyle"
+    # - "gradle check"
   artifacts:
     when: always
     paths:
@@ -53,12 +53,12 @@ package_job:
   tags:
     - docker
   script:
-    - echo "Maven packaging started"
-    - "mvn package"
+    - echo "Gradle packaging started"
+    - "gradle build shadowJar"
 
 deploy_job:
   stage: deploy
   tags:
     - docker
   script:
-    - echo "Maven deploy started"
+    - echo "Gradle deploy started"

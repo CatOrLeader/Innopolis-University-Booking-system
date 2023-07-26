@@ -68,7 +68,6 @@ All the environment variables should be placed in the "docker-compose.yml" file.
 6. Start docker-compose (`docker-compose up -d`)
 7. Copy the necessary files to the Docker containers:
     - `docker cp dockersys/DbBackups/IUBookingBotDb.backup db:/home`
-    - `docker cp dockersys/src/resource bot:/home`
 8. Enter the DB container.: `docker exec -it db bash`
 9. Use Container as a Postgres user: `su - postgres`
 10. Restore backup: `pg_restore -U postgres -d IUBookingBotDb /home/IUBookingBotDb.backup`

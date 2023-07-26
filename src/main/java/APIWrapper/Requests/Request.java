@@ -1,6 +1,7 @@
 package APIWrapper.Requests;
 
 import Models.*;
+import Utilities.Services;
 
 import java.util.ArrayList;
 
@@ -8,7 +9,7 @@ public class Request {
     private final RequestFormatted formatter;
 
     public Request() {
-        String url = System.getenv("MOCK_SERVER_URL");
+        String url = Services.getEnv("MOCK_SERVER_URL");
         formatter = new RequestFormatted(url);
     }
 

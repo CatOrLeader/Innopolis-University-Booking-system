@@ -3,17 +3,18 @@
 #
 # BUILD STAGE
 #
-FROM maven:3.9.2 AS build
-COPY src /home/bot/src
-COPY pom.xml /home/bot
-COPY dockersys /home/bot
-RUN mvn -f /home/bot/pom.xml clean compile assembly:single
+FROM gradle AS build
+COPY --chown=gradle:gradle src /home/gradle/src
+COPY build.gradle /home/gradle
+COPY settings.gradle /home/gradle
+WORKDIR /home/gradle
+RUN gradle clean build shadowJar --no-daemon
 
 #
 # PACKAGE STAGE
 #
 FROM openjdk:19-alpine
-ENV JAR_FILE=IUBookingBot-1.0-SNAPSHOT-jar-with-dependencies.jar
-COPY --from=build /home/bot/target/${JAR_FILE} /home/main.jar
-EXPOSE 8080
-ENTRYPOINT ["java", "-jar", "/home/main.jar"]
+WORKDIR /app
+ENV JAR_FILE=IUBookingBot-1.0-SNAPSHOT-all.jar
+COPY --from=build /home/gradle/build/libs/${JAR_FILE} /app/main.jar
+CMD ["java", "-jar", "/app/main.jar"]
