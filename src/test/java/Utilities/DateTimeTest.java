@@ -9,14 +9,12 @@ public class DateTimeTest {
 
     @Test
     public void isValidTest1() {
-        DateTime dateTime = new DateTime("29.02.23 23:00", 180);
-        assertEquals(dateTime.isValid("29.02.23 23:00"), null);
+        assertNull(DateTime.isValid("29.02.23 23:00"));
     }
 
     @Test
     public void isValidTest2() {
-        DateTime dateTime = new DateTime("29.02.24 23:00", 180);
-        assertEquals(dateTime.isValid("29.02.24 23:00"), true);
+        assertEquals(DateTime.isValid("29.02.24 23:00"), true);
     }
 
 

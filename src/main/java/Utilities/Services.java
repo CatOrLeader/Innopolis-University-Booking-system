@@ -8,6 +8,8 @@ import Database.Controllers.UserDataController;
 import Mail.Client;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import io.github.cdimascio.dotenv.Dotenv;
+import io.github.cdimascio.dotenv.DotenvBuilder;
 
 import javax.mail.NoSuchProviderException;
 
@@ -16,6 +18,14 @@ public class Services {
 
     // Order is important due to the bonds between different classes (some of them cannot be instantiated w/out others)
 
+    // Environment variables
+    public final static Dotenv dotenv = Dotenv.load();
+
+    public static String getEnv(String key) {
+        return dotenv.get(key);
+    }
+
+    // Services
     public static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     public static final Request outlook = new Request();
 

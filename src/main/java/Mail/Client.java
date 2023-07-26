@@ -1,5 +1,7 @@
 package Mail;
 
+import Utilities.Services;
+
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -10,8 +12,8 @@ import java.util.Properties;
  */
 public class Client {
 
-    private final String SMTP_AUTH_USER = System.getenv("SMTP_AUTH_USER");
-    private final String SMTP_AUTH_PWD = System.getenv("SMTP_AUTH_PWD");
+    private final String SMTP_AUTH_USER = Services.getEnv("SMTP_AUTH_USER");
+    private final String SMTP_AUTH_PWD = Services.getEnv("SMTP_AUTH_PWD");
 
     private final Session session;
     private final Transport transport;
@@ -20,12 +22,12 @@ public class Client {
         Properties properties = new Properties();
         properties.put("mail.transport.protocol", "smtp");
 
-        String SMTP_HOST_NAME = System.getenv("SMTP_HOST_NAME");
+        String SMTP_HOST_NAME = Services.getEnv("SMTP_HOST_NAME");
         properties.put("mail.smtp.host", SMTP_HOST_NAME);
 
         properties.put("mail.smtp.auth", "true");
 
-        String SMTP_PORT = System.getenv("SMTP_PORT");
+        String SMTP_PORT = Services.getEnv("SMTP_PORT");
         properties.put("mail.smtp.port", SMTP_PORT);
 
         var auth = new SMTPAuthenticator();
